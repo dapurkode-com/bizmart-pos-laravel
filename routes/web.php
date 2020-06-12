@@ -18,12 +18,26 @@ Route::get('/', function () {
 });
 
 Auth::routes(
-//    [
-//        'register' => false, // Registration Routes...
-//        'reset' => false, // Password Reset Routes...
-//        'verify' => false, // Email Verification Routes...
-//    ]
+    //    [
+    //        'register' => false, // Registration Routes...
+    //        'reset' => false, // Password Reset Routes...
+    //        'verify' => false, // Email Verification Routes...
+    //    ]
 );
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+
+
+Route::get('suplier/datatables', 'SuplierController@datatables')->name('suplier.datatables');
+Route::resource('suplier', 'SuplierController');
+
+Route::get('member/datatables', 'MemberController@datatables')->name('member.datatables');
+Route::resource('member', 'MemberController');
+
+Route::get('item/datatables', 'ItemController@datatables')->name('item.datatables');
+Route::resource('item', 'ItemController');
+
+Route::resource('unit', 'UnitController')->only('index', 'store', 'update');
+
+Route::resource('category', 'CategoryController')->only('index', 'store', 'update');

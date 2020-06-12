@@ -194,11 +194,11 @@ return [
 
     'login_url' => 'login',
 
-    'register_url' => 'register',
+    'register_url' => '',
 
-    'password_reset_url' => 'password/reset',
+    'password_reset_url' => '',
 
-    'password_email_url' => 'password/email',
+    'password_email_url' => '',
 
     'profile_url' => false,
 
@@ -231,71 +231,83 @@ return [
     */
 
     'menu' => [
-//        [
-//            'text' => 'search',
-//            'search' => true,
-//            'topnav' => true,
-//        ],
-//        [
-//            'text' => 'blog',
-//            'url'  => 'admin/blog',
-//            'can'  => 'manage-blog',
-//        ],
+        //        [
+        //            'text' => 'search',
+        //            'search' => true,
+        //            'topnav' => true,
+        //        ],
+        //        [
+        //            'text' => 'blog',
+        //            'url'  => 'admin/blog',
+        //            'can'  => 'manage-blog',
+        //        ],
         [
-            'text'        => 'pages',
-            'url'         => 'admin/pages',
-            'icon'        => 'far fa-fw fa-file',
-            'label'       => 4,
-            'label_color' => 'success',
-        ],
-        ['header' => 'account_settings'],
-        [
-            'text' => 'profile',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
+            'text'      => 'Penjualan',
+            'url'       => '#',
+            'topnav'    => 'true'
         ],
         [
-            'text' => 'change_password',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
+            'text'      => 'Pembelian',
+            'url'       => '#',
+            'topnav'    => 'true'
         ],
         [
-            'text'    => 'multilevel',
-            'icon'    => 'fas fa-fw fa-share',
+            'text'      => 'Dashboard',
+            'url'       => '/home',
+            'icon'      => 'fas fa-fw fa-tachometer-alt'
+        ],
+        ['header' => 'MASTER DATA'],
+        [
+            'text'    => 'Suplier',
+            'icon'    => 'fas fa-fw fa-truck',
             'submenu' => [
                 [
-                    'text' => 'level_one',
-                    'url'  => '#',
+                    'text' => 'Daftar Suplier',
+                    'url'  => '/suplier',
                 ],
                 [
-                    'text'    => 'level_one',
-                    'url'     => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url'  => '#',
-                        ],
-                        [
-                            'text'    => 'level_two',
-                            'url'     => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url'  => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url'  => '#',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'text' => 'level_one',
-                    'url'  => '#',
+                    'text' => 'Tambah Suplier Baru',
+                    'url'  => '/suplier/create',
                 ],
             ],
+        ],
+        [
+            'text'    => 'Member',
+            'icon'    => 'fas fa-fw fa-user',
+            'submenu' => [
+                [
+                    'text' => 'Daftar Member',
+                    'url'  => '/member',
+                ],
+                [
+                    'text' => 'Tambah Member Baru',
+                    'url'  => '/member/create',
+                ],
+            ],
+        ],
+        [
+            'text'    => 'Barang',
+            'icon'    => 'fas fa-fw fa-box',
+            'submenu' => [
+                [
+                    'text' => 'Daftar Barang',
+                    'url'  => '/item',
+                ],
+                [
+                    'text' => 'Tambah Barang Baru',
+                    'url'  => '/item/create',
+                ],
+            ],
+        ],
+        [
+            'text'      => 'Kategori Barang',
+            'url'       => 'category',
+            'icon'      => 'fas fa-fw fa-list',
+        ],
+        [
+            'text'    => 'Unit Barang',
+            'url'     => '/unit',
+            'icon'    => 'fas fa-fw fa-list',
         ],
         ['header' => 'labels'],
         [
@@ -353,7 +365,7 @@ return [
     'plugins' => [
         [
             'name' => 'Datatables',
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
