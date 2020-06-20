@@ -41,4 +41,5 @@ Route::resource('item', 'ItemController');
 Route::get('unit/datatables', 'UnitController@datatables')->name('unit.datatables');
 Route::resource('unit', 'UnitController')->only('index', 'store', 'update', 'show', 'destroy');
 
-Route::resource('category', 'CategoryController')->only('index', 'store', 'update');
+Route::get('category/datatables', 'CategoryController@datatables')->name('category.datatables');
+Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');
