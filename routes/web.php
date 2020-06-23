@@ -28,18 +28,19 @@ Auth::routes(
 Route::get('/home', 'HomeController@index')->name('home');
 
 
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('suplier/datatables', 'SuplierController@datatables')->name('suplier.datatables');
+    Route::resource('suplier', 'SuplierController');
 
-Route::get('suplier/datatables', 'SuplierController@datatables')->name('suplier.datatables');
-Route::resource('suplier', 'SuplierController');
+    Route::get('member/datatables', 'MemberController@datatables')->name('member.datatables');
+    Route::resource('member', 'MemberController');
 
-Route::get('member/datatables', 'MemberController@datatables')->name('member.datatables');
-Route::resource('member', 'MemberController');
+    Route::get('item/datatables', 'ItemController@datatables')->name('item.datatables');
+    Route::resource('item', 'ItemController');
 
-Route::get('item/datatables', 'ItemController@datatables')->name('item.datatables');
-Route::resource('item', 'ItemController');
+    Route::get('unit/datatables', 'UnitController@datatables')->name('unit.datatables');
+    Route::resource('unit', 'UnitController')->only('index', 'store', 'update', 'show', 'destroy');
 
-Route::get('unit/datatables', 'UnitController@datatables')->name('unit.datatables');
-Route::resource('unit', 'UnitController')->only('index', 'store', 'update', 'show', 'destroy');
-
-Route::get('category/datatables', 'CategoryController@datatables')->name('category.datatables');
-Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');
+    Route::get('category/datatables', 'CategoryController@datatables')->name('category.datatables');
+    Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');
+});
