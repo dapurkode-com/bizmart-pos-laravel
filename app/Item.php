@@ -54,7 +54,7 @@ class Item extends Model
         'markup',
         'last_buy_at',
         'last_sell_at',
-        'last_opname:at',
+        'last_opname_at',
         'created_by',
         'updated_by',
     ];
@@ -83,7 +83,7 @@ class Item extends Model
     protected $dates = [
         'last_buy_at',
         'last_sell_at',
-        'last_opname:at',
+        'last_opname_at',
     ];
 
 
@@ -95,5 +95,23 @@ class Item extends Model
     public function unit()
     {
         return $this->belongsTo(\App\Unit::class);
+    }
+
+    public function stockActiveText()
+    {
+        $lookUp = LookUp::where('group_code', 'STCK_ACTV')
+            ->where('key', $this->is_stock_active)
+            ->first();
+
+        return $lookUp != null ? $lookUp->label : '-';
+    }
+
+    public function sellPriceDeterminantText()
+    {
+        $lookUp = LookUp::where('group_code', 'SLL_PRC_DTRM')
+            ->where('key', $this->sell_price_determinant)
+            ->first();
+
+        return $lookUp != null ? $lookUp->label : '-';
     }
 }
