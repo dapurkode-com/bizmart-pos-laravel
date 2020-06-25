@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Traits\Blameable;
+use App\Traits\UniqID;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -20,6 +21,18 @@ class Buy extends Model
 {
     use SoftDeletes;
     use Blameable;
+    use UniqID;
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'uniq_id';
+    }
+
     /**
      * The attributes that are mass assignable.
      *

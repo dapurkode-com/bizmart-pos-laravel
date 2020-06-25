@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Traits\Blameable;
+use App\Traits\UniqID;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -19,6 +20,7 @@ class Sell extends Model
 {
     use SoftDeletes;
     use Blameable;
+    use UniqID;
 
     /**
      * The attributes that are mass assignable.
