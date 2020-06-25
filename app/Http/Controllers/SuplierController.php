@@ -7,6 +7,12 @@ use App\Http\Requests\SuplierUpdateRequest;
 use App\Suplier;
 use Illuminate\Http\Request;
 
+/**
+ * SuplierController
+ *
+ * @package Controller
+ * @author Satya Wibawa <i.g.b.n.satyawibawa@gmail.com>
+ */
 class SuplierController extends Controller
 {
     /**

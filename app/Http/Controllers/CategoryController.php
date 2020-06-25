@@ -7,6 +7,12 @@ use App\Http\Requests\CategoryStoreRequest;
 use App\Http\Requests\CategoryUpdateRequest;
 use Illuminate\Http\Request;
 
+/**
+ * CategoryController
+ *
+ * @package Controller
+ * @author Satya Wibawa <i.g.b.n.satyawibawa@gmail.com>
+ */
 class CategoryController extends Controller
 {
     /**

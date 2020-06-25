@@ -8,6 +8,13 @@ use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Member
+ *
+ * @package Model
+ * @author Satya Wibawa <i.g.b.n.satyawibawa@gmail.com>
+ *
+ */
 class Member extends Model
 {
     use SoftDeletes;

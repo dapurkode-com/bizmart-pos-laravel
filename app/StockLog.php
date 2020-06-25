@@ -5,6 +5,15 @@ namespace App;
 use App\Traits\Blameable;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * StockLog
+ *
+ * Arus log
+ *
+ * @package Model
+ * @author Satya Wibawa <i.g.b.n.satyawibawa@gmail.com>
+ *
+ */
 class StockLog extends Model
 {
     use Blameable;

@@ -7,6 +7,12 @@ use App\Http\Requests\UnitUpdateRequest;
 use App\Unit;
 use Illuminate\Http\Request;
 
+/**
+ * UnitController
+ *
+ * @package Controller
+ * @author Satya Wibawa <i.g.b.n.satyawibawa@gmail.com>
+ */
 class UnitController extends Controller
 {
     /**
@@ -52,7 +58,7 @@ class UnitController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param \App\Uit $unit
+     * @param \App\Unit $unit
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, Unit $unit)

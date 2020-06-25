@@ -4,6 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * LookUp
+ *
+ * Penjelasan kode, status atau notasi khusus.
+ *
+ * @package Model
+ * @author Satya Wibawa <i.g.b.n.satyawibawa@gmail.com>
+ *
+ */
 class LookUp extends Model
 {
     /**

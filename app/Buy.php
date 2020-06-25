@@ -6,6 +6,16 @@ use App\Traits\Blameable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+
+/**
+ * Buy
+ *
+ * Pembelian
+ *
+ * @package Model
+ * @author Satya Wibawa <i.g.b.n.satyawibawa@gmail.com>
+ *
+ */
 class Buy extends Model
 {
     use SoftDeletes;
@@ -39,17 +49,31 @@ class Buy extends Model
         'tax' => 'double',
     ];
 
-
+    /**
+     * [Relationship] Detail Pembelian
+     *
+     * @return hasMany [BuyDetail]
+     */
     public function buyDetails()
     {
         return $this->hasMany(\App\BuyDetail::class);
     }
 
+    /**
+     * [Relationship] Pegawai yang melakukan pembelian
+     *
+     * @return belongsTo [User]
+     */
     public function user()
     {
         return $this->belongsTo(\App\User::class);
     }
 
+    /**
+     * [Relationship] Suplier yang dituju
+     *
+     * @return belongsTo [Suplier]
+     */
     public function suplier()
     {
         return $this->belongsTo(\App\Suplier::class);

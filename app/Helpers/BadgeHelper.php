@@ -2,6 +2,14 @@
 
 namespace App\Helpers;
 
+/**
+ * BadgeHelper
+ *
+ * Helper untuk customize class badge
+ *
+ * @package Helpers
+ * @author Satya Wibawa <i.g.b.n.satyawibawa@gmail.com>
+ */
 class BadgeHelper
 {
     public static function getBadgeClass($id)

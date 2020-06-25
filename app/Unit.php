@@ -6,6 +6,15 @@ use App\Traits\Blameable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Unit
+ *
+ * Satuan Barang
+ *
+ * @package Model
+ * @author Satya Wibawa <i.g.b.n.satyawibawa@gmail.com>
+ *
+ */
 class Unit extends Model
 {
     use SoftDeletes;
@@ -32,9 +41,13 @@ class Unit extends Model
         'id' => 'integer',
     ];
 
-
-    public function item()
+    /**
+     * [Relationship] Barang-barang yang menggunakan satuan tersebut
+     *
+     * @return hasMany [Item]
+     */
+    public function items()
     {
-        return $this->belongsTo(\App\Item::class);
+        return $this->hasMany(\App\Item::class);
     }
 }

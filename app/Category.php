@@ -6,6 +6,15 @@ use App\Traits\Blameable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Category
+ *
+ * Kategori Barang
+ *
+ * @package Model
+ * @author Satya Wibawa <i.g.b.n.satyawibawa@gmail.com>
+ *
+ */
 class Category extends Model
 {
     use SoftDeletes;
@@ -31,7 +40,11 @@ class Category extends Model
         'id' => 'integer',
     ];
 
-
+    /**
+     * [Relationship] Barang-barang pada kategori tersebut.
+     *
+     * @return belongsToMany [Item]
+     */
     public function items()
     {
         return $this->belongsToMany(\App\Item::class);

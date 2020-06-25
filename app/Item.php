@@ -8,6 +8,15 @@ use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Item
+ *
+ * Barang
+ *
+ * @package Model
+ * @author Satya Wibawa <i.g.b.n.satyawibawa@gmail.com>
+ *
+ */
 class Item extends Model
 {
     use SoftDeletes;
@@ -87,16 +96,31 @@ class Item extends Model
     ];
 
 
+    /**
+     * [Relationship] Kategori barang
+     *
+     * @return belongsToMany [Category]
+     */
     public function categories()
     {
         return $this->belongsToMany(\App\Category::class);
     }
 
+    /**
+     * [Relationship] Satuan barang
+     *
+     * @return belongsTo [Uni]
+     */
     public function unit()
     {
         return $this->belongsTo(\App\Unit::class);
     }
 
+    /**
+     * Label is_stock_active
+     *
+     * @return string
+     */
     public function stockActiveText()
     {
         $lookUp = LookUp::where('group_code', 'STCK_ACTV')
@@ -106,6 +130,11 @@ class Item extends Model
         return $lookUp != null ? $lookUp->label : '-';
     }
 
+    /**
+     * Label sell_price_determinant
+     *
+     * @return string
+     */
     public function sellPriceDeterminantText()
     {
         $lookUp = LookUp::where('group_code', 'SLL_PRC_DTRM')

@@ -5,6 +5,15 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * BuyDetail
+ *
+ * Detail Pembelian
+ *
+ * @package Model
+ * @author Satya Wibawa <i.g.b.n.satyawibawa@gmail.com>
+ *
+ */
 class BuyDetail extends Model
 {
     use SoftDeletes;
@@ -34,11 +43,21 @@ class BuyDetail extends Model
     ];
 
 
+    /**
+     * [Relationship] Ref. Pembelian
+     *
+     * @return belongsTo [Buy]
+     */
     public function buy()
     {
         return $this->belongsTo(\App\Buy::class);
     }
 
+    /**
+     * [Relationship] Barang yang dibeli
+     *
+     * @return belongsTo [Item]
+     */
     public function item()
     {
         return $this->belongsTo(\App\Item::class);

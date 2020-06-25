@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ItemStoreRequest;
 use App\Http\Requests\ItemUpdateRequest;
 
+/**
+ * ItemController
+ *
+ * @package Controller
+ * @author Satya Wibawa <i.g.b.n.satyawibawa@gmail.com>
+ */
 class ItemController extends Controller
 {
     /**
@@ -29,9 +35,9 @@ class ItemController extends Controller
      */
     public function create(Request $request)
     {
-        $options['STCK_ACTV'] = LookUp::where('group_code', 'STCK_ACTV')->get();
-        $options['SLL_PRC_DTRM'] = LookUp::where('group_code', 'SLL_PRC_DTRM')->get();
-        $options['UNITS'] = Unit::all();
+        $options['STCK_ACTV'] = LookUp::where('group_code', 'STCK_ACTV')->get(); //option untuk is_stock_active
+        $options['SLL_PRC_DTRM'] = LookUp::where('group_code', 'SLL_PRC_DTRM')->get(); //option untuk sell_price_determinant
+        $options['UNITS'] = Unit::all(); //option satuan barang
         return view('item.create', compact('options'));
     }
 
@@ -43,6 +49,7 @@ class ItemController extends Controller
     {
         try {
             DB::beginTransaction();
+            //Menyimpan data barang
             $item = Item::create($request->only([
                 'name',
                 'barcode',
@@ -59,6 +66,7 @@ class ItemController extends Controller
                 'stock'
             ]));
 
+            //Menyimpan kategori barang
             $categories_list = [];
             $categories      = explode(',', $request->categories);
             if ($categories != null) {
@@ -181,7 +189,7 @@ class ItemController extends Controller
             ->addIndexColumn()
             ->addColumn('categories', function ($item) {
                 return $item->categories->map(function ($item) {
-                    return join('', ["<span class='badge ", BadgeHelper::getBadgeClass($item->id), "'>", $item->name, '</span>']);
+                    return join('', ["<span class='badge ", BadgeHelper::getBadgeClass($item->id), "'>", $item->name, '</span>']); //Customize warna badge
                 })->implode(' ');
             })
             ->addColumn('action', function ($item) {

@@ -7,6 +7,12 @@ use App\Http\Requests\MemberUpdateRequest;
 use App\Member;
 use Illuminate\Http\Request;
 
+/**
+ * MemberController
+ *
+ * @package Controller
+ * @author Satya Wibawa <i.g.b.n.satyawibawa@gmail.com>
+ */
 class MemberController extends Controller
 {
     /**
