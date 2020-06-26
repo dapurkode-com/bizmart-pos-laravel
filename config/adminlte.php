@@ -272,6 +272,11 @@ return [
             ],
         ],
         [
+            'text'    => 'User',
+            'icon'    => 'fas fa-user-cog',
+            'url'     => '/user',
+        ],
+        [
             'text'    => 'Member',
             'icon'    => 'fas fa-fw fa-user',
             'submenu' => [
