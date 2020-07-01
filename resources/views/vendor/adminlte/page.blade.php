@@ -57,7 +57,7 @@
         @endif --}}
         <footer class="main-footer no-print">
             <div class="float-right d-none d-sm-block">
-                <b>Version</b> 3.0.0
+                <b>Version</b> 1
             </div>
             <strong>Copyright © {{ date('Y') }} <a href="https://dapurkode.com" target="_blank">Dapurkode.com</a>.</strong>
         </footer>
