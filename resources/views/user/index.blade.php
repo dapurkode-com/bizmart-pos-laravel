@@ -18,13 +18,14 @@
 @stop
 
 @section('content')
-    <div class="row subContent">
+    <!-- main content -->
+    <div class="row mainContent">
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Daftar User</h3>
                     <div class="card-tools">
-                        <div class="input-group input-group-sm"">
+                        <div class="input-group input-group-sm">
                             <button class="btn btn-sm btn-primary btnAdd"><i class="fas fa-plus" style="padding-right: 1rem;"></i>User Baru</button>
                         </div>
                     </div>
@@ -52,17 +53,39 @@
     <div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalFormLabel">Inget Ganti Ne</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Inget Ganti Ne</button>
-                </div>
+                <form enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header">
+                        <h4 class="modal-title">User</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nama</label>
+                            <input type="text" name="name" class="form-control" placeholder="Tulis nama">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" class="form-control" placeholder="Tulis email">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" name="username" class="form-control" placeholder="Tulis username">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" name="password" class="form-control" placeholder="Tulis password">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="reset" class="btn btn-default">Reset</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -74,10 +97,12 @@
 
 @section('js')
 <script>
-    tbIndex = null;
+    // global variable
+    var tbIndex = null;
 
+    // dom event
     domReady(() => {
-        $('#tbIndex').DataTable({
+        tbIndex = $('#tbIndex').DataTable({
             processing: true,
             serverSide: true,
             language: {
@@ -104,11 +129,75 @@
             },
         });
 
-        addListenToEvent('.subContent .btnAdd', 'click', (e) => {
-            $('#modalForm').modal('show');
+        addListenToEvent('.mainContent .btnAdd', 'click', (e) => {
+            const parentElm = document.querySelector('#modalForm');
+            
+            showModalForm(parentElm, 'store');
+        });
+
+        addListenToEvent('#modalForm button[type="submit"]', 'click', (e) => {
+            e.preventDefault();
+            const parentElm = e.target.closest('.modal');
+            const modalTitle = parentElm.querySelector('.modal-title');
+            let action = (modalTitle.innerHTML.includes(`Tambah`)) ? 'store' : 'update';
+            submitModalForm(parentElm, action);
         });
     });
+    // dom event
 
+
+    // other function
+    function showModalForm(parentElm, action) {
+        const modalTitle = parentElm.querySelector('.modal-title');
+        const modalBody = parentElm.querySelector('.modal-body');
+        const modalFooter = parentElm.querySelector('.modal-footer');
+
+        modalTitle.innerHTML = `Loading data...`;
+        modalBody.classList.add('d-none');
+        modalFooter.classList.add('d-none');
+        $(parentElm).modal('show');
+
+        if(action == 'store'){
+            modalTitle.innerHTML = `Tambah User`;
+            modalBody.classList.remove('d-none');
+            modalFooter.classList.remove('d-none');
+        }
+        if(action == 'update'){
+            modalTitle.innerHTML = `Edit User`;
+        }
+        
+    }
+
+    function submitModalForm(parentElm, action) {
+        let formData = new FormData(parentElm.querySelector('form'));     
+
+        if(action == 'store') {
+            fetch(`{{ route('user.store') }}`, {
+                method: `POST`,
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if(result.status == 'invalid'){
+                    drawError(parentElm, result.validators);
+                }
+                if(result.status == 'valid'){
+                    swalAlert(result.pesan, 'success');
+                    tbIndex.ajax.reload();
+                    $(parentElm).modal('hide');
+                }
+                if(result.status == 'error'){
+                    swalAlert(result.pesan, 'warning');
+                }
+            });
+        }
+
+        if(action == 'update'){
+            console.log(action);
+
+        }
+    }
+    // other function
 
 
     // fixed function
@@ -148,6 +237,46 @@
         }, false);
     }
 
+    function drawError(parentElm, validators) {
+        for (const keyName in validators) {
+            if (validators.hasOwnProperty(keyName)) {
+                const value = validators[keyName][0];
+                
+                parentElm.querySelector(`[name="${keyName}"]`).classList.add('is-invalid');
+                parentElm.querySelector(`[name="${keyName}"]`).closest('.form-group').querySelector('.invalid-feedback').innerHTML = `${value}`;
+            }
+        }
+    }
+
+    function swalAlert(content, type){
+        Swal.fire({
+            position: 'center',
+            icon: type,
+            title: content,
+            showConfirmButton: false,
+            timer: 5000,
+            onAfterClose: () => {
+                document.querySelector('body').style.paddingRight = "0px";
+            }
+        });
+    }
     // fixed function
+
+    // fixed event
+    domReady(() => {
+        addListenToEvent('input, textarea', 'click', (e) => {
+            e.target.classList.remove('is-invalid');
+            e.target.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;;
+        });
+
+        addListenToEvent('button[type="reset"]', 'click', (e) => {
+            const parentFormElm = e.target.closest('form');
+            for (const elm of parentFormElm.querySelectorAll('.is-invalid')) {
+                elm.classList.remove('is-invalid');
+                elm.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;;
+            }
+        });
+    });
+    // fixed event
 </script>
 @stop

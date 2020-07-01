@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use DB;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -35,7 +38,41 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'email' => 'required|unique:users|email',
+            'username' => 'required|unique:users|string',
+            'password' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'invalid',
+                'validators' => $validator->errors(),
+            ]);
+        }
+
+        try {
+            DB::beginTransaction();
+            User::create([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'username' => $request->input('username'),
+                'password'  => bcrypt($request->input('password'))
+            ]);
+            DB::commit();
+            
+            return response()->json([
+                'status' => 'valid',
+                'pesan' => 'User berhasil ditambah',
+            ]);
+        } catch (Exception $exc) {
+            return response()->json([
+                'status' => 'error',
+                'pesan' => $exc->getMessage(),
+            ]);
+        }
+        
     }
 
     /**
