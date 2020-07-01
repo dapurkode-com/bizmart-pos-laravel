@@ -52,9 +52,15 @@
         </div>
 
         {{-- Footer --}}
-        @hasSection('footer')
+        {{-- @hasSection('footer')
             @include('adminlte::partials.footer.footer')
-        @endif
+        @endif --}}
+        <footer class="main-footer no-print">
+            <div class="float-right d-none d-sm-block">
+                <b>Version</b> 3.0.0
+            </div>
+            <strong>Copyright © {{ date('Y') }} <a href="https://dapurkode.com" target="_blank">Dapurkode.com</a>.</strong>
+        </footer>
 
         {{-- Right Control Sidebar --}}
         @if(config('adminlte.right_sidebar'))
