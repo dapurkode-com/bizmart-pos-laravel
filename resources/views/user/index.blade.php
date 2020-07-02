@@ -53,8 +53,9 @@
     <div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form enctype="multipart/form-data">
-                    @csrf
+                <form>
+                    <input type="hidden" name="_remote">
+                    <input type="hidden" name="_method">
                     <div class="modal-header">
                         <h4 class="modal-title">User</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -132,22 +133,31 @@
         addListenToEvent('.mainContent .btnAdd', 'click', (e) => {
             const parentElm = document.querySelector('#modalForm');
             
-            showModalForm(parentElm, 'store');
+            showModalForm(parentElm, null, 'store');
         });
 
         addListenToEvent('#modalForm button[type="submit"]', 'click', (e) => {
             e.preventDefault();
             const parentElm = e.target.closest('.modal');
-            const modalTitle = parentElm.querySelector('.modal-title');
-            let action = (modalTitle.innerHTML.includes(`Tambah`)) ? 'store' : 'update';
-            submitModalForm(parentElm, action);
+
+            submitModalForm(parentElm);
+        });
+
+        addListenToEvent('.mainContent .btnEdit', 'click', (e) => {
+            const parentElm = document.querySelector('#modalForm');
+            const thisElm = e.target.closest('button');
+            
+            showModalForm(parentElm, thisElm, 'update');
         });
     });
     // dom event
 
 
+
+
+
     // other function
-    function showModalForm(parentElm, action) {
+    function showModalForm(parentElm, thisElm, action) {
         const modalTitle = parentElm.querySelector('.modal-title');
         const modalBody = parentElm.querySelector('.modal-body');
         const modalFooter = parentElm.querySelector('.modal-footer');
@@ -158,46 +168,62 @@
         $(parentElm).modal('show');
 
         if(action == 'store'){
+            parentElm.querySelector(`[name="_remote"]`).value = `{{ route('user.store') }}`;
+            parentElm.querySelector(`[name="_method"]`).value = `POST`;
+
             modalTitle.innerHTML = `Tambah User`;
             modalBody.classList.remove('d-none');
             modalFooter.classList.remove('d-none');
         }
         if(action == 'update'){
-            modalTitle.innerHTML = `Edit User`;
-        }
-        
-    }
-
-    function submitModalForm(parentElm, action) {
-        let formData = new FormData(parentElm.querySelector('form'));     
-
-        if(action == 'store') {
-            fetch(`{{ route('user.store') }}`, {
-                method: `POST`,
-                body: formData
-            })
+            fetch(`${thisElm.dataset.remote_show}`)
             .then(response => response.json())
             .then(result => {
-                if(result.status == 'invalid'){
-                    drawError(parentElm, result.validators);
-                }
-                if(result.status == 'valid'){
-                    swalAlert(result.pesan, 'success');
-                    tbIndex.ajax.reload();
-                    $(parentElm).modal('hide');
-                }
-                if(result.status == 'error'){
-                    swalAlert(result.pesan, 'warning');
-                }
+                parentElm.querySelector(`[name="_remote"]`).value = thisElm.dataset.remote_update;
+                parentElm.querySelector(`[name="_method"]`).value = `PUT`;
+                parentElm.querySelector(`[name="name"]`).value = result.users.name;
+                parentElm.querySelector(`[name="email"]`).value = result.users.email;
+                parentElm.querySelector(`[name="username"]`).value = result.users.username;
+                parentElm.querySelector(`[name="password"]`).value = "";
+
+                modalTitle.innerHTML = `Edit User`;
+                modalBody.classList.remove('d-none');
+                modalFooter.classList.remove('d-none');
             });
         }
+    }
 
-        if(action == 'update'){
-            console.log(action);
-
-        }
+    function submitModalForm(parentElm) {
+        let formData = new FormData(parentElm.querySelector('form'));
+        let jsonStr = JSON.stringify(fdToJsonObj(formData));
+        
+        fetch(`${formData.get('_remote')}`, {
+            method: `${formData.get('_method')}`,
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            },
+            body: jsonStr,
+        })
+        .then(response => response.json())
+        .then(result => {
+            if(result.status == 'invalid'){
+                drawError(parentElm, result.validators);
+            }
+            if(result.status == 'valid'){
+                swalAlert(result.pesan, 'success');
+                tbIndex.ajax.reload();
+                $(parentElm).modal('hide');
+            }
+            if(result.status == 'error'){
+                swalAlert(result.pesan, 'warning');
+            }
+        });
     }
     // other function
+
+
+
 
 
     // fixed function
@@ -250,21 +276,30 @@
 
     function swalAlert(content, type){
         Swal.fire({
-            position: 'center',
+            toast: true,
+            position: 'top-end',
             icon: type,
             title: content,
             showConfirmButton: false,
             timer: 5000,
-            onAfterClose: () => {
-                document.querySelector('body').style.paddingRight = "0px";
+            timerProgressBar: true,
+            onOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
         });
+    }
+
+    function fdToJsonObj(formData) {
+        let jsonObj = {};
+        formData.forEach((value, key) => {jsonObj[key] = value});
+        return jsonObj;
     }
     // fixed function
 
     // fixed event
     domReady(() => {
-        addListenToEvent('input, textarea', 'click', (e) => {
+        addListenToEvent('input, textarea', 'change', (e) => {
             e.target.classList.remove('is-invalid');
             e.target.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;;
         });

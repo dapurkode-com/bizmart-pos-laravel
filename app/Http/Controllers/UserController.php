@@ -38,6 +38,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        // validate the request
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|unique:users|email',
@@ -51,7 +52,9 @@ class UserController extends Controller
                 'validators' => $validator->errors(),
             ]);
         }
+        // validate the request
 
+        // store the request
         try {
             DB::beginTransaction();
             User::create([
@@ -67,12 +70,13 @@ class UserController extends Controller
                 'pesan' => 'User berhasil ditambah',
             ]);
         } catch (Exception $exc) {
+            DB::rollBack();
             return response()->json([
                 'status' => 'error',
                 'pesan' => $exc->getMessage(),
             ]);
         }
-        
+        // store the request
     }
 
     /**
@@ -83,7 +87,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        return response()->json([
+            'users' => User::findOrFail($id)
+        ]);
     }
 
     /**
@@ -106,7 +112,62 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // validate the request
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'email' => [
+                'required',
+                'email',
+                'unique:users,email,'.$id.',id'
+            ],
+            'username' => [
+                'required',
+                'string',
+                'unique:users,username,'.$id.',id'
+            ],
+            'password' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'invalid',
+                'validators' => $validator->errors(),
+            ]);
+        }
+        // validate the request
+
+        // save the request
+        try {
+            DB::beginTransaction();
+            if($request->input('password') === null) {
+                User::findOrFail($id)->update([
+                    'name' => $request->input('name'),
+                    'email' => $request->input('email'),
+                    'username' => $request->input('username'),
+                ]);
+            }
+            else {
+                User::findOrFail($id)->update([
+                    'name' => $request->input('name'),
+                    'email' => $request->input('email'),
+                    'username' => $request->input('username'),
+                    'password'  => bcrypt($request->input('password'))
+                ]);
+            }
+            DB::commit();
+            
+            return response()->json([
+                'status' => 'valid',
+                'pesan' => 'User berhasil diedit',
+            ]);
+        } catch (Exception $exc) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'pesan' => $exc->getMessage(),
+            ]);
+        }
+        // save the request
     }
 
     /**
@@ -122,13 +183,13 @@ class UserController extends Controller
 
     public function datatables(Request $request)
     {
-        $data = User::query();
+        $users = User::query();
         return datatables()
-            ->of($data)
+            ->of($users)
             ->addIndexColumn()
-            ->addColumn('action', function ($field) {
-                $btn = '<button data-id="'.$field->id.'" type="button" class="btn btn-success btn-xs" title="Edit"><i class="fas fa-pencil-alt"></i></button> ';
-                $btn .= '<button data-id="'.$field->id.'" type="button" class="btn btn-danger btn-xs" title="Hapus"><i class="fas fa-trash"></i></button> ';
+            ->addColumn('action', function ($user) {
+                $btn = '<button data-remote_show="'.route('user.show', $user->id).'" data-remote_update="'.route('user.update', $user->id).'" type="button" class="btn btn-success btn-xs btnEdit" title="Edit"><i class="fas fa-pencil-alt"></i></button> ';
+                $btn .= '<button type="button" class="btn btn-danger btn-xs btnDelete" title="Hapus"><i class="fas fa-trash"></i></button> ';
                 return $btn;
             })
             ->rawColumns(['action'])
