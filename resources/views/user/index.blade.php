@@ -1,12 +1,12 @@
 @extends('adminlte::page')
 
-@section('title', 'User | Bizmart')
+@section('title', 'User')
 
 @section('content_header')
     <div class="row mb-2">
         <div class="col-sm-6">
             <blockquote style="margin: 0; background: unset;">
-                <h1 class="m-0 text-dark">USER</h1>
+                <h1 class="m-0 text-dark">User</h1>
             </blockquote>
         </div>
         <div class="col-sm-6">
@@ -141,7 +141,7 @@
 
         addListenToEvent('.mainContent .btnAdd', 'click', (e) => {
             const parentElm = document.querySelector('#modalForm');
-            
+
             showModalForm(parentElm, null, 'store');
         });
 
@@ -155,10 +155,10 @@
         addListenToEvent('.mainContent .btnEdit', 'click', (e) => {
             const parentElm = document.querySelector('#modalForm');
             const thisElm = e.target.closest('button');
-            
+
             showModalForm(parentElm, thisElm, 'update');
         });
-        
+
         addListenToEvent('.mainContent .btnDelete', 'click', (e) => {
             const thisElm = e.target.closest('button');
             let url = `${thisElm.dataset.remote_destroy}`;
@@ -223,7 +223,7 @@
     function submitModalForm(parentElm) {
         let formData = new FormData(parentElm.querySelector('form'));
         let jsonStr = JSON.stringify(fdToJsonObj(formData));
-        
+
         fetch(`${formData.get('_remote')}`, {
             method: `${formData.get('_method')}`,
             headers: {
@@ -276,7 +276,7 @@
         for (const elm of document.querySelectorAll('.dataTables_length span.select2')) {
             elm.style.width = '5rem';
         }
-        
+
     }
 
     function addListenToEvent(elementSelector, eventName, handler) {
@@ -294,7 +294,7 @@
         for (const keyName in validators) {
             if (validators.hasOwnProperty(keyName)) {
                 const value = validators[keyName][0];
-                
+
                 parentElm.querySelector(`[name="${keyName}"]`).classList.add('is-invalid');
                 parentElm.querySelector(`[name="${keyName}"]`).closest('.form-group').querySelector('.invalid-feedback').innerHTML = `${value}`;
             }
@@ -358,7 +358,7 @@
             .then(result => {
                 resolve(result.value);
             });
-        }); 
+        });
     }
 
     function fdToJsonObj(formData) {
