@@ -248,7 +248,7 @@ return [
         ],
         [
             'text'      => 'Pembelian',
-            'url'       => '#',
+            'url'       => '/buy/create',
             'topnav'    => 'true'
         ],
         [
