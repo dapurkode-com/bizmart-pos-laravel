@@ -93,7 +93,16 @@
 @stop
 
 @section('css')
-
+    <style>
+        /* sweetalert */
+		.swal2-container .swal2-actions button {
+			margin: 0 2px 1rem;
+		}
+		.swal2-container .swal2-validation-message {
+			margin-top: 1rem;
+		}
+		/* end sweetalert */
+    </style>
 @stop
 
 @section('js')
@@ -148,6 +157,24 @@
             const thisElm = e.target.closest('button');
             
             showModalForm(parentElm, thisElm, 'update');
+        });
+        
+        addListenToEvent('.mainContent .btnDelete', 'click', (e) => {
+            const thisElm = e.target.closest('button');
+            let url = `${thisElm.dataset.remote_destroy}`;
+
+            swalDelete(url)
+            .then((result) => {
+                if(result){
+                    if(result.status == 'valid'){
+                        swalAlert(result.pesan, 'success');
+                        tbIndex.ajax.reload();
+                    }
+                    if(result.status == 'error'){
+                        swalAlert(result.pesan, 'warning');
+                    }
+                }
+            });
         });
     });
     // dom event
@@ -288,6 +315,50 @@
                 toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
         });
+    }
+
+    function swalDelete(url){
+        return new Promise((resolve, reject) => {
+            Swal.fire({
+                customClass: {
+                    confirmButton: 'btn btn-danger',
+                    cancelButton: 'btn btn-default'
+                },
+                buttonsStyling: false,
+                focusCancel: true,
+                position: 'center',
+                icon: 'question',
+                text: 'Apakah anda yakin untuk menghapus data ini?',
+                showCancelButton: true,
+                confirmButtonText: 'Yakin',
+                cancelButtonText: 'Batal',
+                showLoaderOnConfirm: true,
+                preConfirm: () =>
+                    fetch(url, {
+                        method: `DELETE`,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            '_method' : 'DELETE'
+                        })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(response.statusText)
+                        }
+                        return response.json();
+                    })
+                    .catch(error => {
+                        Swal.showValidationMessage(`Tidak ada respon. Reload atau perbaiki koneksi anda!`);
+                    }),
+                allowOutsideClick: () => !Swal.isLoading()
+            })
+            .then(result => {
+                resolve(result.value);
+            });
+        }); 
     }
 
     function fdToJsonObj(formData) {

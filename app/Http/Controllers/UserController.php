@@ -178,7 +178,22 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            DB::beginTransaction();
+            User::findOrFail($id)->delete();
+            DB::commit();
+            
+            return response()->json([
+                'status' => 'valid',
+                'pesan' => 'User berhasil dihapus',
+            ]);
+        } catch (Exception $exc) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'pesan' => $exc->getMessage(),
+            ]);
+        }
     }
 
     public function datatables(Request $request)
@@ -189,7 +204,7 @@ class UserController extends Controller
             ->addIndexColumn()
             ->addColumn('action', function ($user) {
                 $btn = '<button data-remote_show="'.route('user.show', $user->id).'" data-remote_update="'.route('user.update', $user->id).'" type="button" class="btn btn-success btn-xs btnEdit" title="Edit"><i class="fas fa-pencil-alt"></i></button> ';
-                $btn .= '<button type="button" class="btn btn-danger btn-xs btnDelete" title="Hapus"><i class="fas fa-trash"></i></button> ';
+                $btn .= '<button data-remote_destroy="'.route('user.destroy', $user->id).'" type="button" class="btn btn-danger btn-xs btnDelete" title="Hapus"><i class="fas fa-trash"></i></button> ';
                 return $btn;
             })
             ->rawColumns(['action'])
