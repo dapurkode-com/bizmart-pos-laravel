@@ -5,7 +5,9 @@
 @section('content_header')
 <div class="row mb-2">
 	<div class="col-sm-6">
-		<h1 class="m-0 text-dark">Transaksi Pembelian</h1>
+        <blockquote style="margin: 0; background: unset;">
+            <h1 class="m-0 text-dark">Transaksi Pembelian</h1>
+        </blockquote>
 	</div>
 	<!-- /.col -->
 	<div class="col-sm-6">
@@ -29,7 +31,7 @@
                     <div class="input-group">
                     <input type="text" class="form-control" placeholder="Tulis barcode disini." aria-label="Tulis barcode" aria-describedby="basic-addon2">
                     <div class="input-group-append">
-                        <button class="btn btn-outline-primary" type="button"><i class="fa fa-list"></i> List Barang</button>
+                        <button class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#itemList"><i class="fa fa-list"></i> List Barang</button>
                     </div>
                     </div>
                 </div>
@@ -119,7 +121,7 @@
     </div>
     <!-- Modal -->
     <div class="modal fade" id="itemList" tabindex="-1" role="dialog" aria-labelledby="itemListLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
 
                 <div class="modal-header">
