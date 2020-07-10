@@ -5,7 +5,9 @@
 @section('content_header')
 <div class="row mb-2">
 	<div class="col-sm-6">
-		<h1 class="m-0 text-dark">Member</h1>
+		<blockquote style="margin: 0; background: unset;">
+            <h1 class="m-0 text-dark">Ubah Data Member</h1>
+        </blockquote>
 	</div>
 	<!-- /.col -->
 	<div class="col-sm-6">
