@@ -40,7 +40,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');
     Route::resource('buy', 'BuyController')->only('index', 'store', 'create', 'show', 'destroy');
 
-    Route::apiResources([
+    Route::resources([
         'suplier' => 'SuplierController',
         'member' => 'MemberController',
         'item'  => 'ItemController',
