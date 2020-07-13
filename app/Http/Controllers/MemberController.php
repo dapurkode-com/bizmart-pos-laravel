@@ -106,9 +106,8 @@ class MemberController extends Controller
             ->of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($member) {
-                $btn = "";
-                $btn .= "<button data-remote=\"" . route('member.show', $member->slug) . "\" type=\"button\" class=\"btn btn-sm btn-danger\"><i class=\"fa fa-trash\"></i> Hapus</button> ";
-                $btn .= " <a href=\"" . route('member.edit', $member->slug) . "\" class=\"edit btn btn-warning btn-sm\"><i class=\"fa fa-edit\"></i> Ubah</a>";
+                $btn = "<button data-remote='" . route('member.show', $member->slug) . "' type='button' class='btn btn-sm btn-danger' title='Hapus Data'><i class='fa fa-trash'></i></button> ";
+                $btn .= " <a href='" . route('member.edit', $member->slug) . "' class='edit btn btn-warning btn-sm' title='Ubah Data'><i class='fa fa-edit'></i></a>";
 
                 return $btn;
             })

@@ -258,6 +258,11 @@ return [
         ],
         ['header' => 'MASTER DATA'],
         [
+            'text'    => 'User',
+            'icon'    => 'fas fa-user-cog',
+            'url'     => '/user',
+        ],
+        [
             'text'    => 'Suplier',
             'icon'    => 'fas fa-fw fa-truck',
             'submenu' => [
@@ -270,11 +275,6 @@ return [
                     'url'  => '/suplier/create',
                 ],
             ],
-        ],
-        [
-            'text'    => 'User',
-            'icon'    => 'fas fa-user-cog',
-            'url'     => '/user',
         ],
         [
             'text'    => 'Member',
@@ -310,7 +310,7 @@ return [
             'icon'      => 'fas fa-fw fa-list',
         ],
         [
-            'text'    => 'Unit Barang',
+            'text'    => 'Satuan Barang',
             'url'     => '/unit',
             'icon'    => 'fas fa-fw fa-list',
         ],

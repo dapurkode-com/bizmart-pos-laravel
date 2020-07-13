@@ -36,7 +36,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Daftar Kategori Barang</h3>
                     <div class="card-tools">
-                        <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#addCategory"><i class="fa fa-plus"></i> Tambah Kategori Barang baru</button>
+                        <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#addCategory" title="Tambah Data"><i class="fas fa-plus" style="padding-right: 1rem;"></i>Tambah</button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -122,6 +122,29 @@
             processing: true,
             serverSide: true,
             ajax: "{{ route('category.datatables') }}",
+            language: {
+                decimal:        "",
+                emptyTable:     "Tidak ada data di dalam tabel",
+                info:           "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
+                infoEmpty:      "Data kosong",
+                infoFiltered:   "(Difilter dari _MAX_ total data)",
+                infoPostFix:    "",
+                thousands:      ".",
+                lengthMenu:     "Tampilkan _MENU_ data",
+                loadingRecords: "Memuat...",
+                processing:     "Memproses...",
+                search:         "",
+                zeroRecords:    "Tidak ada data yang cocok",
+                paginate: {
+                    previous: '<i class="fas fa-chevron-left"></i>',
+					next: '<i class="fas fa-chevron-right"></i>'
+                },
+                aria: {
+                    sortAscending:  ": mengurutkan kolom yang naik",
+                    sortDescending: ": mengurutkan kolom yang turun"
+                },
+                searchPlaceholder: 'Cari data',
+            },
             columns: [
                 {data: 'DT_RowIndex', orderable: false, searchable: false },
                 {data: 'name'},

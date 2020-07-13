@@ -64,7 +64,7 @@ class UserController extends Controller
                 'password'  => bcrypt($request->input('password'))
             ]);
             DB::commit();
-            
+
             return response()->json([
                 'status' => 'valid',
                 'pesan' => 'User berhasil ditambah',
@@ -118,12 +118,12 @@ class UserController extends Controller
             'email' => [
                 'required',
                 'email',
-                'unique:users,email,'.$id.',id'
+                'unique:users,email,' . $id . ',id'
             ],
             'username' => [
                 'required',
                 'string',
-                'unique:users,username,'.$id.',id'
+                'unique:users,username,' . $id . ',id'
             ],
             'password' => 'nullable|string',
         ]);
@@ -139,14 +139,13 @@ class UserController extends Controller
         // save the request
         try {
             DB::beginTransaction();
-            if($request->input('password') === null) {
+            if ($request->input('password') === null) {
                 User::findOrFail($id)->update([
                     'name' => $request->input('name'),
                     'email' => $request->input('email'),
                     'username' => $request->input('username'),
                 ]);
-            }
-            else {
+            } else {
                 User::findOrFail($id)->update([
                     'name' => $request->input('name'),
                     'email' => $request->input('email'),
@@ -155,7 +154,7 @@ class UserController extends Controller
                 ]);
             }
             DB::commit();
-            
+
             return response()->json([
                 'status' => 'valid',
                 'pesan' => 'User berhasil diedit',
@@ -182,7 +181,7 @@ class UserController extends Controller
             DB::beginTransaction();
             User::findOrFail($id)->delete();
             DB::commit();
-            
+
             return response()->json([
                 'status' => 'valid',
                 'pesan' => 'User berhasil dihapus',
@@ -203,8 +202,8 @@ class UserController extends Controller
             ->of($users)
             ->addIndexColumn()
             ->addColumn('action', function ($user) {
-                $btn = '<button data-remote_show="'.route('user.show', $user->id).'" data-remote_update="'.route('user.update', $user->id).'" type="button" class="btn btn-success btn-xs btnEdit" title="Edit"><i class="fas fa-pencil-alt"></i></button> ';
-                $btn .= '<button data-remote_destroy="'.route('user.destroy', $user->id).'" type="button" class="btn btn-danger btn-xs btnDelete" title="Hapus"><i class="fas fa-trash"></i></button> ';
+                $btn = '<button data-remote_destroy="' . route('user.destroy', $user->id) . '" type="button" class="btn btn-danger btn-sm btnDelete" title="Hapus"><i class="fas fa-trash"></i></button> ';
+                $btn .= '<button data-remote_show="' . route('user.show', $user->id) . '" data-remote_update="' . route('user.update', $user->id) . '" type="button" class="btn btn-warning btn-sm btnEdit" title="Edit"><i class="fas fa-pencil-alt"></i></button> ';
                 return $btn;
             })
             ->rawColumns(['action'])

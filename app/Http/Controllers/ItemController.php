@@ -193,10 +193,9 @@ class ItemController extends Controller
                 })->implode(' ');
             })
             ->addColumn('action', function ($item) {
-                $btn = "";
-                $btn .= "<button data-remote=\"" . route('item.show', $item->slug) . "\" type=\"button\" class=\"btn btn-sm btn-danger\"><i class=\"fa fa-trash\"></i> Hapus</button> ";
-                $btn .= " <a href=\"" . route('item.edit', $item->slug) . "\" class=\"edit btn btn-warning btn-sm\"><i class=\"fa fa-edit\"></i> Ubah</a> ";
-                $btn .= " <a href=\"" . route('item.show', $item->slug) . "\" class=\" btn btn-info btn-sm\"><i class=\"fa fa-eye\"></i> Lihat</a> ";
+                $btn = "<button data-remote='" . route('item.show', $item->slug) . "' type='button' class='btn btn-sm btn-danger' title='Hapus Data'><i class='fa fa-trash'></i></button> ";
+                $btn .= " <a href='" . route('item.edit', $item->slug) . "' class='edit btn btn-warning btn-sm' title='Ubah Data'><i class='fa fa-edit'></i></a> ";
+                $btn .= " <a href='" . route('item.show', $item->slug) . "' class=' btn btn-info btn-sm' title='Lihat Data'><i class='fa fa-eye'></i></a> ";
 
                 return $btn;
             })

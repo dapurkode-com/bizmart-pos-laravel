@@ -26,7 +26,7 @@
                     <h3 class="card-title">Daftar User</h3>
                     <div class="card-tools">
                         <div class="input-group input-group-sm">
-                            <button class="btn btn-sm btn-primary btnAdd"><i class="fas fa-plus" style="padding-right: 1rem;"></i>User Baru</button>
+                            <button class="btn btn-sm btn-info btnAdd" title="Tambah Data"><i class="fas fa-plus" style="padding-right: 1rem;"></i>Tambah</button>
                         </div>
                     </div>
                 </div>
@@ -116,13 +116,27 @@
             processing: true,
             serverSide: true,
             language: {
-				paginate: {
-					previous: '<i class="fas fa-chevron-left"></i>',
+                decimal:        "",
+                emptyTable:     "Tidak ada data di dalam tabel",
+                info:           "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
+                infoEmpty:      "Data kosong",
+                infoFiltered:   "(Difilter dari _MAX_ total data)",
+                infoPostFix:    "",
+                thousands:      ".",
+                lengthMenu:     "Tampilkan _MENU_ data",
+                loadingRecords: "Memuat...",
+                processing:     "Memproses...",
+                search:         "",
+                zeroRecords:    "Tidak ada data yang cocok",
+                paginate: {
+                    previous: '<i class="fas fa-chevron-left"></i>',
 					next: '<i class="fas fa-chevron-right"></i>'
-				},
-				lengthMenu: '_MENU_',
-				search: '',
-				searchPlaceholder: 'Search data'
+                },
+                aria: {
+                    sortAscending:  ": mengurutkan kolom yang naik",
+                    sortDescending: ": mengurutkan kolom yang turun"
+                },
+                searchPlaceholder: 'Cari data',
             },
             scrollX: true,
             ajax: "{{ route('user.datatables') }}",

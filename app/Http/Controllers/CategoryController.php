@@ -82,9 +82,8 @@ class CategoryController extends Controller
             ->of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($category) {
-                $btn = "";
-                $btn .= "<button data-remote=\"" . route('category.show', $category->id) . "\" type=\"button\" class=\"btn m-1 btn-sm btn-danger delete\"><i class=\"fa fa-trash\"></i> Hapus</button> ";
-                $btn .= " <button data-remote=\"" . route('category.show', $category->id) . "\" class=\"edit btn m-1 btn-warning btn-sm\" data-toggle='modal' data-target='#editCategory'><i class=\"fa fa-edit\"></i> Ubah</button>";
+                $btn = "<button data-remote='" . route('category.show', $category->id) . "' type=button' class='btn btn-sm btn-danger delete' title='Hapus Data'><i class='fa fa-trash'></i></button> ";
+                $btn .= "<button data-remote='" . route('category.show', $category->id) . "' class='edit btn btn-warning btn-sm' data-toggle='modal' data-target='#editCategory' title='Update Data'><i class='fa fa-edit'></i></button>";
 
                 return $btn;
             })

@@ -82,9 +82,8 @@ class UnitController extends Controller
             ->of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($unit) {
-                $btn = "";
-                $btn .= "<button data-remote=\"" . route('unit.show', $unit->id) . "\" type=\"button\" class=\"btn m-1 btn-sm btn-danger delete\"><i class=\"fa fa-trash\"></i> Hapus</button> ";
-                $btn .= " <button data-remote=\"" . route('unit.show', $unit->id) . "\" class=\"edit btn m-1 btn-warning btn-sm\" data-toggle='modal' data-target='#editUnit'><i class=\"fa fa-edit\"></i> Ubah</button>";
+                $btn = "<button data-remote='" . route('unit.show', $unit->id) . "' type='button' class='btn btn-sm btn-danger delete' title='Hapus Data'><i class='fa fa-trash'></i></button> ";
+                $btn .= "<button data-remote='" . route('unit.show', $unit->id) . "' class='edit btn btn-warning btn-sm' data-toggle='modal' data-target='#editUnit' title='Ubah Data'><i class='fa fa-edit'></i></button>";
 
                 return $btn;
             })

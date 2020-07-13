@@ -26,7 +26,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Daftar Suplier</h3>
                     <div class="card-tools">
-                        <a href="{{route('suplier.create')}}" class="btn btn-info btn-sm"><i class="fa fa-plus"></i> Tambah Suplier baru</a>
+                        <a href="{{route('suplier.create')}}" class="btn btn-info btn-sm" title="Tambah Data"><i class="fas fa-plus" style="padding-right: 1rem;"></i>Tambah</a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -70,6 +70,29 @@
             processing: true,
             serverSide: true,
             ajax: "{{ route('suplier.datatables') }}",
+            language: {
+                decimal:        "",
+                emptyTable:     "Tidak ada data di dalam tabel",
+                info:           "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
+                infoEmpty:      "Data kosong",
+                infoFiltered:   "(Difilter dari _MAX_ total data)",
+                infoPostFix:    "",
+                thousands:      ".",
+                lengthMenu:     "Tampilkan _MENU_ data",
+                loadingRecords: "Memuat...",
+                processing:     "Memproses...",
+                search:         "",
+                zeroRecords:    "Tidak ada data yang cocok",
+                paginate: {
+                    previous: '<i class="fas fa-chevron-left"></i>',
+					next: '<i class="fas fa-chevron-right"></i>'
+                },
+                aria: {
+                    sortAscending:  ": mengurutkan kolom yang naik",
+                    sortDescending: ": mengurutkan kolom yang turun"
+                },
+                searchPlaceholder: 'Cari data',
+            },
             columns: [
                 {data: 'DT_RowIndex', orderable: false, searchable: false },
                 {data: 'name'},
