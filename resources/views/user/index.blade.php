@@ -162,8 +162,9 @@
         addListenToEvent('#modalForm button[type="submit"]', 'click', (e) => {
             e.preventDefault();
             const parentElm = e.target.closest('.modal');
+            const thisElm = e.target;
 
-            submitModalForm(parentElm);
+            submitModalForm(parentElm, thisElm);
         });
 
         addListenToEvent('.mainContent .btnEdit', 'click', (e) => {
@@ -234,10 +235,17 @@
         }
     }
 
-    function submitModalForm(parentElm) {
+    function submitModalForm(parentElm, thisElm) {
         let formData = new FormData(parentElm.querySelector('form'));
         let jsonStr = JSON.stringify(fdToJsonObj(formData));
-
+        
+        // loading and disabled button
+        const buttonText = thisElm.innerHTML;
+        thisElm.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> ${buttonText}...`
+        for (const elm of parentElm.querySelectorAll('button')) {
+            elm.disabled = true;
+        }
+        
         fetch(`${formData.get('_remote')}`, {
             method: `${formData.get('_method')}`,
             headers: {
@@ -258,6 +266,13 @@
             }
             if(result.status == 'error'){
                 swalAlert(result.pesan, 'warning');
+            }
+        })
+        .finally(() => {
+            // loading and disabled button
+            thisElm.innerHTML = `${buttonText}`
+            for (const elm of parentElm.querySelectorAll('button')) {
+                elm.disabled = false;
             }
         });
     }
