@@ -252,6 +252,11 @@ return [
             'topnav'    => 'true'
         ],
         [
+            'text'      => 'Opname',
+            'url'       => '/opname',
+            'topnav'    => 'true'
+        ],
+        [
             'text'      => 'Dashboard',
             'url'       => '/home',
             'icon'      => 'fas fa-fw fa-tachometer-alt'
