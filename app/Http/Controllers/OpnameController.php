@@ -41,15 +41,28 @@ class OpnameController extends Controller
         // store the request
         try {
             DB::beginTransaction();
-            Opname::create([
-                'user_id' => auth()->user()->id
-            ]);
-            DB::commit();
 
-            return response()->json([
-                'status' => 'valid',
-                'pesan' => 'Opname berhasil ditambah',
-            ]);
+            // check is there any record with status on going
+            $isExist = Opname::where('status', 'On Going')->exists();
+
+            if($isExist){
+                return response()->json([
+                    'status' => 'invalid',
+                    'pesan' => 'Selesaikan terlebih dahulu opname sebelumnya',
+                ]);
+            }
+            else{
+                Opname::create([
+                    'user_id' => auth()->user()->id
+                ]);
+                DB::commit();
+    
+                return response()->json([
+                    'status' => 'valid',
+                    'pesan' => 'Opname berhasil ditambah',
+                ]);
+            }
+
         } catch (Exception $exc) {
             DB::rollBack();
             return response()->json([
@@ -123,7 +136,18 @@ class OpnameController extends Controller
                 // $btn .= '<button data-remote_show="' . route('user.show', $user->id) . '" data-remote_update="' . route('user.update', $user->id) . '" type="button" class="btn btn-warning btn-sm btnEdit" title="Edit"><i class="fas fa-pencil-alt"></i></button> ';
                 return $btn;
             })
-            ->rawColumns(['action'])
+            ->addColumn('created_at_idn', function ($opname) {
+                return date('d M Y', strtotime($opname->created_at));
+            })
+            ->addColumn('status_color', function ($opname) {
+                if($opname->status == 'On Going'){
+                    return '<p class="text-warning">'.$opname->status.'</p>';
+                }
+                else{
+                    return '<p class="text-success">'.$opname->status.'</p>';
+                }
+            })
+            ->rawColumns(['action', 'status_color'])
             ->toJson();
     }
 }

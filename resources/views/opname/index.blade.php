@@ -154,10 +154,10 @@
             ajax: "{{ route('opname.datatables') }}",
             columns: [
                 {data: 'DT_RowIndex', orderable: false, searchable: false },
-                {data: 'created_at'},
+                {data: 'created_at_idn', name: 'created_at'},
                 {data: 'uniq_id'},
                 {data: 'created_by'},
-                {data: 'status'},
+                {data: 'status_color', name: 'status'},
                 {data: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'},
             ],
             order: [[1, 'asc']],
@@ -177,6 +177,9 @@
                     if(result.status == 'valid'){
                         swalAlert(result.pesan, 'success');
                         tbIndex.ajax.reload();
+                    }
+                    if(result.status == 'invalid'){
+                        swalAlert(result.pesan, 'error');
                     }
                     if(result.status == 'error'){
                         swalAlert('Terjadi kesalahan internal', 'warning');
