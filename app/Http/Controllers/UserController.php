@@ -195,6 +195,12 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Display a listing of the resource in form of datatable.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function datatables(Request $request)
     {
         $users = User::query();

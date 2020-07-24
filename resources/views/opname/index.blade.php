@@ -52,16 +52,38 @@
 
     <!-- modal insert edit -->
     <div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <form>
                     <input type="hidden" name="_remote">
                     <input type="hidden" name="_method">
                     <div class="modal-header">
-                        <h4 class="modal-title">User</h4>
+                        <h4 class="modal-title">Title</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body">
+                        <blockquote style="margin: 0; background: unset;">
+                            <p>Info Opname</p>
+                        </blockquote>
+                        <!-- <div class="callout callout-info">
+                            <p>Info Opname</p>
+                            <h5><strong>Info Opname</strong></h5>
+                        </div> -->
+                        <dl class="row">
+                            <dt class="col-sm-4">Description lists</dt>
+                            <dd class="col-sm-8">A description list is perfect for defining terms.</dd>
+                            <dt class="col-sm-4">Euismod</dt>
+                            <dd class="col-sm-8">Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.</dd>
+                            <dd class="col-sm-8 offset-sm-4">Donec id elit non mi porta gravida at eget metus.</dd>
+                            <dt class="col-sm-4">Malesuada porta</dt>
+                            <dd class="col-sm-8">Etiam porta sem malesuada magna mollis euismod.</dd>
+                            <dt class="col-sm-4">Felis euismod semper eget lacinia</dt>
+                            <dd class="col-sm-8">Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo
+                                sit amet risus.
+                            </dd>
+                        </dl>
+                        
+
                         <div class="form-group">
                             <label>Nama</label>
                             <input type="text" name="name" class="form-control" placeholder="Tulis nama">
@@ -154,13 +176,13 @@
             ajax: "{{ route('opname.datatables') }}",
             columns: [
                 {data: 'DT_RowIndex', orderable: false, searchable: false },
-                {data: 'created_at_idn', name: 'created_at'},
+                {data: 'created_at_idn'},
                 {data: 'uniq_id'},
                 {data: 'created_by'},
                 {data: 'status_color', name: 'status'},
                 {data: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'},
             ],
-            order: [[1, 'asc']],
+            order: [[1, 'desc']],
             initComplete: () => {
                 initSelect2Datatables();
             },
@@ -188,7 +210,7 @@
                 }
             });
         });
-
+        /*
         addListenToEvent('#modalForm button[type="submit"]', 'click', (e) => {
             e.preventDefault();
             const parentElm = e.target.closest('.modal');
@@ -196,14 +218,15 @@
 
             submitModalForm(parentElm, thisElm);
         });
-
+        */
+        
         addListenToEvent('.mainContent .btnEdit', 'click', (e) => {
             const parentElm = document.querySelector('#modalForm');
             const thisElm = e.target.closest('button');
 
             showModalForm(parentElm, thisElm, 'update');
         });
-
+        
         addListenToEvent('.mainContent .btnDelete', 'click', (e) => {
             const thisElm = e.target.closest('button');
             let url = `${thisElm.dataset.remote_destroy}`;
@@ -215,8 +238,12 @@
                         swalAlert(result.pesan, 'success');
                         tbIndex.ajax.reload();
                     }
+                    if(result.status == 'invalid'){
+                        swalAlert(result.pesan, 'error');
+                    }
                     if(result.status == 'error'){
-                        swalAlert(result.pesan, 'warning');
+                        swalAlert('Terjadi kesalahan internal', 'warning');
+                        console.log(result.pesan);
                     }
                 }
             });
@@ -239,32 +266,25 @@
         modalFooter.classList.add('d-none');
         $(parentElm).modal('show');
 
-        if(action == 'store'){
-            parentElm.querySelector(`[name="_remote"]`).value = `{{ route('user.store') }}`;
-            parentElm.querySelector(`[name="_method"]`).value = `POST`;
-
-            modalTitle.innerHTML = `Tambah User`;
-            modalBody.classList.remove('d-none');
-            modalFooter.classList.remove('d-none');
-        }
         if(action == 'update'){
             fetch(`${thisElm.dataset.remote_show}`)
             .then(response => response.json())
             .then(result => {
-                parentElm.querySelector(`[name="_remote"]`).value = thisElm.dataset.remote_update;
-                parentElm.querySelector(`[name="_method"]`).value = `PUT`;
-                parentElm.querySelector(`[name="name"]`).value = result.users.name;
-                parentElm.querySelector(`[name="email"]`).value = result.users.email;
-                parentElm.querySelector(`[name="username"]`).value = result.users.username;
-                parentElm.querySelector(`[name="password"]`).value = "";
+                // parentElm.querySelector(`[name="_remote"]`).value = thisElm.dataset.remote_update;
+                // parentElm.querySelector(`[name="_method"]`).value = `PUT`;
+                // parentElm.querySelector(`[name="name"]`).value = result.users.name;
+                // parentElm.querySelector(`[name="email"]`).value = result.users.email;
+                // parentElm.querySelector(`[name="username"]`).value = result.users.username;
+                // parentElm.querySelector(`[name="password"]`).value = "";
 
-                modalTitle.innerHTML = `Edit User`;
+                modalTitle.innerHTML = `Proses Opname`;
                 modalBody.classList.remove('d-none');
                 modalFooter.classList.remove('d-none');
             });
         }
     }
-
+    
+    /*
     function submitModalForm(parentElm, thisElm) {
         let formData = new FormData(parentElm.querySelector('form'));
         let jsonStr = JSON.stringify(fdToJsonObj(formData));
@@ -306,6 +326,7 @@
             }
         });
     }
+    */
     // other function
 
 

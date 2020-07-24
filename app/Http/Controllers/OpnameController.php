@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Opname;
+use App\OpnameDetail;
 use Auth;
 use DB;
 use Exception;
@@ -38,7 +39,6 @@ class OpnameController extends Controller
      */
     public function store(Request $request)
     {
-        // store the request
         try {
             DB::beginTransaction();
 
@@ -50,8 +50,7 @@ class OpnameController extends Controller
                     'status' => 'invalid',
                     'pesan' => 'Selesaikan terlebih dahulu opname sebelumnya',
                 ]);
-            }
-            else{
+            } else{
                 Opname::create([
                     'user_id' => auth()->user()->id
                 ]);
@@ -70,7 +69,6 @@ class OpnameController extends Controller
                 'pesan' => $exc->getMessage(),
             ]);
         }
-        // store the request
     }
 
     /**
@@ -81,7 +79,9 @@ class OpnameController extends Controller
      */
     public function show($id)
     {
-        //
+        return response()->json([
+            'opnames' => Opname::findOrFail($id)
+        ]);
     }
 
     /**
@@ -115,7 +115,32 @@ class OpnameController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            $isIdExistOnOpnameDetails = OpnameDetail::where('opname_id', $id)->exists();
+
+            if($isIdExistOnOpnameDetails){
+                return response()->json([
+                    'status' => 'invalid',
+                    'pesan' => 'Opname yang sudah diproses tidak boleh dihapus',
+                ]);
+            } else {
+                Opname::findOrFail($id)->delete();
+                DB::commit();
+    
+                return response()->json([
+                    'status' => 'valid',
+                    'pesan' => 'Opname berhasil dihapus',
+                ]);
+            }
+        } catch (Exception $exc) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'pesan' => $exc->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -126,28 +151,34 @@ class OpnameController extends Controller
      */
     public function datatables(Request $request)
     {
-        $opnames = Opname::query();
+        $opnames = Opname::select([
+            'id',
+            DB::raw("DATE_FORMAT(`created_at`,'%d %b %Y') AS `created_at_idn`"),
+            'uniq_id',
+            'created_by',
+            'status',
+        ]);
         return datatables()
             ->of($opnames)
             ->addIndexColumn()
             ->addColumn('action', function ($opname) {
                 $btn = '';
-                // $btn = '<button data-remote_destroy="' . route('user.destroy', $user->id) . '" type="button" class="btn btn-danger btn-sm btnDelete" title="Hapus"><i class="fas fa-trash"></i></button> ';
-                // $btn .= '<button data-remote_show="' . route('user.show', $user->id) . '" data-remote_update="' . route('user.update', $user->id) . '" type="button" class="btn btn-warning btn-sm btnEdit" title="Edit"><i class="fas fa-pencil-alt"></i></button> ';
+                $btn = '<button data-remote_destroy="' . route('opname.destroy', $opname->id) . '" type="button" class="btn btn-danger btn-sm btnDelete" title="Hapus"><i class="fas fa-trash"></i></button> ';
+                $btn .= '<button data-remote_show="' . route('opname.show', $opname->id) . '" type="button" class="btn btn-warning btn-sm btnEdit" title="Kerjakan Opname Ini"><i class="fas fa-plus"></i></button> ';
                 return $btn;
-            })
-            ->addColumn('created_at_idn', function ($opname) {
-                return date('d M Y', strtotime($opname->created_at));
             })
             ->addColumn('status_color', function ($opname) {
                 if($opname->status == 'On Going'){
                     return '<p class="text-warning">'.$opname->status.'</p>';
-                }
-                else{
+                }else{
                     return '<p class="text-success">'.$opname->status.'</p>';
                 }
             })
             ->rawColumns(['action', 'status_color'])
+            ->filterColumn('created_at_idn', function($query, $keyword) {
+                $sql = "DATE_FORMAT(`created_at`,'%d %b %Y') like ?";
+                $query->whereRaw($sql, ["%{$keyword}%"]);
+            })
             ->toJson();
     }
 }
