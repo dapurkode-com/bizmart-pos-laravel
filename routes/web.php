@@ -44,6 +44,7 @@ Route::group(['middleware' => ['auth']], function () {
         'suplier' => 'SuplierController',
         'member' => 'MemberController',
         'item'  => 'ItemController',
-        'user' => 'UserController'
+        'user' => 'UserController',
+        'sell' => 'SellController'
     ]);
 });

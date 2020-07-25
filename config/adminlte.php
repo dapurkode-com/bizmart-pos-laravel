@@ -243,7 +243,7 @@ return [
         //        ],
         [
             'text'      => 'Penjualan',
-            'url'       => '#',
+            'url'       => '/sell',
             'topnav'    => 'true'
         ],
         [
