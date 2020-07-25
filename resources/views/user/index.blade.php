@@ -23,7 +23,7 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Daftar User</h3>
+                    <h3 class="card-title"><i class="fas fa-file-alt mr-2"></i> Daftar User</h3>
                     <div class="card-tools">
                         <div class="input-group input-group-sm">
                             <button class="btn btn-sm btn-info btnAdd" title="Tambah Data"><i class="fas fa-plus" style="padding-right: 1rem;"></i>Tambah</button>

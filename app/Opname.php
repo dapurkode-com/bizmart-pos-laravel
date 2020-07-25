@@ -65,4 +65,18 @@ class Opname extends Model
     {
         return $this->belongsTo(\App\User::class);
     }
+
+    /**
+     * Label status
+     *
+     * @return string
+     */
+    public function statusText()
+    {
+        $lookUp = LookUp::where('group_code', 'OPNAME_STATUS')
+            ->where('key', $this->status)
+            ->first();
+
+        return $lookUp != null ? $lookUp->label : '-';
+    }
 }

@@ -42,26 +42,25 @@ class OpnameController extends Controller
         try {
             DB::beginTransaction();
 
-            // check is there any record with status on going
-            $isExist = Opname::where('status', 'On Going')->exists();
+            // check is there any record with status ONGO
+            $isExist = Opname::where('status', 'ONGO')->exists();
 
-            if($isExist){
+            if ($isExist) {
                 return response()->json([
                     'status' => 'invalid',
                     'pesan' => 'Selesaikan terlebih dahulu opname sebelumnya',
                 ]);
-            } else{
+            } else {
                 Opname::create([
                     'user_id' => auth()->user()->id
                 ]);
                 DB::commit();
-    
+
                 return response()->json([
                     'status' => 'valid',
                     'pesan' => 'Opname berhasil ditambah',
                 ]);
             }
-
         } catch (Exception $exc) {
             DB::rollBack();
             return response()->json([
@@ -120,7 +119,7 @@ class OpnameController extends Controller
 
             $isIdExistOnOpnameDetails = OpnameDetail::where('opname_id', $id)->exists();
 
-            if($isIdExistOnOpnameDetails){
+            if ($isIdExistOnOpnameDetails) {
                 return response()->json([
                     'status' => 'invalid',
                     'pesan' => 'Opname yang sudah diproses tidak boleh dihapus',
@@ -128,7 +127,7 @@ class OpnameController extends Controller
             } else {
                 Opname::findOrFail($id)->delete();
                 DB::commit();
-    
+
                 return response()->json([
                     'status' => 'valid',
                     'pesan' => 'Opname berhasil dihapus',
@@ -151,13 +150,15 @@ class OpnameController extends Controller
      */
     public function datatables(Request $request)
     {
-        $opnames = Opname::select([
-            'id',
-            DB::raw("DATE_FORMAT(`created_at`,'%d %b %Y') AS `created_at_idn`"),
-            'uniq_id',
-            'created_by',
-            'status',
-        ]);
+        $opnames = Opname::leftJoin('look_ups', 'look_ups.key', '=', 'opnames.status')
+            ->select([
+                'opnames.id',
+                DB::raw("DATE_FORMAT(opnames.created_at, '%d %b %Y') AS created_at_idn"),
+                'opnames.uniq_id',
+                'opnames.created_by',
+                'opnames.status',
+                'look_ups.label as status_text',
+            ]);
         return datatables()
             ->of($opnames)
             ->addIndexColumn()
@@ -168,15 +169,15 @@ class OpnameController extends Controller
                 return $btn;
             })
             ->addColumn('status_color', function ($opname) {
-                if($opname->status == 'On Going'){
-                    return '<p class="text-warning">'.$opname->status.'</p>';
-                }else{
-                    return '<p class="text-success">'.$opname->status.'</p>';
+                if ($opname->status == 'ONGO') {
+                    return '<p class="text-warning">' . $opname->status_text . '</p>';
+                } else {
+                    return '<p class="text-success">' . $opname->status_text . '</p>';
                 }
             })
             ->rawColumns(['action', 'status_color'])
-            ->filterColumn('created_at_idn', function($query, $keyword) {
-                $sql = "DATE_FORMAT(`created_at`,'%d %b %Y') like ?";
+            ->filterColumn('created_at_idn', function ($query, $keyword) {
+                $sql = "DATE_FORMAT(opnames.created_at, '%d %b %Y') like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->toJson();

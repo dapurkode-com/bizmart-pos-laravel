@@ -14,7 +14,7 @@ class AddStatusFieldOnOpnameTable extends Migration
     public function up()
     {
         Schema::table('opnames', function (Blueprint $table) {
-            $table->enum('status', ["On Going","Done"])->default("On Going")->after('updated_by');
+            $table->string('status')->default("ONGO")->after('updated_by');
         });
     }
     
