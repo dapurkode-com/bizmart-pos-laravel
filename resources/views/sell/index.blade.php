@@ -10,11 +10,14 @@
         </blockquote>
 	</div>
 	<!-- /.col -->
-	<!-- <div class="col-sm-6">
+	<div class="col-sm-6">
 		<ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item active">Buat Penjualan</li>
+            <li class="breadcrumb-item active">Penjualan</li>
+			<li class="breadcrumb-item">
+                <a href="{{ route('sell.list') }}">List Penjualan</a>
+            </li>
 		</ol>
-	</div> -->
+	</div>
 	<!-- /.col -->
 </div>
 @stop
@@ -44,15 +47,17 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="small-box bg-info">
-                <div class="inner">
-                    <p>Total Pembelian</p>
-                    <h3>1000</h3>
+            <a href="{{ route('sell.list') }}">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <p>Total Penjualan</p>
+                        <h3>1000</h3>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
                 </div>
-                <div class="icon">
-                    <i class="fas fa-shopping-cart"></i>
-                </div>
-            </div>
+            </a>
         </div>
     </div>
     <form>
