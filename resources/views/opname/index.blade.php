@@ -57,6 +57,7 @@
                 <form>
                     <input type="hidden" name="_remote">
                     <input type="hidden" name="_method">
+                    <input type="hidden" name="opname_id">
                     <div class="modal-header">
                         <h4 class="modal-title">Title</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -99,29 +100,49 @@
                             </div>
                         </div>
 
+                        <!-- insert barang -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="card bg-default">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Tambahkan Barang</h3>
+                                        <div class="card-tools">
+                                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <div class="form-group">
+                                                    <label>Barang</label>
+                                                    <select name="items" class="form-control select2-advance" data-placeholder="Pilih barang" data-url=""></select>
+                                                    <div class="invalid-feedback"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label>Qty Sekarang</label>
+                                                    <input type="number" name="new_stock" class="form-control" placeholder="Tulis qty barang saat ini">
+                                                    <div class="invalid-feedback"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <div class="form-group">
+                                                    <label>Aksi</label>
+                                                    <button type="button" class="btn btn-info btn-block" title="Tambahkan barang ke tabel"><i class="fas fa-plus"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <blockquote style="margin: 0; background: unset;">
                             <p>Info Opname</p>
                         </blockquote>
-                        <!-- <div class="callout callout-info">
-                            <p>Info Opname</p>
-                            <h5><strong>Info Opname</strong></h5>
-                        </div> -->
-                        <dl class="row">
-                            <dt class="col-sm-4">Description lists</dt>
-                            <dd class="col-sm-8">A description list is perfect for defining terms.</dd>
-                            <dt class="col-sm-4">Euismod</dt>
-                            <dd class="col-sm-8">Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.</dd>
-                            <dd class="col-sm-8 offset-sm-4">Donec id elit non mi porta gravida at eget metus.</dd>
-                            <dt class="col-sm-4">Malesuada porta</dt>
-                            <dd class="col-sm-8">Etiam porta sem malesuada magna mollis euismod.</dd>
-                            <dt class="col-sm-4">Felis euismod semper eget lacinia</dt>
-                            <dd class="col-sm-8">Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo
-                                sit amet risus.
-                            </dd>
-                        </dl>
                         
-
                         <div class="form-group">
                             <label>Nama</label>
                             <input type="text" name="name" class="form-control" placeholder="Tulis nama">
@@ -187,6 +208,17 @@
                 top: 66px;
             }
         }
+        @media (max-width: 767.98px) {
+            .small-box.edit {
+                text-align: unset;
+            }
+            .small-box.edit .inner p {
+                font-size: unset;
+            }
+            .small-box.edit .icon {
+                display: unset;
+            }
+        }
         /* end small box edit */
     </style>
 @stop
@@ -234,14 +266,6 @@
                     {data: 'status_color', name: 'status_text'},
                     {data: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'},
                 ],
-                // columns: [
-                //     {data: 'DT_RowIndex', orderable: false, searchable: false },
-                //     {data: 'uniq_id'},
-                //     {data: 'uniq_id'},
-                //     {data: 'uniq_id'},
-                //     {data: 'uniq_id', name: 'status'},
-                //     {data: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'},
-                // ],
                 order: [[1, 'desc']],
                 initComplete: () => {
                     initSelect2Datatables();
@@ -550,10 +574,40 @@
             formData.forEach((value, key) => {jsonObj[key] = value});
             return jsonObj;
         }
+
+        function initSelect2Advance(){
+            $('select.select2-advance').select2({
+                width: '100%',
+                placeholder: () => {
+                    return $(this).data('placeholder');
+                },
+                language: {
+                    errorLoading: function(){
+                        return "Searching..."
+                    }
+                },
+                allowClear: false,
+                ajax: {
+                    url: () => {
+                        return $(this).data('url');
+                    },
+                    dataType: 'json',
+                    data: params => {
+                        return {
+                            term: params.term || '',
+                            page: params.page || 1
+                        }
+                    },
+                    cache: true
+                }
+            });
+        }
         // fixed function
 
         // fixed event
         domReady(() => {
+            initSelect2Advance();
+
             addListenToEvent('input, textarea', 'change', (e) => {
                 e.target.classList.remove('is-invalid');
                 e.target.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;;
