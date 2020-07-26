@@ -36,6 +36,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('category/datatables', 'CategoryController@datatables')->name('category.datatables');
     Route::get('user/datatables', 'UserController@datatables')->name('user.datatables');
     Route::get('opname/datatables', 'OpnameController@datatables')->name('opname.datatables');
+    Route::get('opname/get_items', 'OpnameController@get_items')->name('opname.get_items');
 
     Route::resource('unit', 'UnitController')->only('index', 'store', 'update', 'show', 'destroy');
     Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');

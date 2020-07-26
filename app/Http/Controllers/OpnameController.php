@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Item;
 use App\Opname;
 use App\OpnameDetail;
 use Auth;
@@ -181,5 +182,47 @@ class OpnameController extends Controller
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->toJson();
+    }
+
+    /**
+     * Display a listing of items in form of select2.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function get_items(Request $request)
+    {
+        $page = $request->page;
+        $search = $request->term;
+        $limit = 100;
+        $offset = ($page - 1) * $limit;
+
+        $items = Item::orderby('name', 'asc')
+            ->select(['*'])
+            ->where('barcode', 'like', '%' . $search . '%')
+            ->orWhere('name', 'like', '%' . $search . '%')
+            ->skip($offset)->take($limit)
+            ->get();
+
+        $results = [];
+        foreach ($items as $i => $item) {
+            $results[] = array(
+                'id' => json_encode($item),
+                'text' => "$item->barcode - $item->name",
+            );
+        }
+
+        if (count($results) < $limit) {
+            $more_pages = false;
+        } else {
+            $more_pages = true;
+        }
+
+        return response()->json([
+            "results" => $results,
+            "pagination" => [
+                "more" => $more_pages,
+            ],
+        ]);
     }
 }

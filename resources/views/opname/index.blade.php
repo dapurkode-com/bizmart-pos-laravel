@@ -115,7 +115,7 @@
                                             <div class="col-lg-8">
                                                 <div class="form-group">
                                                     <label>Barang</label>
-                                                    <select name="items" class="form-control select2-advance" data-placeholder="Pilih barang" data-url=""></select>
+                                                    <select name="items" class="form-control select2-advance" data-placeholder="Pilih barang" data-url="{{ route('opname.get_items') }}"></select>
                                                     <div class="invalid-feedback"></div>
                                                 </div>
                                             </div>
@@ -588,12 +588,13 @@
                 },
                 allowClear: false,
                 ajax: {
-                    url: () => {
+                    url: function () {
                         return $(this).data('url');
                     },
                     dataType: 'json',
-                    data: params => {
+                    data: function (params) {
                         return {
+                            _token: `{{ csrf_token() }}`,
                             term: params.term || '',
                             page: params.page || 1
                         }
