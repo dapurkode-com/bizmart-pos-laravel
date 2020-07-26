@@ -35,6 +35,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('unit/datatables', 'UnitController@datatables')->name('unit.datatables');
     Route::get('category/datatables', 'CategoryController@datatables')->name('category.datatables');
     Route::get('user/datatables', 'UserController@datatables')->name('user.datatables');
+    Route::get('sell/list', 'SellController@list')->name('sell.list');
+    Route::get('sell/datatables', 'SellController@datatables')->name('sell.datatables');
 
     Route::resource('unit', 'UnitController')->only('index', 'store', 'update', 'show', 'destroy');
     Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');
@@ -44,6 +46,7 @@ Route::group(['middleware' => ['auth']], function () {
         'suplier' => 'SuplierController',
         'member' => 'MemberController',
         'item'  => 'ItemController',
-        'user' => 'UserController'
+        'user' => 'UserController',
+        'sell' => 'SellController'
     ]);
 });
