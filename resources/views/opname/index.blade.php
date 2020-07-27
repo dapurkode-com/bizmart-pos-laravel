@@ -65,8 +65,8 @@
                     <div class="modal-body">
                         <!-- master info -->
                         <div class="row">
-                            <div class="col-lg-8">
-                                <div class="card bg-info">
+                            <div class="col-lg-8 opname_info_elm">
+                                <!-- <div class="card bg-info">
                                     <div class="card-header">
                                         <h3 class="card-title">Informasi Umum</h3>
                                         <div class="card-tools">
@@ -85,10 +85,10 @@
                                             <dd class="col-sm-9">Sedang Berlangsung</dd>
                                         </dl>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
-                            <div class="col-lg-4">
-                                <div class="small-box bg-info mb-3 edit">
+                            <div class="col-lg-4 item_info_elm">
+                                <!-- <div class="small-box bg-info mb-3 edit">
                                     <div class="inner">
                                         <h3>150 / 2000</h3>
                                         <p>Barang sudah di Opname</p>
@@ -96,7 +96,7 @@
                                     <div class="icon">
                                         <i class="fas fa-cookie-bite"></i>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
 
@@ -138,31 +138,6 @@
                             </div>
                         </div>
 
-
-                        <blockquote style="margin: 0; background: unset;">
-                            <p>Info Opname</p>
-                        </blockquote>
-                        
-                        <div class="form-group">
-                            <label>Nama</label>
-                            <input type="text" name="name" class="form-control" placeholder="Tulis nama">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" name="email" class="form-control" placeholder="Tulis email">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="form-group">
-                            <label>Username</label>
-                            <input type="text" name="username" class="form-control" placeholder="Tulis username">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" name="password" class="form-control" placeholder="Tulis password">
-                            <div class="invalid-feedback"></div>
-                        </div>
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="reset" class="btn btn-default">Reset</button>
@@ -354,12 +329,8 @@
                 fetch(`${thisElm.dataset.remote_show}`)
                 .then(response => response.json())
                 .then(result => {
-                    // parentElm.querySelector(`[name="_remote"]`).value = thisElm.dataset.remote_update;
-                    // parentElm.querySelector(`[name="_method"]`).value = `PUT`;
-                    // parentElm.querySelector(`[name="name"]`).value = result.users.name;
-                    // parentElm.querySelector(`[name="email"]`).value = result.users.email;
-                    // parentElm.querySelector(`[name="username"]`).value = result.users.username;
-                    // parentElm.querySelector(`[name="password"]`).value = "";
+                    renderOpnameInfo(parentElm, result);
+                    renderItemInfo(parentElm, result);
 
                     modalTitle.innerHTML = `Proses Opname`;
                     modalBody.classList.remove('d-none');
@@ -412,6 +383,49 @@
         }
         */
         // other function
+
+        function renderOpnameInfo(parentElm, data){
+            let html = `
+                <div class="card bg-info">
+                    <div class="card-header">
+                        <h3 class="card-title">Informasi Umum</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-3">Tanggal</dt>
+                            <dd class="col-sm-9">${getIndoDate(data.opname.created_at)}</dd>
+                            <dt class="col-sm-3">Uniq ID</dt>
+                            <dd class="col-sm-9">${data.opname.uniq_id}</dd>
+                            <dt class="col-sm-3">Pembuat</dt>
+                            <dd class="col-sm-9">${data.user.name}</dd>
+                            <dt class="col-sm-3">Status</dt>
+                            <dd class="col-sm-9">${data.statusText}</dd>
+                        </dl>
+                    </div>
+                </div>
+            `;
+
+            parentElm.querySelector('.opname_info_elm').innerHTML = html;
+        }
+
+        function renderItemInfo(parentElm, data){
+            let html = `
+                <div class="small-box bg-info mb-3 edit">
+                    <div class="inner">
+                        <h3>0 / ${data.count_item}</h3>
+                        <p>Barang sudah di Opname</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-cookie-bite"></i>
+                    </div>
+                </div>
+            `;
+
+            parentElm.querySelector('.item_info_elm').innerHTML = html;
+        }
 
 
 
@@ -602,6 +616,12 @@
                     cache: true
                 }
             });
+        }
+
+        function getIndoDate(val){
+            let date = new Date(val).toDateString();
+            let date_split = date.split(' ');
+            return `${date_split[2]} ${date_split[1]} ${date_split[3]}`;
         }
         // fixed function
 

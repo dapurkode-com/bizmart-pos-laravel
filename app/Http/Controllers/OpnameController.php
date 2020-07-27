@@ -79,8 +79,12 @@ class OpnameController extends Controller
      */
     public function show($id)
     {
+        $opname = Opname::findOrFail($id);
         return response()->json([
-            'opnames' => Opname::findOrFail($id)
+            'opname' => $opname,
+            'user' => $opname->user,
+            'statusText' => $opname->statusText(),
+            'count_item' => Item::count(),
         ]);
     }
 
@@ -194,7 +198,7 @@ class OpnameController extends Controller
     {
         $page = $request->page;
         $search = $request->term;
-        $limit = 100;
+        $limit = 25;
         $offset = ($page - 1) * $limit;
 
         $items = Item::orderby('name', 'asc')
