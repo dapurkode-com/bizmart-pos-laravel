@@ -443,5 +443,21 @@ return [
                 ],
             ],
         ],
+        [
+            'name' => 'Custom',
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'plugins/custom/global.style.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'plugins/custom/global.app.js',
+                ]
+            ]
+        ],
     ],
 ];
