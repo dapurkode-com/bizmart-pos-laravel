@@ -54,10 +54,6 @@
     <div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
-                <form>
-                    <input type="hidden" name="_remote">
-                    <input type="hidden" name="_method">
-                    <input type="hidden" name="opname_id">
                     <div class="modal-header">
                         <h4 class="modal-title">Title</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -65,7 +61,7 @@
                     <div class="modal-body">
                         <!-- master info -->
                         <div class="row">
-                            <div class="col-lg-8 opname_info_elm">
+                            <div class="col-lg-8 opnameInfoElm">
                                 <!-- <div class="card bg-info">
                                     <div class="card-header">
                                         <h3 class="card-title">Informasi Umum</h3>
@@ -87,7 +83,7 @@
                                     </div>
                                 </div> -->
                             </div>
-                            <div class="col-lg-4 item_info_elm">
+                            <div class="col-lg-4 itemInfoElm">
                                 <!-- <div class="small-box bg-info mb-3 edit">
                                     <div class="inner">
                                         <h3>150 / 2000</h3>
@@ -103,38 +99,44 @@
                         <!-- insert barang -->
                         <div class="row">
                             <div class="col-sm-12">
-                                <div class="card bg-default">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Tambahkan Barang</h3>
-                                        <div class="card-tools">
-                                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-lg-8">
-                                                <div class="form-group">
-                                                    <label>Barang</label>
-                                                    <select name="items" class="form-control select2-advance" data-placeholder="Pilih barang" data-url="{{ route('opname.get_items') }}"></select>
-                                                    <div class="invalid-feedback"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group">
-                                                    <label>Qty Sekarang</label>
-                                                    <input type="number" name="new_stock" class="form-control" placeholder="Tulis qty barang saat ini">
-                                                    <div class="invalid-feedback"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-1">
-                                                <div class="form-group">
-                                                    <label>Aksi</label>
-                                                    <button type="button" class="btn btn-info btn-block" title="Tambahkan barang ke tabel"><i class="fas fa-plus"></i></button>
-                                                </div>
+                                <form id="insertItemForm">
+                                    <input type="nohidden" name="_remote">
+                                    <input type="nohidden" name="_method">
+                                    <input type="nohidden" name="opname_id">
+
+                                    <div class="card bg-default">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Tambahkan Barang</h3>
+                                            <div class="card-tools">
+                                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-8">
+                                                    <div class="form-group">
+                                                        <label>Barang</label>
+                                                        <select name="items" class="form-control select2-advance" data-placeholder="Pilih barang" data-url="{{ route('opname.get_items') }}"></select>
+                                                        <div class="invalid-feedback"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group">
+                                                        <label>Qty Sekarang</label>
+                                                        <input type="number" name="new_stock" class="form-control" placeholder="Tulis qty barang saat ini">
+                                                        <div class="invalid-feedback"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-1">
+                                                    <div class="form-group">
+                                                        <label>Aksi</label>
+                                                        <button type="button" class="btn btn-info btn-block addItemBtn" title="Tambahkan barang ke tabel"><i class="fas fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>    
+                                </form>
                             </div>
                         </div>
 
@@ -143,7 +145,6 @@
                         <button type="reset" class="btn btn-default">Reset</button>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
-                </form>
             </div>
         </div>
     </div>
@@ -307,6 +308,14 @@
                     }
                 });
             });
+
+            addListenToEvent('#modalForm .addItemBtn', 'click', (e) => {
+                e.preventDefault();
+                const parentElm = e.target.closest('.modal');
+                const thisElm = e.target;
+                console.log('test');
+                submitItemToOpnameDetail(parentElm, thisElm);
+            });
         });
         // dom event
 
@@ -331,6 +340,10 @@
                 .then(result => {
                     renderOpnameInfo(parentElm, result);
                     renderItemInfo(parentElm, result);
+
+                    parentElm.querySelector('#insertItemForm input[name="_remote"]').value = `${thisElm.dataset.remote_store_opaname_detail}`;
+                    parentElm.querySelector('#insertItemForm input[name="_method"]').value = 'POST';
+                    parentElm.querySelector('#insertItemForm input[name="opname_id"]').value = result.opname.id;
 
                     modalTitle.innerHTML = `Proses Opname`;
                     modalBody.classList.remove('d-none');
@@ -382,6 +395,47 @@
             });
         }
         */
+        function submitItemToOpnameDetail(parentElm, thisElm) {
+            let formData = new FormData(parentElm.querySelector('form#insertItemForm'));
+            let jsonStr = JSON.stringify(fdToJsonObj(formData));
+            
+            // loading and disabled button
+            const buttonText = thisElm.innerHTML;
+            thisElm.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i>`
+            for (const elm of parentElm.querySelectorAll('button')) {
+                elm.disabled = true;
+            }
+            
+            fetch(`${formData.get('_remote')}`, {
+                method: `${formData.get('_method')}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                body: jsonStr,
+            })
+            .then(response => response.json())
+            .then(result => {
+                if(result.status == 'invalid'){
+                    drawError(parentElm, result.validators);
+                }
+                if(result.status == 'valid'){
+                    swalAlert(result.pesan, 'success');
+                    tbIndex.ajax.reload();
+                    $(parentElm).modal('hide');
+                }
+                if(result.status == 'error'){
+                    swalAlert(result.pesan, 'warning');
+                }
+            })
+            .finally(() => {
+                // loading and disabled button
+                thisElm.innerHTML = `${buttonText}`
+                for (const elm of parentElm.querySelectorAll('button')) {
+                    elm.disabled = false;
+                }
+            });
+        }
         // other function
 
         function renderOpnameInfo(parentElm, data){
@@ -400,7 +454,7 @@
                             <dt class="col-sm-3">Uniq ID</dt>
                             <dd class="col-sm-9">${data.opname.uniq_id}</dd>
                             <dt class="col-sm-3">Pembuat</dt>
-                            <dd class="col-sm-9">${data.user.name}</dd>
+                            <dd class="col-sm-9">${data.opname.user.name}</dd>
                             <dt class="col-sm-3">Status</dt>
                             <dd class="col-sm-9">${data.statusText}</dd>
                         </dl>
@@ -408,7 +462,7 @@
                 </div>
             `;
 
-            parentElm.querySelector('.opname_info_elm').innerHTML = html;
+            parentElm.querySelector('.opnameInfoElm').innerHTML = html;
         }
 
         function renderItemInfo(parentElm, data){
@@ -424,7 +478,7 @@
                 </div>
             `;
 
-            parentElm.querySelector('.item_info_elm').innerHTML = html;
+            parentElm.querySelector('.itemInfoElm').innerHTML = html;
         }
 
 

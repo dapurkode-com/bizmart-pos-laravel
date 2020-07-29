@@ -9,6 +9,7 @@ use Auth;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class OpnameController extends Controller
 {
@@ -47,6 +48,7 @@ class OpnameController extends Controller
             $isExist = Opname::where('status', 'ONGO')->exists();
 
             if ($isExist) {
+                DB::rollBack();
                 return response()->json([
                     'status' => 'invalid',
                     'pesan' => 'Selesaikan terlebih dahulu opname sebelumnya',
@@ -70,6 +72,58 @@ class OpnameController extends Controller
             ]);
         }
     }
+    
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeOpnameDetail(Request $request)
+    {
+        // validate the request
+        $validator = Validator::make($request->all(), [
+            'items' => 'required',
+            'new_stock' => 'required|number',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'invalid',
+                'validators' => $validator->errors(),
+            ]);
+        }
+        // try {
+        //     DB::beginTransaction();
+
+        //     // check is there any record with status ONGO
+        //     $isExist = Opname::where('status', 'ONGO')->exists();
+
+        //     if ($isExist) {
+        //         DB::rollBack();
+        //         return response()->json([
+        //             'status' => 'invalid',
+        //             'pesan' => 'Selesaikan terlebih dahulu opname sebelumnya',
+        //         ]);
+        //     } else {
+        //         Opname::create([
+        //             'user_id' => auth()->user()->id
+        //         ]);
+        //         DB::commit();
+
+        //         return response()->json([
+        //             'status' => 'valid',
+        //             'pesan' => 'Opname berhasil ditambah',
+        //         ]);
+        //     }
+        // } catch (Exception $exc) {
+        //     DB::rollBack();
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'pesan' => $exc->getMessage(),
+        //     ]);
+        // }
+    }
 
     /**
      * Display the specified resource.
@@ -79,10 +133,9 @@ class OpnameController extends Controller
      */
     public function show($id)
     {
-        $opname = Opname::findOrFail($id);
+        $opname = Opname::with('user')->findOrFail($id);
         return response()->json([
             'opname' => $opname,
-            'user' => $opname->user,
             'statusText' => $opname->statusText(),
             'count_item' => Item::count(),
         ]);
@@ -125,6 +178,7 @@ class OpnameController extends Controller
             $isIdExistOnOpnameDetails = OpnameDetail::where('opname_id', $id)->exists();
 
             if ($isIdExistOnOpnameDetails) {
+                DB::rollBack();
                 return response()->json([
                     'status' => 'invalid',
                     'pesan' => 'Opname yang sudah diproses tidak boleh dihapus',
@@ -170,7 +224,7 @@ class OpnameController extends Controller
             ->addColumn('action', function ($opname) {
                 $btn = '';
                 $btn = '<button data-remote_destroy="' . route('opname.destroy', $opname->id) . '" type="button" class="btn btn-danger btn-sm btnDelete" title="Hapus"><i class="fas fa-trash"></i></button> ';
-                $btn .= '<button data-remote_show="' . route('opname.show', $opname->id) . '" type="button" class="btn btn-warning btn-sm btnEdit" title="Kerjakan Opname Ini"><i class="fas fa-plus"></i></button> ';
+                $btn .= '<button data-remote_show="' . route('opname.show', $opname->id) . '" data-remote_store_opaname_detail="' . route('opname.store_opname_detail') . '" type="button" class="btn btn-warning btn-sm btnEdit" title="Kerjakan Opname Ini"><i class="fas fa-plus"></i></button> ';
                 return $btn;
             })
             ->addColumn('status_color', function ($opname) {
@@ -194,7 +248,7 @@ class OpnameController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function get_items(Request $request)
+    public function getItems(Request $request)
     {
         $page = $request->page;
         $search = $request->term;
