@@ -54,6 +54,7 @@
     <div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
+                <form id="insertItemForm">
                     <div class="modal-header">
                         <h4 class="modal-title">Title</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -99,7 +100,7 @@
                         <!-- insert barang -->
                         <div class="row">
                             <div class="col-sm-12">
-                                <form id="insertItemForm">
+                                <!-- <form id="insertItemForm"> -->
                                     <input type="nohidden" name="_remote">
                                     <input type="nohidden" name="_method">
                                     <input type="nohidden" name="opname_id">
@@ -136,7 +137,7 @@
                                             </div>
                                         </div>
                                     </div>    
-                                </form>
+                                <!-- </form> -->
                             </div>
                         </div>
 
@@ -145,6 +146,7 @@
                         <button type="reset" class="btn btn-default">Reset</button>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
+                </form>
             </div>
         </div>
     </div>
@@ -196,6 +198,12 @@
             }
         }
         /* end small box edit */
+
+        /* is-invalid on select2 */
+        select.is-invalid + .select2 .selection .select2-selection{
+            border-color: #dc3545;
+        }
+        /* end is-invalid on select2 */
     </style>
 @stop
 
@@ -685,15 +693,24 @@
 
             addListenToEvent('input, textarea', 'change', (e) => {
                 e.target.classList.remove('is-invalid');
-                e.target.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;;
+                e.target.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;
             });
+            $(document).on('change', '.select2-advance', (e) => {
+                e.target.classList.remove('is-invalid');
+                e.target.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;
+            })
 
             addListenToEvent('button[type="reset"]', 'click', (e) => {
+                // e.preventDefault();
                 const parentFormElm = e.target.closest('form');
                 for (const elm of parentFormElm.querySelectorAll('.is-invalid')) {
                     elm.classList.remove('is-invalid');
-                    elm.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;;
+                    elm.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;
                 }
+
+                // for (const elm of parentFormElm.querySelectorAll('input:not(".no-reset")') {
+                    
+                // }
             });
         });
         // fixed event
