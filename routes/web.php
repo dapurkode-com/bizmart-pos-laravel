@@ -30,13 +30,13 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('suplier/datatables', 'SuplierController@datatables')->name('suplier.datatables');
+    Route::get('buy/datatables', 'BuyController@datatables')->name('buy.datatables');
+    Route::post('buy/select', 'BuyController@select')->name('buy.select');
     Route::get('member/datatables', 'MemberController@datatables')->name('member.datatables');
     Route::get('item/datatables', 'ItemController@datatables')->name('item.datatables');
     Route::get('unit/datatables', 'UnitController@datatables')->name('unit.datatables');
     Route::get('category/datatables', 'CategoryController@datatables')->name('category.datatables');
     Route::get('user/datatables', 'UserController@datatables')->name('user.datatables');
-    Route::get('sell/list', 'SellController@list')->name('sell.list');
-    Route::get('sell/datatables', 'SellController@datatables')->name('sell.datatables');
 
     Route::resource('unit', 'UnitController')->only('index', 'store', 'update', 'show', 'destroy');
     Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');
@@ -47,6 +47,5 @@ Route::group(['middleware' => ['auth']], function () {
         'member' => 'MemberController',
         'item'  => 'ItemController',
         'user' => 'UserController',
-        'sell' => 'SellController'
     ]);
 });
