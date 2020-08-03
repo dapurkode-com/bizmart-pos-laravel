@@ -101,9 +101,9 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <!-- <form id="insertItemForm"> -->
-                                    <input type="nohidden" name="_remote">
-                                    <input type="nohidden" name="_method">
-                                    <input type="nohidden" name="opname_id">
+                                    <input type="nohidden" name="_remote" class="noReset">
+                                    <input type="nohidden" name="_method" class="noReset">
+                                    <input type="nohidden" name="opname_id" class="noReset">
 
                                     <div class="card bg-default">
                                         <div class="card-header">
@@ -143,7 +143,7 @@
 
                     </div>
                     <div class="modal-footer justify-content-between">
-                        <button type="reset" class="btn btn-default">Reset</button>
+                        <button type="reset" class="myReset btn btn-default">Reset</button>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
                 </form>
@@ -321,7 +321,6 @@
                 e.preventDefault();
                 const parentElm = e.target.closest('.modal');
                 const thisElm = e.target;
-                console.log('test');
                 submitItemToOpnameDetail(parentElm, thisElm);
             });
         });
@@ -700,17 +699,21 @@
                 e.target.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;
             })
 
-            addListenToEvent('button[type="reset"]', 'click', (e) => {
-                // e.preventDefault();
+            addListenToEvent('button[type="reset"].myReset', 'click', (e) => {
+                e.preventDefault();
                 const parentFormElm = e.target.closest('form');
                 for (const elm of parentFormElm.querySelectorAll('.is-invalid')) {
                     elm.classList.remove('is-invalid');
                     elm.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;
                 }
 
-                // for (const elm of parentFormElm.querySelectorAll('input:not(".no-reset")') {
-                    
-                // }
+                for (const elm of parentFormElm.querySelectorAll('input:not(.noReset)')) {
+                    elm.value = '';
+                }
+
+                $(parentFormElm).find('select:not(.noReset).select2-advance').each(function(i, elm){
+                    $(elm).val('').trigger('change');
+                })
             });
         });
         // fixed event

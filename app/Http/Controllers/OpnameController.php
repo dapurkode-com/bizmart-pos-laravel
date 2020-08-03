@@ -93,36 +93,44 @@ class OpnameController extends Controller
                 'validators' => $validator->errors(),
             ]);
         }
-        // try {
-        //     DB::beginTransaction();
 
-        //     // check is there any record with status ONGO
-        //     $isExist = Opname::where('status', 'ONGO')->exists();
+        try {
+            DB::beginTransaction();
 
-        //     if ($isExist) {
-        //         DB::rollBack();
-        //         return response()->json([
-        //             'status' => 'invalid',
-        //             'pesan' => 'Selesaikan terlebih dahulu opname sebelumnya',
-        //         ]);
-        //     } else {
-        //         Opname::create([
-        //             'user_id' => auth()->user()->id
-        //         ]);
-        //         DB::commit();
+            // $isExist = Opname::where('status', 'ONGO')->exists();
+            $isExist = false;
 
-        //         return response()->json([
-        //             'status' => 'valid',
-        //             'pesan' => 'Opname berhasil ditambah',
-        //         ]);
-        //     }
-        // } catch (Exception $exc) {
-        //     DB::rollBack();
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'pesan' => $exc->getMessage(),
-        //     ]);
-        // }
+            if ($isExist) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'invalid',
+                    'pesan' => 'Selesaikan terlebih dahulu opname sebelumnya',
+                ]);
+            } else {
+                $itemsObj = json_decode($request->items);
+                dd($itemsObj);
+                OpnameDetail::create([
+                    'opname_id' => $request->opname_id,
+                    'item_id' => $itemsObj->id,
+                    'old_stock' => $itemsObj->stock,
+                    'new_stock' => $request->new_stock,
+                    'buy_price' => $itemsObj->buy_price,
+                    'sell_price' => $itemsObj->sell_price
+                ]);
+                DB::commit();
+
+                return response()->json([
+                    'status' => 'valid',
+                    'pesan' => 'Barang berhasil diopname',
+                ]);
+            }
+        } catch (Exception $exc) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'pesan' => $exc->getMessage(),
+            ]);
+        }
     }
 
     /**
