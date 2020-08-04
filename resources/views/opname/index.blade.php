@@ -51,7 +51,7 @@
 
 
     <!-- modal insert edit -->
-    <div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
+    <div class="modal fade" id="modalForm" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <form id="insertItemForm">
@@ -426,13 +426,18 @@
                 if(result.status == 'invalid'){
                     drawError(parentElm, result.validators);
                 }
-                if(result.status == 'valid'){
-                    swalAlert(result.pesan, 'success');
-                    tbIndex.ajax.reload();
-                    $(parentElm).modal('hide');
+                if(result.status == 'exist'){
+                    swalAlert(result.pesan, 'warning');
                 }
                 if(result.status == 'error'){
                     swalAlert(result.pesan, 'warning');
+                }
+                if(result.status == 'valid'){
+                    swalAlert(result.pesan, 'success');
+
+                    if(result.is_new_stock_and_old_stock_same === false){
+
+                    }
                 }
             })
             .finally(() => {
@@ -441,6 +446,9 @@
                 for (const elm of parentElm.querySelectorAll('button')) {
                     elm.disabled = false;
                 }
+
+                // trigger reset button
+                parentElm.querySelector('#insertItemForm button[type="reset"]').dispatchEvent(document.createEvent('HTMLEvents').initEvent('click', true, false));
             });
         }
         // other function

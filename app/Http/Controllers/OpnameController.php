@@ -84,7 +84,7 @@ class OpnameController extends Controller
         // validate the request
         $validator = Validator::make($request->all(), [
             'items' => 'required',
-            'new_stock' => 'required|number',
+            'new_stock' => 'required|numeric',
         ]);
 
         if ($validator->fails()) {
@@ -97,31 +97,47 @@ class OpnameController extends Controller
         try {
             DB::beginTransaction();
 
-            // $isExist = Opname::where('status', 'ONGO')->exists();
-            $isExist = false;
+            $itemsObj = json_decode($request->items);
+
+            $isExist = OpnameDetail::where([
+                'opname_id' => $request->opname_id,
+                'item_id' => $itemsObj->id,
+            ])->exists();
 
             if ($isExist) {
                 DB::rollBack();
                 return response()->json([
-                    'status' => 'invalid',
-                    'pesan' => 'Selesaikan terlebih dahulu opname sebelumnya',
+                    'status' => 'exist',
+                    'pesan' => 'Barang ini sudah diopname',
                 ]);
             } else {
-                $itemsObj = json_decode($request->items);
-                dd($itemsObj);
+                $item = Item::findOrFail($itemsObj->id);
+                $oldStock = $item->stock;
+                $newStock = $request->new_stock;
+
                 OpnameDetail::create([
                     'opname_id' => $request->opname_id,
-                    'item_id' => $itemsObj->id,
-                    'old_stock' => $itemsObj->stock,
-                    'new_stock' => $request->new_stock,
-                    'buy_price' => $itemsObj->buy_price,
-                    'sell_price' => $itemsObj->sell_price
+                    'item_id' => $item->id,
+                    'old_stock' => $oldStock,
+                    'new_stock' => $newStock,
+                    'buy_price' => $item->buy_price,
+                    'sell_price' => $item->sell_price
                 ]);
                 DB::commit();
+
+                $isNewStockAndOldStockSame = ($newStock == $oldStock) ? true : false;
 
                 return response()->json([
                     'status' => 'valid',
                     'pesan' => 'Barang berhasil diopname',
+                    'is_new_stock_and_old_stock_same' => $isNewStockAndOldStockSame,
+                    'item' => [
+                        'old_stock' => $oldStock,
+                        'new_stock' => $newStock,
+                        'id' => $item->id,
+                        'name' => $item->name,
+                        'barcode' => $item->barcode,
+                    ]
                 ]);
             }
         } catch (Exception $exc) {
