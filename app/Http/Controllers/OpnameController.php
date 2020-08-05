@@ -162,6 +162,7 @@ class OpnameController extends Controller
             'opname' => $opname,
             'statusText' => $opname->statusText(),
             'count_item' => Item::count(),
+            'count_item_in_opname_detail' => OpnameDetail::where('opname_id', $id)->count(),
         ]);
     }
 

@@ -101,9 +101,10 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <!-- <form id="insertItemForm"> -->
-                                    <input type="nohidden" name="_remote" class="noReset">
-                                    <input type="nohidden" name="_method" class="noReset">
-                                    <input type="nohidden" name="opname_id" class="noReset">
+                                    <input type="hidden" name="_remote" class="noReset">
+                                    <input type="hidden" name="_method" class="noReset">
+                                    <input type="hidden" name="opname_id" class="noReset">
+                                    <input type="hidden" name="ref_uniq_id" class="noReset">
 
                                     <div class="card bg-default">
                                         <div class="card-header">
@@ -144,6 +145,69 @@
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="reset" class="myReset btn btn-default">Reset</button>
+                        <!-- <button type="submit" class="btn btn-primary">Simpan</button> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal reason for opname -->
+    <div class="modal fade" id="modalReasonForOpname" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form>
+                    <div class="modal-header">
+                        <h4 class="modal-title">Form Alasan Perbedaan Stock Barang</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                
+                                <input type="nohidden" name="_remote" class="noReset">
+                                <input type="nohidden" name="_method" class="noReset">
+                                <input type="nohidden" name="ref_uniq_id" class="noReset">
+                                <input type="nohidden" name="item_id" class="noReset">
+
+                                <div class="form-group">
+                                    <label>Barcode Barang</label>
+                                    <input type="text" name="barcode" class="form-control" placeholder="" readonly>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nama Barang</label>
+                                    <input type="text" name="name" class="form-control" placeholder="" readonly>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Stock Sistem</label>
+                                            <input type="text" name="old_stock" class="form-control" placeholder="" readonly>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Stock Sekarang</label>
+                                            <input type="text" name="new_stock" class="form-control" placeholder="" readonly>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Deskripsi</label>
+                                    <textarea type="text" name="description" rows="5" class="form-control" placeholder="Deskripsikan alasannya disini"></textarea>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="reset" class="myReset btn btn-default">Reset</button>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
                 </form>
@@ -171,6 +235,8 @@
         }
         ul.navbar-nav li.nav-item.active a.nav-link{
             color: white;
+            padding-right: 16px;
+            padding-left: 16px;
         }
         /* end navbar */
 
@@ -351,6 +417,7 @@
                     parentElm.querySelector('#insertItemForm input[name="_remote"]').value = `${thisElm.dataset.remote_store_opaname_detail}`;
                     parentElm.querySelector('#insertItemForm input[name="_method"]').value = 'POST';
                     parentElm.querySelector('#insertItemForm input[name="opname_id"]').value = result.opname.id;
+                    parentElm.querySelector('#insertItemForm input[name="ref_uniq_id"]').value = result.opname.uniq_id;
 
                     modalTitle.innerHTML = `Proses Opname`;
                     modalBody.classList.remove('d-none');
@@ -405,6 +472,7 @@
         function submitItemToOpnameDetail(parentElm, thisElm) {
             let formData = new FormData(parentElm.querySelector('form#insertItemForm'));
             let jsonStr = JSON.stringify(fdToJsonObj(formData));
+            const resetBtn = parentElm.querySelector('form#insertItemForm button[type="reset"]')
             
             // loading and disabled button
             const buttonText = thisElm.innerHTML;
@@ -422,7 +490,7 @@
                 body: jsonStr,
             })
             .then(response => response.json())
-            .then(result => {
+            .then((result) => {
                 if(result.status == 'invalid'){
                     drawError(parentElm, result.validators);
                 }
@@ -434,9 +502,10 @@
                 }
                 if(result.status == 'valid'){
                     swalAlert(result.pesan, 'success');
+                    simulateEvent(resetBtn, 'click');
 
                     if(result.is_new_stock_and_old_stock_same === false){
-
+                        showModalReasonForOpname(result.item);
                     }
                 }
             })
@@ -446,12 +515,8 @@
                 for (const elm of parentElm.querySelectorAll('button')) {
                     elm.disabled = false;
                 }
-
-                // trigger reset button
-                parentElm.querySelector('#insertItemForm button[type="reset"]').dispatchEvent(document.createEvent('HTMLEvents').initEvent('click', true, false));
             });
         }
-        // other function
 
         function renderOpnameInfo(parentElm, data){
             let html = `
@@ -484,7 +549,7 @@
             let html = `
                 <div class="small-box bg-info mb-3 edit">
                     <div class="inner">
-                        <h3>0 / ${data.count_item}</h3>
+                        <h3>${data.count_item_in_opname_detail} / ${data.count_item}</h3>
                         <p>Barang sudah di Opname</p>
                     </div>
                     <div class="icon">
@@ -495,6 +560,23 @@
 
             parentElm.querySelector('.itemInfoElm').innerHTML = html;
         }
+
+        function showModalReasonForOpname(data){
+            const parentElm = document.querySelector('#modalReasonForOpname');
+            const refUniqIdElm = document.querySelector('#insertItemForm input[name="ref_uniq_id"]');
+
+            parentElm.querySelector('input[name="_remote"]').value = "";
+            parentElm.querySelector('input[name="_method"]').value = "POST";
+            parentElm.querySelector('input[name="ref_uniq_id"]').value = refUniqIdElm.value;
+            parentElm.querySelector('input[name="item_id"]').value = data.id;
+            parentElm.querySelector('input[name="barcode"]').value = data.barcode;
+            parentElm.querySelector('input[name="name"]').value = data.name;
+            parentElm.querySelector('input[name="old_stock"]').value = data.old_stock;
+            parentElm.querySelector('input[name="new_stock"]').value = data.new_stock;
+            
+            $(parentElm).modal('show');
+        }
+        // other function
 
 
 
@@ -692,6 +774,15 @@
             let date_split = date.split(' ');
             return `${date_split[2]} ${date_split[1]} ${date_split[3]}`;
         }
+
+        function simulateEvent(elm, eventName) {
+            let evt = new MouseEvent(eventName, {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            });
+            let canceled = !elm.dispatchEvent(evt);
+        };
         // fixed function
 
         // fixed event
@@ -702,6 +793,7 @@
                 e.target.classList.remove('is-invalid');
                 e.target.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;
             });
+
             $(document).on('change', '.select2-advance', (e) => {
                 e.target.classList.remove('is-invalid');
                 e.target.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;
