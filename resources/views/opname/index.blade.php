@@ -164,19 +164,22 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 
-                                <input type="nohidden" name="_remote" class="noReset">
-                                <input type="nohidden" name="_method" class="noReset">
-                                <input type="nohidden" name="ref_uniq_id" class="noReset">
-                                <input type="nohidden" name="item_id" class="noReset">
+                                <input type="hidden" name="_remote" class="noReset">
+                                <input type="hidden" name="_method" class="noReset">
+                                <input type="hidden" name="opname_id" class="noReset">
+                                <input type="hidden" name="ref_uniq_id" class="noReset">
+                                <input type="hidden" name="item_id" class="noReset">
+                                <input type="hidden" name="buy_price" class="noReset">
+                                <input type="hidden" name="sell_price" class="noReset">
 
                                 <div class="form-group">
                                     <label>Barcode Barang</label>
-                                    <input type="text" name="barcode" class="form-control" placeholder="" readonly>
+                                    <input type="text" name="barcode" class="form-control noReset" placeholder="" readonly>
                                     <div class="invalid-feedback"></div>
                                 </div>
                                 <div class="form-group">
                                     <label>Nama Barang</label>
-                                    <input type="text" name="name" class="form-control" placeholder="" readonly>
+                                    <input type="text" name="name" class="form-control noReset" placeholder="" readonly>
                                     <div class="invalid-feedback"></div>
                                 </div>
 
@@ -184,14 +187,14 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Stock Sistem</label>
-                                            <input type="text" name="old_stock" class="form-control" placeholder="" readonly>
+                                            <input type="text" name="old_stock" class="form-control noReset" placeholder="" readonly>
                                             <div class="invalid-feedback"></div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Stock Sekarang</label>
-                                            <input type="text" name="new_stock" class="form-control" placeholder="" readonly>
+                                            <input type="text" name="new_stock" class="form-control noReset" placeholder="" readonly>
                                             <div class="invalid-feedback"></div>
                                         </div>
                                     </div>
@@ -389,6 +392,13 @@
                 const thisElm = e.target;
                 submitItemToOpnameDetail(parentElm, thisElm);
             });
+
+            addListenToEvent('#modalReasonForOpname button[type="submit"]', 'click', (e) => {
+                e.preventDefault();
+                const parentElm = e.target.closest('.modal');
+                const thisElm = e.target;
+                submitReasonStockLog(parentElm, thisElm);
+            });
         });
         // dom event
 
@@ -412,7 +422,7 @@
                 .then(response => response.json())
                 .then(result => {
                     renderOpnameInfo(parentElm, result);
-                    renderItemInfo(parentElm, result);
+                    renderItemInfo(parentElm, result.count_item_in_opname_detail, result.count_item);
 
                     parentElm.querySelector('#insertItemForm input[name="_remote"]').value = `${thisElm.dataset.remote_store_opaname_detail}`;
                     parentElm.querySelector('#insertItemForm input[name="_method"]').value = 'POST';
@@ -503,9 +513,10 @@
                 if(result.status == 'valid'){
                     swalAlert(result.pesan, 'success');
                     simulateEvent(resetBtn, 'click');
+                    renderItemInfo(parentElm, result.count_item_in_opname_detail, result.count_item);
 
                     if(result.is_new_stock_and_old_stock_same === false){
-                        showModalReasonForOpname(result.item);
+                        showModalReasonForOpname(result);
                     }
                 }
             })
@@ -545,11 +556,11 @@
             parentElm.querySelector('.opnameInfoElm').innerHTML = html;
         }
 
-        function renderItemInfo(parentElm, data){
+        function renderItemInfo(parentElm, countItemOpnamed, countAllItem){
             let html = `
                 <div class="small-box bg-info mb-3 edit">
                     <div class="inner">
-                        <h3>${data.count_item_in_opname_detail} / ${data.count_item}</h3>
+                        <h3>${countItemOpnamed} / ${countAllItem}</h3>
                         <p>Barang sudah di Opname</p>
                     </div>
                     <div class="icon">
@@ -565,16 +576,59 @@
             const parentElm = document.querySelector('#modalReasonForOpname');
             const refUniqIdElm = document.querySelector('#insertItemForm input[name="ref_uniq_id"]');
 
-            parentElm.querySelector('input[name="_remote"]').value = "";
-            parentElm.querySelector('input[name="_method"]').value = "POST";
+            parentElm.querySelector('input[name="_remote"]').value = `{{ route('opname.store_stock_log') }}`;
+            parentElm.querySelector('input[name="_method"]').value = `POST`;
+            parentElm.querySelector('input[name="opname_id"]').value = data.opname_id;
             parentElm.querySelector('input[name="ref_uniq_id"]').value = refUniqIdElm.value;
-            parentElm.querySelector('input[name="item_id"]').value = data.id;
-            parentElm.querySelector('input[name="barcode"]').value = data.barcode;
-            parentElm.querySelector('input[name="name"]').value = data.name;
-            parentElm.querySelector('input[name="old_stock"]').value = data.old_stock;
-            parentElm.querySelector('input[name="new_stock"]').value = data.new_stock;
+            parentElm.querySelector('input[name="item_id"]').value = data.item.id;
+            parentElm.querySelector('input[name="barcode"]').value = data.item.barcode;
+            parentElm.querySelector('input[name="name"]').value = data.item.name;
+            parentElm.querySelector('input[name="old_stock"]').value = data.item.old_stock;
+            parentElm.querySelector('input[name="new_stock"]').value = data.item.new_stock;
+            parentElm.querySelector('input[name="buy_price"]').value = data.item.buy_price;
+            parentElm.querySelector('input[name="sell_price"]').value = data.item.sell_price;
             
             $(parentElm).modal('show');
+        }
+
+        function submitReasonStockLog(parentElm, thisElm) {
+            let formData = new FormData(parentElm.querySelector('form'));
+            let jsonStr = JSON.stringify(fdToJsonObj(formData));
+            
+            // loading and disabled button
+            const buttonText = thisElm.innerHTML;
+            thisElm.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i>`
+            for (const elm of parentElm.querySelectorAll('button')) {
+                elm.disabled = true;
+            }
+            
+            fetch(`${formData.get('_remote')}`, {
+                method: `${formData.get('_method')}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                body: jsonStr,
+            })
+            .then(response => response.json())
+            .then((result) => {
+                if(result.status == 'invalid'){
+                    drawError(parentElm, result.validators);
+                }
+                if(result.status == 'error'){
+                    swalAlert(result.pesan, 'warning');
+                }
+                if(result.status == 'valid'){
+                    swalAlert(result.pesan, 'success');
+                }
+            })
+            .finally(() => {
+                // loading and disabled button
+                thisElm.innerHTML = `${buttonText}`
+                for (const elm of parentElm.querySelectorAll('button')) {
+                    elm.disabled = false;
+                }
+            });
         }
         // other function
 

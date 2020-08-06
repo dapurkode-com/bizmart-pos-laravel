@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Item;
 use App\Opname;
 use App\OpnameDetail;
+use App\StockLog;
 use Auth;
 use DB;
 use Exception;
@@ -131,15 +132,86 @@ class OpnameController extends Controller
                     'status' => 'valid',
                     'pesan' => 'Barang berhasil diopname',
                     'is_new_stock_and_old_stock_same' => $isNewStockAndOldStockSame,
+                    'opname_id' => $request->opname_id,
                     'item' => [
                         'old_stock' => $oldStock,
                         'new_stock' => $newStock,
                         'id' => $item->id,
                         'name' => $item->name,
                         'barcode' => $item->barcode,
-                    ]
+                        'buy_price' => $item->buy_price,
+                        'sell_price' => $item->sell_price,
+                    ],
+                    'count_item' => Item::count(),
+                    'count_item_in_opname_detail' => OpnameDetail::where('opname_id', $request->opname_id)->count(),
                 ]);
             }
+        } catch (Exception $exc) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'pesan' => $exc->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeStockLog(Request $request)
+    {
+        // validate the request
+        $validator = Validator::make($request->all(), [
+            'description' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'invalid',
+                'validators' => $validator->errors(),
+            ]);
+        }
+
+        try {
+            DB::beginTransaction();
+            
+            // update opname detail
+            OpnameDetail::where([
+                'opname_id' => $request->opname_id,
+                'item_id' => $request->item_id,
+            ])->update([
+                'description' => $request->description
+            ]);
+
+            // store data to stock log
+            $stockDeviation = $request->old_stock - $request->new_stock;
+            $inOutPosition = ($stockDeviation > 0) ? 'OUT' : 'IN';
+            $stockDeviationAbs = abs($stockDeviation);
+            StockLog::create([
+                'ref_uniq_id' => $request->ref_uniq_id,
+                'cause' => 'ADJ',
+                'in_out_position' => $inOutPosition,
+                'qty' => $stockDeviationAbs,
+                'old_stock' => $request->old_stock,
+                'new_stock' => $request->new_stock,
+                'buy_price' => $request->buy_price,
+                'sell_price' => $request->sell_price,
+                'item_id' => $request->item_id,
+            ]);
+
+            // todo
+            // adjust stock on item
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'valid',
+                'pesan' => 'Alasan berhasil disimpan'
+            ]);
+
         } catch (Exception $exc) {
             DB::rollBack();
             return response()->json([
