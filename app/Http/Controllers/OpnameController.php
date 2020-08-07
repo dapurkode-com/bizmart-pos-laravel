@@ -199,11 +199,13 @@ class OpnameController extends Controller
                 'new_stock' => $request->new_stock,
                 'buy_price' => $request->buy_price,
                 'sell_price' => $request->sell_price,
-                'item_id' => $request->item_id,
+                'item_id' => $request->item_id
             ]);
 
-            // todo
             // adjust stock on item
+            Item::findOrFail($request->item_id)->update([
+                'stock' => $request->new_stock
+            ]);
 
             DB::commit();
 
@@ -335,6 +337,40 @@ class OpnameController extends Controller
             ->filterColumn('created_at_idn', function ($query, $keyword) {
                 $sql = "DATE_FORMAT(opnames.created_at, '%d %b %Y') like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
+            })
+            ->toJson();
+    }
+
+    /**
+     * Display a listing of the resource in form of datatable.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function datatablesOpnameDetail(Request $request)
+    {
+        $opnameDetails = OpnameDetail::leftJoin('items', 'items.id', '=', 'opname_details.item_id')
+            ->select([
+                'opname_details.id',
+                'opname_details.opname_id',
+                'opname_details.item_id',
+                'items.barcode',
+                'items.name',
+                'opname_details.old_stock',
+                'opname_details.new_stock',
+                'opname_details.buy_price',
+                'opname_details.sell_price',
+                'opname_details.description',
+            ]);
+
+        return datatables()
+            ->of($opnameDetails)
+            ->addIndexColumn()
+            ->addColumn('action', function ($opnameDetail) {
+                $btn = '';
+                // $btn = '<button data-remote_destroy="' . route('opname.destroy', $opname->id) . '" type="button" class="btn btn-danger btn-sm btnDelete" title="Hapus"><i class="fas fa-trash"></i></button> ';
+                // $btn .= '<button data-remote_show="' . route('opname.show', $opname->id) . '" data-remote_store_opaname_detail="' . route('opname.store_opname_detail') . '" type="button" class="btn btn-warning btn-sm btnEdit" title="Kerjakan Opname Ini"><i class="fas fa-plus"></i></button> ';
+                return $btn;
             })
             ->toJson();
     }

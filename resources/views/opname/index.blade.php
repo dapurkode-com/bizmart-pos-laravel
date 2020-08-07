@@ -49,12 +49,11 @@
         </div>
     </div>
 
-
     <!-- modal insert edit -->
     <div class="modal fade" id="modalForm" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
-                <form id="insertItemForm">
+                <!-- <form id="insertItemForm"> -->
                     <div class="modal-header">
                         <h4 class="modal-title">Title</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -100,7 +99,7 @@
                         <!-- insert barang -->
                         <div class="row">
                             <div class="col-sm-12">
-                                <!-- <form id="insertItemForm"> -->
+                                <form id="insertItemForm">
                                     <input type="hidden" name="_remote" class="noReset">
                                     <input type="hidden" name="_method" class="noReset">
                                     <input type="hidden" name="opname_id" class="noReset">
@@ -136,18 +135,51 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <button type="reset" class="myReset btn btn-default btn-sm">Reset</button>
                                         </div>
-                                    </div>    
-                                <!-- </form> -->
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- opname details -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="card bg-default">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Barang yang sudah di-Opname</h3>
+                                        <div class="card-tools">
+                                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <table class="table table-striped" id="tbOpnameDetail" style="width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Barcode</th>
+                                                    <th>Nama Barang</th>
+                                                    <th>Stock Sistem</th>
+                                                    <th>Stock Sekarang</th>
+                                                    <th>Harga Beli</th>
+                                                    <th>Harga Jual</th>
+                                                    <th>Deskripsi</th>
+                                                    <th class="text-right">Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                     </div>
-                    <div class="modal-footer justify-content-between">
-                        <button type="reset" class="myReset btn btn-default">Reset</button>
+                    <!-- <div class="modal-footer justify-content-between"> -->
+                        <!-- <button type="reset" class="myReset btn btn-default">Reset</button> -->
                         <!-- <button type="submit" class="btn btn-primary">Simpan</button> -->
-                    </div>
-                </form>
+                    <!-- </div> -->
+                <!-- </form> -->
             </div>
         </div>
     </div>
@@ -280,6 +312,7 @@
     <script>
         // global variable
         var tbIndex = null;
+        var tbOpnameDetail = null;
 
         // dom event
         domReady(() => {
@@ -325,6 +358,51 @@
                 },
             });
 
+            tbOpnameDetail = $('#tbOpnameDetail').DataTable({
+                processing: true,
+                serverSide: true,
+                language: {
+                    decimal:        "",
+                    emptyTable:     "Tidak ada data di dalam tabel",
+                    info:           "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
+                    infoEmpty:      "Data kosong",
+                    infoFiltered:   "(Difilter dari _MAX_ total data)",
+                    infoPostFix:    "",
+                    thousands:      ".",
+                    lengthMenu:     "Tampilkan _MENU_ data",
+                    loadingRecords: "Memuat...",
+                    processing:     "Memproses...",
+                    search:         "",
+                    zeroRecords:    "Tidak ada data yang cocok",
+                    paginate: {
+                        previous: '<i class="fas fa-chevron-left"></i>',
+                        next: '<i class="fas fa-chevron-right"></i>'
+                    },
+                    aria: {
+                        sortAscending:  ": mengurutkan kolom yang naik",
+                        sortDescending: ": mengurutkan kolom yang turun"
+                    },
+                    searchPlaceholder: 'Cari data',
+                },
+                scrollX: true,
+                ajax: "{{ route('opname.datatables_opname_detail') }}",
+                columns: [
+                    {data: 'DT_RowIndex', orderable: false, searchable: false },
+                    {data: 'barcode'},
+                    {data: 'name'},
+                    {data: 'old_stock'},
+                    {data: 'new_stock'},
+                    {data: 'buy_price'},
+                    {data: 'sell_price'},
+                    {data: 'description'},
+                    {data: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'},
+                ],
+                order: [[1, 'desc']],
+                initComplete: () => {
+                    initSelect2Datatables();
+                },
+            });
+
             addListenToEvent('.mainContent .btnAdd', 'click', (e) => {
                 const thisElm = e.target.closest('button');
                 let url = `{{ route('opname.store') }}`;
@@ -347,15 +425,6 @@
                     }
                 });
             });
-            /*
-            addListenToEvent('#modalForm button[type="submit"]', 'click', (e) => {
-                e.preventDefault();
-                const parentElm = e.target.closest('.modal');
-                const thisElm = e.target;
-
-                submitModalForm(parentElm, thisElm);
-            });
-            */
             
             addListenToEvent('.mainContent .btnEdit', 'click', (e) => {
                 const parentElm = document.querySelector('#modalForm');
@@ -410,11 +479,11 @@
         function showModalForm(parentElm, thisElm, action) {
             const modalTitle = parentElm.querySelector('.modal-title');
             const modalBody = parentElm.querySelector('.modal-body');
-            const modalFooter = parentElm.querySelector('.modal-footer');
+            // const modalFooter = parentElm.querySelector('.modal-footer');
 
             modalTitle.innerHTML = `Loading data...`;
             modalBody.classList.add('d-none');
-            modalFooter.classList.add('d-none');
+            // modalFooter.classList.add('d-none');
             $(parentElm).modal('show');
 
             if(action == 'update'){
@@ -431,54 +500,11 @@
 
                     modalTitle.innerHTML = `Proses Opname`;
                     modalBody.classList.remove('d-none');
-                    modalFooter.classList.remove('d-none');
+                    // modalFooter.classList.remove('d-none');
                 });
             }
         }
         
-        /*
-        function submitModalForm(parentElm, thisElm) {
-            let formData = new FormData(parentElm.querySelector('form'));
-            let jsonStr = JSON.stringify(fdToJsonObj(formData));
-            
-            // loading and disabled button
-            const buttonText = thisElm.innerHTML;
-            thisElm.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> ${buttonText}...`
-            for (const elm of parentElm.querySelectorAll('button')) {
-                elm.disabled = true;
-            }
-            
-            fetch(`${formData.get('_remote')}`, {
-                method: `${formData.get('_method')}`,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                },
-                body: jsonStr,
-            })
-            .then(response => response.json())
-            .then(result => {
-                if(result.status == 'invalid'){
-                    drawError(parentElm, result.validators);
-                }
-                if(result.status == 'valid'){
-                    swalAlert(result.pesan, 'success');
-                    tbIndex.ajax.reload();
-                    $(parentElm).modal('hide');
-                }
-                if(result.status == 'error'){
-                    swalAlert(result.pesan, 'warning');
-                }
-            })
-            .finally(() => {
-                // loading and disabled button
-                thisElm.innerHTML = `${buttonText}`
-                for (const elm of parentElm.querySelectorAll('button')) {
-                    elm.disabled = false;
-                }
-            });
-        }
-        */
         function submitItemToOpnameDetail(parentElm, thisElm) {
             let formData = new FormData(parentElm.querySelector('form#insertItemForm'));
             let jsonStr = JSON.stringify(fdToJsonObj(formData));
@@ -620,6 +646,7 @@
                 }
                 if(result.status == 'valid'){
                     swalAlert(result.pesan, 'success');
+                    $(parentElm).modal('hide');
                 }
             })
             .finally(() => {
