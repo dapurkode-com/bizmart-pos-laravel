@@ -39,6 +39,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('opname/get_items', 'OpnameController@getItems')->name('opname.get_items');
     Route::post('opname/store_opname_detail', 'OpnameController@storeOpnameDetail')->name('opname.store_opname_detail');
     Route::post('opname/store_stock_log', 'OpnameController@storeStockLog')->name('opname.store_stock_log');
+    Route::get('sell/list', 'SellController@list')->name('sell.list');
+    Route::get('sell/datatables', 'SellController@datatables')->name('sell.datatables');
 
     Route::resource('unit', 'UnitController')->only('index', 'store', 'update', 'show', 'destroy');
     Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');
@@ -49,6 +51,7 @@ Route::group(['middleware' => ['auth']], function () {
         'member' => 'MemberController',
         'item'  => 'ItemController',
         'user' => 'UserController',
-        'opname' => 'OpnameController'
+        'opname' => 'OpnameController',
+        'sell' => 'SellController'
     ]);
 });

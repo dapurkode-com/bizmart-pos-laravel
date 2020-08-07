@@ -243,7 +243,7 @@ return [
         //        ],
         [
             'text'      => 'Penjualan',
-            'url'       => '#',
+            'url'       => '/sell',
             'topnav'    => 'true'
         ],
         [
@@ -447,6 +447,22 @@ return [
                     'location' => '//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js',
                 ],
             ],
+        ],
+        [
+            'name' => 'Custom',
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'plugins/custom/global.style.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'plugins/custom/global.app.js',
+                ]
+            ]
         ],
     ],
 ];
