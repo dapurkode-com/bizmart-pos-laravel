@@ -6,7 +6,8 @@
 <div class="row mb-2">
 	<div class="col-sm-6">
         <blockquote style="margin: 0; background: unset;">
-            <h1 class="m-0 text-dark">Transaksi Pembelian</h1>
+            <h1 class="m-0 text-dark">Transaksi Pembelian {{count(old('items_id',[]))}}</h1>
+            
         </blockquote>
 	</div>
 	<!-- /.col -->
@@ -24,12 +25,6 @@
 
 @section('content')
     <div class="row row-flex">
-            {{-- @if(Session::has('message'))
-            <div class="alert {{ Session::get('alert-class', 'alert-info') }} alert-block">
-                <button type="button" class="close" data-dismiss="alert">×</button>
-                <p>{{Session::get('message')}}</p>
-            </div>
-            @endif --}}
         <div class="col-md-6">
              <div class="card">
                  <div class="card-body">
@@ -56,6 +51,15 @@
             </div>
         </div>
     </div>
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -78,7 +82,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    @if(count(old('items_id',[]))>0)
+                                        @for($i =0; $i < count(old('items_id')); $i++)                            
+                                            <tr class="my_tr">
+                                                <td><input type="hidden" name="items_id[]" value="{{ old('items_id.'.$i)}}">
+                                                    <input type="hidden" name="name[]" value="{{ old('name.'.$i)}}">{{ old('name.'.$i)}}</td>
+                                                <td><input name="qty[]" data-val="{{ old('qty.'.$i)}}" id="qty" type="number" class="form-control" value="{{ old('qty.'.$i)}}"></td>
+                                                <td><input name="buy_price[]" data-val="{{ old('buy_price.'.$i)}}" id="buy_price" type="number" class="form-control" value="{{ old('buy_price.'.$i)}}"></td>
+                                                <td><button id= "btn_delete" data-id="{{ old('items_id.'.$i)}}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></td> 
+                                            </tr>                            
+                                        @endfor
+                                    @endif
                                 </tbody>
                                 <tfoot>
 
@@ -109,9 +123,13 @@
                                     <td id="suplier_address" class="detail"> -- </td>
                                 </tr>
                             </table>
+                            <hr>
+                            <div class="form-group">
+                                <label for="note">Keterangan</label>
+                                <textarea  class="form-control" name="note" id="note" cols="10" rows="5"></textarea>
+                            </div>
                         </div>
                     </div>
-                    
                 </div>
                 <div class="card-footer">
                     <div class="row">
@@ -214,9 +232,9 @@
                     var item = res.row;
                     var total = sum + item.buy_price;
                     var content = '<tr class="my_tr">'+
-                        '<td><input type="hidden" name="items_id[]" value="'+item.id+'">'+item.name+'</td>'+
+                        '<td><input type="hidden" name="items_id[]" value="'+item.id+'"><input type="hidden" name="name[]" value="'+item.name+'">'+item.name+'</td>'+
                         '<td><input name="qty[]" data-val="1" id="qty" type="number" class="form-control" value="1"></td>'+
-                        '<td><input name="buy_price[]" data-val="'+item.buy_price+'" id="buy_price" type="number" class="form-control" value="'+item.buy_price+'"</td>'+
+                        '<td><input name="buy_price[]" data-val="'+item.buy_price+'" id="buy_price" type="number" class="form-control" value="'+item.buy_price+'"></td>'+
                         '<td><button id= "btn_delete" data-id="'+item.id+'" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></td>'+    
                     '</tr>';
                     $('#my_table').find('tbody').append(content);

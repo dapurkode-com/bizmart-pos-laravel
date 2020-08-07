@@ -10,6 +10,7 @@ use App\Helpers\BadgeHelper;
 use App\BuyDetail;
 use Illuminate\Support\Facades\DB;
 use App\StockLog;
+use App\Http\Requests\BuyStoreRequest;
 
 class BuyController extends Controller
 {
@@ -40,7 +41,7 @@ class BuyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BuyStoreRequest $request)
     {
         $data = [];
 
@@ -49,6 +50,7 @@ class BuyController extends Controller
 
             $suplier_id = $request->input('suplier_id');
             $buy_prices = $request->input('buy_price');
+            $note       = $request->input('note');
             $qty  = $request->input('qty');
             $item_id = $request->input('items_id');
             $total = 0;
@@ -58,10 +60,9 @@ class BuyController extends Controller
                 'user_id'       => auth()->user()->id,
                 'suplier_id'    => $suplier_id,
                 'summary'       => $total,
-
+                'note'          => $note,
             ]);
 
-            
             foreach ($buy_prices as $i => $buy_price){
 
                 $item = Item::findOrFail($item_id[$i]);
@@ -88,7 +89,7 @@ class BuyController extends Controller
                 $total +=$buy_price * $qty[$i];
 
                 $log = array(
-                    'ref_uniq_id'       => $item->barcode,
+                    'ref_uniq_id'       => $buy->uniq_id,
                     'cause'             => 'BUY',
                     'in_out_position'   => 'IN',
                     'qty'               => $qty[$i],
@@ -96,6 +97,7 @@ class BuyController extends Controller
                     'new_stock'         => $new_stock,
                     'buy_price'         => $new_buy_price,
                     'sell_price'        => $item->sell_price,
+                    'item_id'           => $item_id[$i],
                 );
 
                 StockLog::create($log);
@@ -106,6 +108,7 @@ class BuyController extends Controller
             $buy->save();
 
             DB::commit();
+            $request->session()->flash('buy.summary', $buy->summary);
             return redirect()->back()
                 ->with('message', "Data berhasil tersimpan.");
         } catch (Exception $exception) {
