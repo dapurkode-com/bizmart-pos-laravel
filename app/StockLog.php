@@ -33,6 +33,7 @@ class StockLog extends Model
         'sell_price',
         'created_by',
         'updated_by',
+        'item_id',
     ];
 
     /**
