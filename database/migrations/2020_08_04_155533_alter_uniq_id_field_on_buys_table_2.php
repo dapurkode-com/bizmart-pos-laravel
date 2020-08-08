@@ -14,7 +14,7 @@ class AlterUniqIdFieldOnBuysTable2 extends Migration
     public function up()
     {
         Schema::table('buys', function (Blueprint $table) {
-            $table->string('uniq_id', 36)->unique()->change();
+            $table->string('uniq_id', 36)->change();
         });
     }
 

@@ -24,10 +24,18 @@ class BuyStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'buy_price.*'     => 'required|numeric|min:1',
-            'qty.*'           => 'required|numeric|min:1',
+            'buy_price.*'   => 'required|numeric|min:1',
+            'qty.*'         => 'required|numeric|min:1',
             'suplier_id'    => 'required',
             'note'          => 'nullable|string',  
+        ];
+    }
+    public function attributes()
+    {
+        return [
+            'buy_price.*'   => 'harga pembelian',
+            'qty.*'         => 'kuantitas',
+            'note'          => 'keterangan', 
         ];
     }
 }
