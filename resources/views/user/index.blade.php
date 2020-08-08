@@ -108,7 +108,7 @@
 @section('js')
 <script>
     // global variable
-    var tbIndex = null;
+    let tbIndex = null;
 
     // dom event
     domReady(() => {

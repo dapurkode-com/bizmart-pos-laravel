@@ -50,8 +50,8 @@
     </div>
 
     <!-- modal insert edit -->
-    <div class="modal fade" id="modalForm" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
+    <div class="modal fade" id="modalForm" data-backdrop="static" data-keyboard="false" tabindex="-2" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <!-- <form id="insertItemForm"> -->
                     <div class="modal-header">
@@ -97,7 +97,7 @@
                         </div>
 
                         <!-- insert barang -->
-                        <div class="row">
+                        <div class="row insertBarangElm">
                             <div class="col-sm-12">
                                 <form id="insertItemForm">
                                     <input type="hidden" name="_remote" class="noReset">
@@ -157,6 +157,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
+                                                    <th>Tanggal</th>
                                                     <th>Barcode</th>
                                                     <th>Nama Barang</th>
                                                     <th>Stock Sistem</th>
@@ -175,20 +176,18 @@
                         </div>
 
                     </div>
-                    <!-- <div class="modal-footer justify-content-between"> -->
-                        <!-- <button type="reset" class="myReset btn btn-default">Reset</button> -->
-                        <!-- <button type="submit" class="btn btn-primary">Simpan</button> -->
-                    <!-- </div> -->
+                    <div class="modal-footer justify-content-between">
+                    </div>
                 <!-- </form> -->
             </div>
         </div>
     </div>
 
     <!-- modal reason for opname -->
-    <div class="modal fade" id="modalReasonForOpname" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <form>
+    <form>
+        <div class="modal fade" id="modalReasonForOpname" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">Form Alasan Perbedaan Stock Barang</h4>
                     </div>
@@ -245,10 +244,10 @@
                         <button type="reset" class="myReset btn btn-default">Reset</button>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 @stop
 
 @section('css')
@@ -305,14 +304,20 @@
             border-color: #dc3545;
         }
         /* end is-invalid on select2 */
+
+        /* multiple modal */
+        .modal {
+            overflow-y: auto !important;
+        }
+        /* multiple modal */
     </style>
 @stop
 
 @section('js')
     <script>
         // global variable
-        var tbIndex = null;
-        var tbOpnameDetail = null;
+        let tbIndex = null;
+        let tbOpnameDetail = null;
 
         // dom event
         domReady(() => {
@@ -385,9 +390,15 @@
                     searchPlaceholder: 'Cari data',
                 },
                 scrollX: true,
-                ajax: "{{ route('opname.datatables_opname_detail') }}",
+                ajax: {
+                    url: "{{ route('opname.datatables_opname_detail') }}",
+                    data: function (extra_data) {
+                        extra_data.opname_id = document.querySelector('#modalForm input[name="opname_id"]').value;
+                    }
+                },
                 columns: [
                     {data: 'DT_RowIndex', orderable: false, searchable: false },
+                    {data: 'updated_at_idn'},
                     {data: 'barcode'},
                     {data: 'name'},
                     {data: 'old_stock'},
@@ -432,6 +443,13 @@
 
                 showModalForm(parentElm, thisElm, 'update');
             });
+
+            addListenToEvent('.mainContent .btnOpen', 'click', (e) => {
+                const parentElm = document.querySelector('#modalForm');
+                const thisElm = e.target.closest('button');
+
+                showModalForm(parentElm, thisElm, 'show');
+            });
             
             addListenToEvent('.mainContent .btnDelete', 'click', (e) => {
                 const thisElm = e.target.closest('button');
@@ -462,6 +480,44 @@
                 submitItemToOpnameDetail(parentElm, thisElm);
             });
 
+            addListenToEvent('#modalForm #tbOpnameDetail .btnEdit', 'click', (e) => {
+                e.preventDefault();
+                const parentElm = document.querySelector('#tbOpnameDetail');
+                const thisElm = e.target.closest('button');
+
+                // loading and disabled button
+                const buttonText = thisElm.innerHTML;
+                thisElm.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i>`;
+                for (const elm of parentElm.querySelectorAll('button')) {
+                    elm.disabled = true;
+                }
+
+                // get data from api
+                fetch(`${thisElm.dataset.remote_show_opname_detail}`, {
+                    method: `GET`,
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                })
+                .then(response => response.json())
+                .then((result) => {
+                    if(result.status == 'error'){
+                        swalAlert(result.pesan, 'warning');
+                    }
+                    if(result.status == 'valid'){
+                        swalAlert(result.pesan, 'success');
+                        showModalReasonForOpname(result);
+                    }
+                })
+                .finally(() => {
+                    // loading and disabled button
+                    thisElm.innerHTML = `${buttonText}`
+                    for (const elm of parentElm.querySelectorAll('button')) {
+                        elm.disabled = false;
+                    }
+                });
+            });
+
             addListenToEvent('#modalReasonForOpname button[type="submit"]', 'click', (e) => {
                 e.preventDefault();
                 const parentElm = e.target.closest('.modal');
@@ -479,30 +535,44 @@
         function showModalForm(parentElm, thisElm, action) {
             const modalTitle = parentElm.querySelector('.modal-title');
             const modalBody = parentElm.querySelector('.modal-body');
-            // const modalFooter = parentElm.querySelector('.modal-footer');
+            const modalFooter = parentElm.querySelector('.modal-footer');
+            const insertBarangElm = parentElm.querySelector('.insertBarangElm');
 
             modalTitle.innerHTML = `Loading data...`;
             modalBody.classList.add('d-none');
-            // modalFooter.classList.add('d-none');
+            modalFooter.classList.add('d-none');
             $(parentElm).modal('show');
 
-            if(action == 'update'){
-                fetch(`${thisElm.dataset.remote_show}`)
-                .then(response => response.json())
-                .then(result => {
-                    renderOpnameInfo(parentElm, result);
-                    renderItemInfo(parentElm, result.count_item_in_opname_detail, result.count_item);
-
-                    parentElm.querySelector('#insertItemForm input[name="_remote"]').value = `${thisElm.dataset.remote_store_opaname_detail}`;
-                    parentElm.querySelector('#insertItemForm input[name="_method"]').value = 'POST';
-                    parentElm.querySelector('#insertItemForm input[name="opname_id"]').value = result.opname.id;
-                    parentElm.querySelector('#insertItemForm input[name="ref_uniq_id"]').value = result.opname.uniq_id;
-
-                    modalTitle.innerHTML = `Proses Opname`;
-                    modalBody.classList.remove('d-none');
-                    // modalFooter.classList.remove('d-none');
-                });
+            if (action == 'show') {
+                insertBarangElm.classList.add('d-none');
             }
+            if (action == 'update') {
+                insertBarangElm.classList.remove('d-none');
+            }
+
+            fetch(`${thisElm.dataset.remote_show}`)
+            .then(response => response.json())
+            .then(result => {
+                renderOpnameInfo(result);
+
+                if (action == 'show') {
+                    renderItemInfo(result.count_item_in_opname_detail, result.count_item_in_opname_detail);
+                }
+                if (action == 'update') {
+                    renderItemInfo(result.count_item_in_opname_detail, result.count_item);
+                }
+
+                parentElm.querySelector('#insertItemForm input[name="_remote"]').value = `${thisElm.dataset.remote_store_opaname_detail}`;
+                parentElm.querySelector('#insertItemForm input[name="_method"]').value = 'POST';
+                parentElm.querySelector('#insertItemForm input[name="opname_id"]').value = result.opname.id;
+                parentElm.querySelector('#insertItemForm input[name="ref_uniq_id"]').value = result.opname.uniq_id;
+
+                modalTitle.innerHTML = `Proses Opname`;
+                modalBody.classList.remove('d-none');
+                modalFooter.classList.remove('d-none');
+
+                tbOpnameDetail.ajax.reload();
+            });
         }
         
         function submitItemToOpnameDetail(parentElm, thisElm) {
@@ -539,7 +609,10 @@
                 if(result.status == 'valid'){
                     swalAlert(result.pesan, 'success');
                     simulateEvent(resetBtn, 'click');
-                    renderItemInfo(parentElm, result.count_item_in_opname_detail, result.count_item);
+                    renderOpnameInfo(result);
+                    renderItemInfo(result.count_item_in_opname_detail, result.count_item);
+                    tbIndex.ajax.reload();
+                    tbOpnameDetail.ajax.reload();
 
                     if(result.is_new_stock_and_old_stock_same === false){
                         showModalReasonForOpname(result);
@@ -555,7 +628,8 @@
             });
         }
 
-        function renderOpnameInfo(parentElm, data){
+        function renderOpnameInfo(data){
+            const parentElm = document.querySelector('#modalForm');
             let html = `
                 <div class="card bg-info">
                     <div class="card-header">
@@ -582,7 +656,8 @@
             parentElm.querySelector('.opnameInfoElm').innerHTML = html;
         }
 
-        function renderItemInfo(parentElm, countItemOpnamed, countAllItem){
+        function renderItemInfo(countItemOpnamed, countAllItem){
+            const parentElm = document.querySelector('#modalForm');
             let html = `
                 <div class="small-box bg-info mb-3 edit">
                     <div class="inner">
@@ -618,7 +693,7 @@
         }
 
         function submitReasonStockLog(parentElm, thisElm) {
-            let formData = new FormData(parentElm.querySelector('form'));
+            let formData = new FormData(parentElm.closest('form'));
             let jsonStr = JSON.stringify(fdToJsonObj(formData));
             
             // loading and disabled button
@@ -646,6 +721,10 @@
                 }
                 if(result.status == 'valid'){
                     swalAlert(result.pesan, 'success');
+                    renderOpnameInfo(result);
+                    tbIndex.ajax.reload();
+                    tbOpnameDetail.ajax.reload();
+
                     $(parentElm).modal('hide');
                 }
             })
@@ -889,6 +968,9 @@
                 }
 
                 for (const elm of parentFormElm.querySelectorAll('input:not(.noReset)')) {
+                    elm.value = '';
+                }
+                for (const elm of parentFormElm.querySelectorAll('textarea:not(.noReset)')) {
                     elm.value = '';
                 }
 

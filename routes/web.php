@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('opname/datatables', 'OpnameController@datatables')->name('opname.datatables');
     Route::get('opname/datatablesOpnameDetail', 'OpnameController@datatablesOpnameDetail')->name('opname.datatables_opname_detail');
     Route::get('opname/get_items', 'OpnameController@getItems')->name('opname.get_items');
+    Route::get('opname/show_opname_detail/{id}', 'OpnameController@showOpnameDetail')->name('opname.show_opname_detail');
     Route::post('opname/store_opname_detail', 'OpnameController@storeOpnameDetail')->name('opname.store_opname_detail');
     Route::post('opname/store_stock_log', 'OpnameController@storeStockLog')->name('opname.store_stock_log');
     Route::get('sell/list', 'SellController@list')->name('sell.list');
