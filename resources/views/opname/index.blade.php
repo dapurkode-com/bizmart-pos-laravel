@@ -117,7 +117,7 @@
                                                 <div class="col-lg-8">
                                                     <div class="form-group">
                                                         <label>Barang</label>
-                                                        <select name="items" class="form-control select2-advance" data-placeholder="Pilih barang" data-url="{{ route('opname.get_items') }}"></select>
+                                                        <select name="items" id="selectItems" class="form-control select2" data-placeholder="Pilih barang" data-url="{{ route('opname.get_items') }}"></select>
                                                         <div class="invalid-feedback"></div>
                                                     </div>
                                                 </div>
@@ -318,6 +318,7 @@
         // global variable
         let tbIndex = null;
         let tbOpnameDetail = null;
+        let selectItems = null;
 
         // dom event
         domReady(() => {
@@ -412,6 +413,34 @@
                 initComplete: () => {
                     initSelect2Datatables();
                 },
+            });
+
+            selectItems = $('#selectItems').select2({
+                width: '100%',
+                placeholder: () => {
+                    return $(this).data('placeholder');
+                },
+                language: {
+                    errorLoading: function(){
+                        return "Searching..."
+                    }
+                },
+                allowClear: false,
+                ajax: {
+                    url: function () {
+                        return $(this).data('url');
+                    },
+                    dataType: 'json',
+                    data: function (params) {
+                        return {
+                            _token: `{{ csrf_token() }}`,
+                            term: params.term || '',
+                            page: params.page || 1,
+                            opname_id: document.querySelector('#modalForm input[name="opname_id"]').value || 0,
+                        }
+                    },
+                    cache: true
+                }
             });
 
             addListenToEvent('.mainContent .btnAdd', 'click', (e) => {
@@ -591,6 +620,7 @@
                 method: `${formData.get('_method')}`,
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': "{{ csrf_token() }}"
                 },
                 body: jsonStr,
@@ -676,6 +706,9 @@
         function showModalReasonForOpname(data){
             const parentElm = document.querySelector('#modalReasonForOpname');
             const refUniqIdElm = document.querySelector('#insertItemForm input[name="ref_uniq_id"]');
+            const resetButton = parentElm.querySelector('button[type="reset"]');
+
+            simulateEvent(resetButton, 'click');
 
             parentElm.querySelector('input[name="_remote"]').value = `{{ route('opname.store_stock_log') }}`;
             parentElm.querySelector('input[name="_method"]').value = `POST`;
@@ -976,7 +1009,10 @@
 
                 $(parentFormElm).find('select:not(.noReset).select2-advance').each(function(i, elm){
                     $(elm).val('').trigger('change');
-                })
+                });
+                $(parentFormElm).find('select:not(.noReset).select2').each(function(i, elm){
+                    $(elm).val('').trigger('change');
+                });
             });
         });
         // fixed event

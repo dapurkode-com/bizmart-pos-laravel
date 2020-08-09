@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OpnameStoreOpnameDetailRequest;
+use App\Http\Requests\OpnameStoreStockLogRequest;
 use App\Item;
 use App\Opname;
 use App\OpnameDetail;
@@ -80,21 +82,8 @@ class OpnameController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function storeOpnameDetail(Request $request)
+    public function storeOpnameDetail(OpnameStoreOpnameDetailRequest $request)
     {
-        // validate the request
-        $validator = Validator::make($request->all(), [
-            'items' => 'required',
-            'new_stock' => 'required|numeric',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'invalid',
-                'validators' => $validator->errors(),
-            ]);
-        }
-
         try {
             DB::beginTransaction();
 
@@ -169,20 +158,8 @@ class OpnameController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function storeStockLog(Request $request)
+    public function storeStockLog(OpnameStoreStockLogRequest $request)
     {
-        // validate the request
-        $validator = Validator::make($request->all(), [
-            'description' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'invalid',
-                'validators' => $validator->errors(),
-            ]);
-        }
-
         try {
             DB::beginTransaction();
             
@@ -457,13 +434,19 @@ class OpnameController extends Controller
     {
         $page = $request->page;
         $search = $request->term;
+        $opname_id = $request->opname_id;
         $limit = 25;
         $offset = ($page - 1) * $limit;
 
-        $items = Item::orderby('name', 'asc')
-            ->select(['*'])
-            ->where('barcode', 'like', '%' . $search . '%')
-            ->orWhere('name', 'like', '%' . $search . '%')
+        $items = Item::select('*')
+            ->whereNotIn('id', function($query) use ($opname_id) {
+                $query->select('item_id')->from('opname_details')->where('opname_id', $opname_id);
+            })
+            ->where(function($query) use ($search){
+                $query->where('barcode', 'like', '%' . $search . '%')
+                    ->orWhere('name', 'like', '%' . $search . '%');
+            })
+            ->orderby('name', 'asc')
             ->skip($offset)->take($limit)
             ->get();
 
