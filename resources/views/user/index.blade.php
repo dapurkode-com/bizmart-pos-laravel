@@ -23,10 +23,12 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-file-alt mr-2"></i> Daftar User</h3>
-                    <div class="card-tools">
-                        <div class="input-group input-group-sm">
-                            <button class="btn btn-sm btn-info btnAdd" title="Tambah Data"><i class="fas fa-plus" style="padding-right: 1rem;"></i>Tambah</button>
+                    <div class="row align-items-center">
+                        <div class="col-6">
+                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Daftar User</h5>
+                        </div>
+                        <div class="col-6 text-right">
+                            <button class="btn btn-info btnAdd" title="Tambah Data"><i class="fas fa-plus mr-2"></i>Tambah</button>
                         </div>
                     </div>
                 </div>
