@@ -35,6 +35,7 @@ class BuyStoreRequest extends FormRequest
         return [
             'buy_price.*'   => 'harga pembelian',
             'qty.*'         => 'kuantitas',
+            'suplier_id'    => 'suplier',
             'note'          => 'keterangan', 
         ];
     }
