@@ -205,10 +205,12 @@
         const modalTitle = parentElm.querySelector('.modal-title');
         const modalBody = parentElm.querySelector('.modal-body');
         const modalFooter = parentElm.querySelector('.modal-footer');
+        const resetBtn = parentElm.querySelector('button[type="reset"]');
 
         modalTitle.innerHTML = `Loading data...`;
         modalBody.classList.add('d-none');
         modalFooter.classList.add('d-none');
+        simulateEvent(resetBtn, 'click');
         $(parentElm).modal('show');
 
         if(action == 'store'){
@@ -397,6 +399,15 @@
         formData.forEach((value, key) => {jsonObj[key] = value});
         return jsonObj;
     }
+
+    function simulateEvent(elm, eventName) {
+        let evt = new MouseEvent(eventName, {
+            bubbles: true,
+            cancelable: true,
+            view: window
+        });
+        let canceled = !elm.dispatchEvent(evt);
+    };
     // fixed function
 
     // fixed event
