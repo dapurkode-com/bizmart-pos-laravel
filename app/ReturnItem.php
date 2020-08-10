@@ -2,21 +2,21 @@
 
 namespace App;
 
-use App\Traits\Blameable;
 use App\Traits\UniqID;
+use App\Traits\Blameable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Opname
+ * ReturnItem
  *
- * Stock Opname
+ * Retur Barang
  *
  * @package Model
  * @author Satya Wibawa <i.g.b.n.satyawibawa@gmail.com>
  *
  */
-class Opname extends Model
+class ReturnItem extends Model
 {
     use SoftDeletes;
     use Blameable;
@@ -30,7 +30,9 @@ class Opname extends Model
     protected $fillable = [
         'uniq_id',
         'user_id',
+        'suplier_id',
         'summary',
+        'note',
         'created_by',
         'updated_by',
     ];
@@ -43,23 +45,24 @@ class Opname extends Model
     protected $casts = [
         'id' => 'integer',
         'user_id' => 'integer',
+        'suplier_id' => 'integer',
         'summary' => 'double',
     ];
 
     /**
-     * [Relationship] Detail stock opname
+     * [Relationship] Details dari retur barang
      *
-     * @return hasMany [OpnameDetail]
+     * @return hasMany [ReturnItemDetail]
      */
-    public function opnameDetails()
+    public function details()
     {
-        return $this->hasMany(\App\OpnameDetail::class);
+        return $this->hasMany(\App\ReturnItemDetail::class);
     }
 
     /**
-     * [Relationship] User penanggung jawab yang melakukan stock opname
+     * [Relationship] Ref. pengguna
      *
-     * @return belongsTo
+     * @return belongsTo [User]
      */
     public function user()
     {
@@ -67,16 +70,12 @@ class Opname extends Model
     }
 
     /**
-     * Label status
+     * [Relationship] Suplier
      *
-     * @return string
+     * @return belongsTo [Suplier]
      */
-    public function statusText()
+    public function suplier()
     {
-        $lookUp = LookUp::where('group_code', 'OPNAME_STATUS')
-            ->where('key', $this->status)
-            ->first();
-
-        return $lookUp != null ? $lookUp->label : '-';
+        return $this->belongsTo(\App\Suplier::class);
     }
 }

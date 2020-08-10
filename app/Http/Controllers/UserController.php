@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\User;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -36,25 +37,8 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserStoreRequest $request)
     {
-        // validate the request
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'email' => 'required|unique:users|email',
-            'username' => 'required|unique:users|string',
-            'password' => 'required|string|min:6',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'invalid',
-                'validators' => $validator->errors(),
-            ]);
-        }
-        // validate the request
-
-        // store the request
         try {
             DB::beginTransaction();
             User::create([
@@ -76,7 +60,6 @@ class UserController extends Controller
                 'pesan' => $exc->getMessage(),
             ]);
         }
-        // store the request
     }
 
     /**
@@ -110,33 +93,8 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserUpdateRequest $request, $id)
     {
-        // validate the request
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'email' => [
-                'required',
-                'email',
-                'unique:users,email,' . $id . ',id'
-            ],
-            'username' => [
-                'required',
-                'string',
-                'unique:users,username,' . $id . ',id'
-            ],
-            'password' => 'nullable|string|min:6',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'invalid',
-                'validators' => $validator->errors(),
-            ]);
-        }
-        // validate the request
-
-        // save the request
         try {
             DB::beginTransaction();
             if ($request->input('password') === null) {
@@ -166,7 +124,6 @@ class UserController extends Controller
                 'pesan' => $exc->getMessage(),
             ]);
         }
-        // save the request
     }
 
     /**
@@ -195,6 +152,12 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Display a listing of the resource in form of datatable.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function datatables(Request $request)
     {
         $users = User::query();
@@ -202,8 +165,8 @@ class UserController extends Controller
             ->of($users)
             ->addIndexColumn()
             ->addColumn('action', function ($user) {
-                $btn = '<button data-remote_destroy="' . route('user.destroy', $user->id) . '" type="button" class="btn btn-danger btn-sm btnDelete" title="Hapus"><i class="fas fa-trash"></i></button> ';
-                $btn .= '<button data-remote_show="' . route('user.show', $user->id) . '" data-remote_update="' . route('user.update', $user->id) . '" type="button" class="btn btn-warning btn-sm btnEdit" title="Edit"><i class="fas fa-pencil-alt"></i></button> ';
+                $btn = '<button data-remote_destroy="' . route('user.destroy', $user->id) . '" type="button" class="btn btn-danger btn-sm btnDelete" title="Hapus"><i class="fas fa-trash fa-fw"></i></button> ';
+                $btn .= '<button data-remote_show="' . route('user.show', $user->id) . '" data-remote_update="' . route('user.update', $user->id) . '" type="button" class="btn btn-warning btn-sm btnEdit" title="Edit"><i class="fas fa-pencil-alt fa-fw"></i></button> ';
                 return $btn;
             })
             ->rawColumns(['action'])

@@ -23,10 +23,12 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Daftar User</h3>
-                    <div class="card-tools">
-                        <div class="input-group input-group-sm">
-                            <button class="btn btn-sm btn-info btnAdd" title="Tambah Data"><i class="fas fa-plus" style="padding-right: 1rem;"></i>Tambah</button>
+                    <div class="row align-items-center">
+                        <div class="col-6">
+                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Daftar User</h5>
+                        </div>
+                        <div class="col-6 text-right">
+                            <button class="btn btn-info btnAdd" title="Tambah Data"><i class="fas fa-plus mr-2"></i>Tambah</button>
                         </div>
                     </div>
                 </div>
@@ -108,7 +110,7 @@
 @section('js')
 <script>
     // global variable
-    var tbIndex = null;
+    let tbIndex = null;
 
     // dom event
     domReady(() => {
@@ -203,10 +205,12 @@
         const modalTitle = parentElm.querySelector('.modal-title');
         const modalBody = parentElm.querySelector('.modal-body');
         const modalFooter = parentElm.querySelector('.modal-footer');
+        const resetBtn = parentElm.querySelector('button[type="reset"]');
 
         modalTitle.innerHTML = `Loading data...`;
         modalBody.classList.add('d-none');
         modalFooter.classList.add('d-none');
+        simulateEvent(resetBtn, 'click');
         $(parentElm).modal('show');
 
         if(action == 'store'){
@@ -395,6 +399,15 @@
         formData.forEach((value, key) => {jsonObj[key] = value});
         return jsonObj;
     }
+
+    function simulateEvent(elm, eventName) {
+        let evt = new MouseEvent(eventName, {
+            bubbles: true,
+            cancelable: true,
+            view: window
+        });
+        let canceled = !elm.dispatchEvent(evt);
+    };
     // fixed function
 
     // fixed event
