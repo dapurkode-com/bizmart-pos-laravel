@@ -30,11 +30,14 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('suplier/datatables', 'SuplierController@datatables')->name('suplier.datatables');
+    Route::get('buy/datatables', 'BuyController@datatables')->name('buy.datatables');
+    Route::post('buy/select', 'BuyController@select')->name('buy.select');
     Route::get('member/datatables', 'MemberController@datatables')->name('member.datatables');
     Route::get('item/datatables', 'ItemController@datatables')->name('item.datatables');
     Route::get('unit/datatables', 'UnitController@datatables')->name('unit.datatables');
     Route::get('category/datatables', 'CategoryController@datatables')->name('category.datatables');
     Route::get('user/datatables', 'UserController@datatables')->name('user.datatables');
+
     Route::get('opname/datatables', 'OpnameController@datatables')->name('opname.datatables');
     Route::get('opname/datatablesOpnameDetail', 'OpnameController@datatablesOpnameDetail')->name('opname.datatables_opname_detail');
     Route::get('opname/get_items', 'OpnameController@getItems')->name('opname.get_items');
