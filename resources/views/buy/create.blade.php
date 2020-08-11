@@ -6,7 +6,7 @@
 <div class="row mb-2">
 	<div class="col-sm-6">
         <blockquote style="margin: 0; background: unset;">
-            <h1 class="m-0 text-dark">Transaksi Pembelian</h1>
+            
         </blockquote>
 	</div>
 	<!-- /.col -->
@@ -27,11 +27,12 @@
         <div class="col-md-6">
              <div class="card">
                  <div class="card-body">
+                    
                     <h3 class="card-title mb-3"><i class="fa fa-search"></i> Pencari Barang</h3>
                     <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Tulis barcode disini." aria-label="Tulis barcode" aria-describedby="basic-addon2">
+                    <input type="text" id="barcode" class="form-control" placeholder="Tulis barcode disini." aria-label="Tulis barcode" aria-describedby="basic-addon2">
                     <div class="input-group-append">
-                        <button class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#itemList"><i class="fa fa-list"></i> List Barang</button>
+                        <button id="btnList" class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#itemList"><i class="fa fa-list"></i> List Barang</button>
                     </div>
                     </div>
                 </div>
@@ -41,7 +42,7 @@
             <div class="small-box bg-info">
                 <div class="inner">
                     <p>Total Pembelian</p>
-                    <h3>1000</h3>
+                    <h3 id="total_value">0</h3>
                 </div>
                 <div class="icon">
                     <i class="fas fa-shopping-cart"></i>
@@ -49,9 +50,20 @@
             </div>
         </div>
     </div>
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
     <div class="row">
         <div class="col-md-12">
             <div class="card">
+            <form action="{{ route('buy.store') }}" method="post">
+                @csrf
                 <div class="card-header">
                     <h3 class="card-title">Pembelian</h3>
                 </div>
@@ -59,7 +71,7 @@
                     <div class="row">
                         <div class="col-sm-6 border p-3">
                             <b>Barang yang dibeli</b>
-                            <table class="table table-bordered table-sm mt-2" >
+                            <table id="my_table" class="table table-bordered table-sm mt-2" >
                                 <thead>
                                     <tr>
                                         <th style="width: 40%">Nama</th>
@@ -69,12 +81,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Bengbeng</td>
-                                        <td><input type="number" class="form-control" value="1"></td>
-                                        <td><input type="number" class="form-control" value="1000"></td>
-                                        <td><button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></td>
-                                    </tr>
+                                    @if(count(old('items_id',[]))>0)
+                                        @for($i =0; $i < count(old('items_id')); $i++)                            
+                                            <tr class="my_tr">
+                                                <td><input type="hidden" name="items_id[]" value="{{ old('items_id.'.$i)}}">
+                                                    <input type="hidden" name="name[]" value="{{ old('name.'.$i)}}">{{ old('name.'.$i)}}</td>
+                                                <td><input name="qty[]" data-val="{{ old('qty.'.$i)}}" id="qty" type="number" class="form-control" value="{{ old('qty.'.$i)}}"></td>
+                                                <td><input name="buy_price[]" data-val="{{ old('buy_price.'.$i)}}" id="buy_price" type="number" class="form-control" value="{{ old('buy_price.'.$i)}}"></td>
+                                                <td><button id= "btn_delete" data-id="{{ old('items_id.'.$i)}}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></td> 
+                                            </tr>                            
+                                        @endfor
+                                    @endif
                                 </tbody>
                                 <tfoot>
 
@@ -83,39 +100,47 @@
                         </div>
                         <div class="col-sm-6 border p-3">
                             <div class="form-group">
-                                <label for="suplier_id"> Cari Suplier</label>
+                                <label for="suplier_id">Cari Suplier</label>
                                 <select name="suplier_id" id="suplier_id" class="form-control">
-                                    <option value="">--Pilih Suplier--</option>
-                                    <option value="1">Agus</option>
+                                    <option value="0" selected hidden disabled>--Pilih Suplier--</option>
+                                    @foreach ($options['SUPLIER'] as $option)
+                                        <option value="{{ $option->id }}" {{ $option->id == old('suplier_id') ? 'selected' : '' }}>{{ $option->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <table class="table table-bordered table-sm table-striped">
                                 <tr>
                                     <th>Nama Suplier</th>
-                                    <td>UD Sumber Hasil</td>
+                                    <td id="suplier_name" class="detail"> -- </td>
                                 </tr>
                                 <tr>
                                     <th>No Kontak</th>
-                                    <td>0362 22149</td>
+                                    <td id="suplier_phone" class="detail"> -- </td>
                                 </tr>
                                 <tr>
                                     <th>Alamat</th>
-                                    <td>Jalan Kampung Tinggi</td>
+                                    <td id="suplier_address" class="detail"> -- </td>
                                 </tr>
                             </table>
+                            <hr>
+                            <div class="form-group">
+                                <label for="note">Keterangan</label>
+                                <textarea  class="form-control" name="note" id="note" cols="10" rows="5"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="card-footer">
                     <div class="row">
                         <div class="col-6">
-                            <button type="button" class="btn btn-lg btn-block btn-danger"><i class="fa fa-times"></i> Batalkan</button>
+                            <button id="reset" type="reset" class="btn btn-lg btn-block btn-danger"><i class="fa fa-times"></i> Batalkan</button>
                         </div>
                         <div class="col-6">
-                            <button type="button" class="btn btn-lg btn-block btn-success"><i class="fa fa-check"></i> Bayar</button>
+                            <button type="submit" class="btn btn-lg btn-block btn-success"><i class="fa fa-check"></i> Bayar</button>
                         </div>
                     </div>
                 </div>
+            </form>
             </div>
         </div>
     </div>
@@ -131,28 +156,18 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-striped table-sm table-bordered">
+                    <table id="tbIndex" class="table table-striped table-sm table-bordered" width="100%">
                         <thead>
                             <tr>
+                                <th width="10%">#</th>
                                 <th>Nama</th>
                                 <th>Kategori</th>
                                 <th>Deskripsi</th>
-                                <th>Aksi</th>
+                                <th width="10%">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Bengbeng 200 g</td>
-                                <td>snack, roti</td>
-                                <td>Lorem insum.....</td>
-                                <td><button class="btn btn-primary btn-sm"><i class="fa fa-plus"></i></button></td>
-                            </tr>
-                            <tr>
-                                <td>Bengbeng 150 g</td>
-                                <td>snack, roti</td>
-                                <td>Lorem insum.....</td>
-                                <td><button class="btn btn-primary btn-sm"><i class="fa fa-plus"></i></button></td>
-                            </tr>
+                            
                         </tbody>
                     </table>
                 </div>
