@@ -8,11 +8,9 @@ use App\Item;
 use App\Opname;
 use App\OpnameDetail;
 use App\StockLog;
-use Auth;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class OpnameController extends Controller
 {

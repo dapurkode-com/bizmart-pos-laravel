@@ -46,6 +46,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('opname/store_stock_log', 'OpnameController@storeStockLog')->name('opname.store_stock_log');
     Route::get('sell/list', 'SellController@list')->name('sell.list');
     Route::get('sell/datatables', 'SellController@datatables')->name('sell.datatables');
+    
+    Route::get('return_item/datatables', 'ReturnItemController@datatables')->name('return_item.datatables');
 
     Route::resource('unit', 'UnitController')->only('index', 'store', 'update', 'show', 'destroy');
     Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');
@@ -57,6 +59,7 @@ Route::group(['middleware' => ['auth']], function () {
         'item'  => 'ItemController',
         'user' => 'UserController',
         'opname' => 'OpnameController',
-        'sell' => 'SellController'
+        'sell' => 'SellController',
+        'return_item' => 'ReturnItemController'
     ]);
 });
