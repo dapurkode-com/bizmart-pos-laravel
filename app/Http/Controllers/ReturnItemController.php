@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReturnItemValidateAddItemRequest;
+use App\Item;
 use App\ReturnItem;
+use App\Suplier;
 use DB;
 use Illuminate\Http\Request;
 
@@ -127,5 +130,100 @@ class ReturnItemController extends Controller
                 $btn .= '<button data-remote_show="' . route('opname.show', $opname->id) . '" type="button" class="btn btn-info btn-sm btnOpen" title="Lihat"><i class="fas fa-eye fa-fw"></i></button> ';
             })
             ->toJson();
+    }
+
+    /**
+     * Display a listing of items in form of select2.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getSuppliers(Request $request)
+    {
+        $page = $request->page;
+        $search = $request->term;
+        $limit = 25;
+        $offset = ($page - 1) * $limit;
+
+        $suppliers = Suplier::select('*')
+            ->where('name', 'like', "%$search%")
+            ->orderby('name', 'asc')
+            ->skip($offset)->take($limit)
+            ->get();
+
+        $results = [];
+        foreach ($suppliers as $i => $supplier) {
+            $results[] = array(
+                'id' => json_encode($supplier),
+                'text' => "$supplier->name",
+            );
+        }
+
+        if (count($results) < $limit) {
+            $more_pages = false;
+        } else {
+            $more_pages = true;
+        }
+
+        return response()->json([
+            "results" => $results,
+            "pagination" => [
+                "more" => $more_pages,
+            ],
+        ]);
+    }
+
+    /**
+     * Display a listing of items in form of select2.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getItems(Request $request)
+    {
+        $page = $request->page;
+        $search = $request->term;
+        $limit = 25;
+        $offset = ($page - 1) * $limit;
+
+        $items = Item::select('*')
+            ->where('barcode', 'like', "%$search%")
+            ->orWhere('name', 'like', "%$search%")
+            ->orderby('name', 'asc')
+            ->skip($offset)->take($limit)
+            ->get();
+
+        $results = [];
+        foreach ($items as $i => $item) {
+            $results[] = array(
+                'id' => json_encode($item),
+                'text' => "$item->barcode - $item->name",
+            );
+        }
+
+        if (count($results) < $limit) {
+            $more_pages = false;
+        } else {
+            $more_pages = true;
+        }
+
+        return response()->json([
+            "results" => $results,
+            "pagination" => [
+                "more" => $more_pages,
+            ],
+        ]);
+    }
+
+    /**
+     * Validate request
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function validateAddItem(ReturnItemValidateAddItemRequest $request){
+        return response()->json([
+            'status' => 'valid',
+        ]);
     }
 }

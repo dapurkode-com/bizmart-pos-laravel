@@ -6,7 +6,7 @@
     <div class="row mb-2">
         <div class="col-sm-6">
             <blockquote style="margin: 0; background: unset;">
-                <h1 class="m-0 text-dark">Retur Barang Ke Suplier</h1>
+                <h1 class="m-0 text-dark">Retur Barang Ke Supplier</h1>
             </blockquote>
         </div>
         <div class="col-sm-6">
@@ -56,7 +56,7 @@
     <!-- modal insert edit -->
     <form>
         <div class="modal fade" id="modalForm" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">Title</h4>
@@ -70,7 +70,7 @@
 
                                 <div class="card bg-default">
                                     <div class="card-header">
-                                        <h3 class="card-title">Informasi Umum</h3>
+                                        <h3 class="card-title">Form Informasi Umum</h3>
                                         <div class="card-tools">
                                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                                         </div>
@@ -80,7 +80,7 @@
                                             <div class="col-sm-12">
                                                 <div class="form-group">
                                                     <label>Supplier</label>
-                                                    <select name="supliers" class="form-control select2-advance" data-placeholder="Pilih supplier" data-url=""></select>
+                                                    <select name="suppliers" class="form-control select2-advance" data-placeholder="Pilih supplier" data-url="{{ route('return_item.get_suppliers') }}"></select>
                                                     <div class="invalid-feedback"></div>
                                                 </div>
                                             </div>
@@ -100,46 +100,38 @@
                         <!-- insert barang -->
                         <div class="row insertBarangElm">
                             <div class="col-sm-12">
-                                <form id="insertItemForm">
-                                    <input type="hidden" name="_remote" class="noReset">
-                                    <input type="hidden" name="_method" class="noReset">
-                                    <input type="hidden" name="opname_id" class="noReset">
-                                    <input type="hidden" name="ref_uniq_id" class="noReset">
-
-                                    <div class="card bg-default">
-                                        <div class="card-header">
-                                            <h3 class="card-title">Tambahkan Barang</h3>
-                                            <div class="card-tools">
-                                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                                            </div>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-lg-8">
-                                                    <div class="form-group">
-                                                        <label>Barang</label>
-                                                        <select name="items" id="selectItems" class="form-control select2" data-placeholder="Pilih barang" data-url="{{ route('opname.get_items') }}"></select>
-                                                        <div class="invalid-feedback"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-                                                    <div class="form-group">
-                                                        <label>Qty Sekarang</label>
-                                                        <input type="number" name="new_stock" class="form-control" placeholder="Tulis qty barang saat ini">
-                                                        <div class="invalid-feedback"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-1">
-                                                    <div class="form-group">
-                                                        <label>Aksi</label>
-                                                        <button type="button" class="btn btn-info btn-block addItemBtn" title="Tambahkan barang ke tabel"><i class="fas fa-plus"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <button type="reset" class="myReset btn btn-default btn-sm">Reset</button>
+                                <div class="card bg-default">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Form Pilih Barang</h3>
+                                        <div class="card-tools">
+                                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                                         </div>
                                     </div>
-                                </form>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <div class="form-group">
+                                                    <label>Barang</label>
+                                                    <select name="items" class="form-control select2-advance" data-placeholder="Pilih barang" data-url="{{ route('return_item.get_items') }}"></select>
+                                                    <div class="invalid-feedback"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label>Qty Retur</label>
+                                                    <input type="number" name="qty" class="form-control" placeholder="Tulis qty retur">
+                                                    <div class="invalid-feedback"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <div class="form-group">
+                                                    <label>Aksi</label>
+                                                    <button type="button" class="btn btn-info btn-block btnAddItem" title="Tambahkan barang ke tabel"><i class="fas fa-plus"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -148,24 +140,19 @@
                             <div class="col-sm-12">
                                 <div class="card bg-default mb-0">
                                     <div class="card-header">
-                                        <h3 class="card-title">Barang yang sudah di-Opname</h3>
+                                        <h3 class="card-title">List Barang yang akan diretur</h3>
                                         <div class="card-tools">
                                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                                         </div>
                                     </div>
                                     <div class="card-body">
-                                        <table class="table table-striped" id="tbOpnameDetail" style="width: 100%;">
+                                        <table class="table table-striped" style="width: 100%;">
                                             <thead>
                                                 <tr>
-                                                    <th>#</th>
-                                                    <th>Tanggal</th>
                                                     <th>Barcode</th>
                                                     <th>Nama Barang</th>
-                                                    <th>Stock Sistem</th>
-                                                    <th>Stock Sekarang</th>
+                                                    <th>Qty Retur</th>
                                                     <th>Harga Beli</th>
-                                                    <th>Harga Jual</th>
-                                                    <th>Deskripsi</th>
                                                     <th class="text-right">Aksi</th>
                                                 </tr>
                                             </thead>
@@ -303,6 +290,40 @@
             addListenToEvent('.mainContent .btnAdd', 'click', (e) => {
                 const thisElm = e.target.closest('button');
                 showModalForm(thisElm, 'store');
+            });
+
+            addListenToEvent('#modalForm .btnAddItem', 'click', (e) => {
+                const parentElm = document.querySelector('#modalForm');
+                const thisElm = e.target.closest('button');
+                const itemsElm = $(parentElm).find('select[name="items"]');
+                const qtyElm = parentElm.querySelector('input[name="qty"]');
+                
+                let dataJson = JSON.stringify({
+                    'items': itemsElm.val(),
+                    'qty': qtyElm.value
+                });
+                
+                // loading and disabled button
+                const buttonText = thisElm.innerHTML;
+                thisElm.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i>`
+                for (const elm of parentElm.querySelectorAll('button')) {
+                    elm.disabled = true;
+                }
+                validateToServer(`{{ route('return_item.validate_add_item') }}`, dataJson)
+                    .then((result) => {
+                        if(result.status == 'invalid'){
+                            drawError(parentElm, result.validators);
+                        }
+                        if(result.status == 'valid'){
+                            // todo
+                        }
+
+                        // loading and disabled button
+                        thisElm.innerHTML = `${buttonText}`
+                        for (const elm of parentElm.querySelectorAll('button')) {
+                            elm.disabled = false;
+                        }
+                    });
             });
         });
         // dom event
@@ -539,6 +560,23 @@
             });
             let canceled = !elm.dispatchEvent(evt);
         };
+
+        function validateToServer (url, jsonStr) {
+            return new Promise((resolve, reject) => {
+                fetch(url, {
+                    method: `POST`,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    body: jsonStr,
+                })
+                .then(response => response.json())
+                .then((result) => {
+                    resolve(result);
+                });
+            });  
+        }
         // fixed function
 
         // fixed event

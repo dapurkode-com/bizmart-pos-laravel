@@ -48,6 +48,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('sell/datatables', 'SellController@datatables')->name('sell.datatables');
     
     Route::get('return_item/datatables', 'ReturnItemController@datatables')->name('return_item.datatables');
+    Route::get('return_item/get_suppliers', 'ReturnItemController@getSuppliers')->name('return_item.get_suppliers');
+    Route::get('return_item/get_items', 'ReturnItemController@getItems')->name('return_item.get_items');
+    Route::post('return_item/validate_add_item', 'ReturnItemController@validateAddItem')->name('return_item.validate_add_item');
 
     Route::resource('unit', 'UnitController')->only('index', 'store', 'update', 'show', 'destroy');
     Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');
