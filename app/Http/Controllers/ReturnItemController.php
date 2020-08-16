@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReturnItemStoreRequest;
 use App\Http\Requests\ReturnItemValidateAddItemRequest;
 use App\Item;
 use App\ReturnItem;
+use App\ReturnItemDetail;
+use App\StockLog;
 use App\Suplier;
 use DB;
+use Exception;
 use Illuminate\Http\Request;
 
 class ReturnItemController extends Controller
@@ -37,9 +41,61 @@ class ReturnItemController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ReturnItemStoreRequest $request)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            $returnItemArr = $request->only('suplier_id', 'summary', 'note');
+            $returnItemArr['user_id'] = auth()->user()->id;
+
+            ReturnItem::create($returnItemArr);
+
+            $thisReturnItemObj = ReturnItem::where($returnItemArr)->orderBy('id', 'desc')->first();
+            $returnItemId = $thisReturnItemObj->id;
+            $returnItemUniqId = $thisReturnItemObj->uniq_id;
+
+            // details
+            foreach ($request->items as $i => $itemObj) {
+                // store to return item detail
+                ReturnItemDetail::create([
+                    'return_item_id' => $returnItemId,
+                    'item_id' => $itemObj['id'],
+                    'qty' => $itemObj['qty'],
+                    'buy_price' => $itemObj['buy_price']
+                ]);
+
+                // store to stock log
+                StockLog::create([
+                    'ref_uniq_id' => $returnItemUniqId,
+                    'cause' => 'RTR',
+                    'in_out_position' => 'OUT',
+                    'qty' => $itemObj['qty'],
+                    'old_stock' => $itemObj['stock'],
+                    'new_stock' => $itemObj['stock'] - $itemObj['qty'],
+                    'buy_price' => $itemObj['buy_price'],
+                    'sell_price' => $itemObj['sell_price'],
+                    'item_id' => $itemObj['id']
+                ]);
+
+                // update stock on item
+                Item::findOrFail($itemObj['id'])->update([
+                    'stock' => $itemObj['stock'] - $itemObj['qty']
+                ]);
+            }
+
+            DB::commit();
+            return response()->json([
+                'status' => 'valid',
+                'pesan' => 'Retur Barang berhasil ditambah',
+            ]);
+        } catch (Exception $exc) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'pesan' => $exc->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -96,16 +152,16 @@ class ReturnItemController extends Controller
     public function datatables(Request $request)
     {
         $returnItems = ReturnItem::select([
-                'return_items.id',
-                DB::raw("DATE_FORMAT(return_items.updated_at, '%d %b %Y') AS updated_at_idn"),
-                'return_items.uniq_id',
-                'supliers.name AS suplier_name',
-                DB::raw("FORMAT(return_items.summary, 2) AS summary_iso"),
-                'users.name as user_name',
-            ])
+            'return_items.id',
+            DB::raw("DATE_FORMAT(return_items.updated_at, '%d %b %Y') AS updated_at_idn"),
+            'return_items.uniq_id',
+            'supliers.name AS suplier_name',
+            DB::raw("FORMAT(return_items.summary, 2) AS summary_iso"),
+            'users.name as user_name',
+        ])
             ->leftJoin('users', 'users.id', '=', 'return_items.user_id')
             ->leftJoin('supliers', 'supliers.id', '=', 'return_items.suplier_id');
-            
+
         return datatables()
             ->of($returnItems)
             ->addIndexColumn()
@@ -221,7 +277,8 @@ class ReturnItemController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function validateAddItem(ReturnItemValidateAddItemRequest $request){
+    public function validateAddItem(ReturnItemValidateAddItemRequest $request)
+    {
         return response()->json([
             'status' => 'valid',
         ]);
