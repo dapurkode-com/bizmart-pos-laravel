@@ -56,39 +56,60 @@ class ReturnItemController extends Controller
             $returnItemUniqId = $thisReturnItemObj->uniq_id;
 
             // details
+            $isSuccess = true;
             foreach ($request->items as $i => $itemObj) {
-                // store to return item detail
-                ReturnItemDetail::create([
-                    'return_item_id' => $returnItemId,
-                    'item_id' => $itemObj['id'],
-                    'qty' => $itemObj['qty'],
-                    'buy_price' => $itemObj['buy_price']
-                ]);
+                //check stock
+                $isQtyReturnGreaterThanStock = ($itemObj['qty'] > $itemObj['stock']) ? true : false;
+                if ($isQtyReturnGreaterThanStock === false) {
+                    // store to return item detail
+                    ReturnItemDetail::create([
+                        'return_item_id' => $returnItemId,
+                        'item_id' => $itemObj['id'],
+                        'qty' => $itemObj['qty'],
+                        'buy_price' => $itemObj['buy_price']
+                    ]);
 
-                // store to stock log
-                StockLog::create([
-                    'ref_uniq_id' => $returnItemUniqId,
-                    'cause' => 'RTR',
-                    'in_out_position' => 'OUT',
-                    'qty' => $itemObj['qty'],
-                    'old_stock' => $itemObj['stock'],
-                    'new_stock' => $itemObj['stock'] - $itemObj['qty'],
-                    'buy_price' => $itemObj['buy_price'],
-                    'sell_price' => $itemObj['sell_price'],
-                    'item_id' => $itemObj['id']
-                ]);
+                    // store to stock log
+                    StockLog::create([
+                        'ref_uniq_id' => $returnItemUniqId,
+                        'cause' => 'RTR',
+                        'in_out_position' => 'OUT',
+                        'qty' => $itemObj['qty'],
+                        'old_stock' => $itemObj['stock'],
+                        'new_stock' => $itemObj['stock'] - $itemObj['qty'],
+                        'buy_price' => $itemObj['buy_price'],
+                        'sell_price' => $itemObj['sell_price'],
+                        'item_id' => $itemObj['id']
+                    ]);
 
-                // update stock on item
-                Item::findOrFail($itemObj['id'])->update([
-                    'stock' => $itemObj['stock'] - $itemObj['qty']
+                    // update stock on item
+                    Item::findOrFail($itemObj['id'])->update([
+                        'stock' => $itemObj['stock'] - $itemObj['qty']
+                    ]);
+                }
+                else {
+                    $isSuccess = false;
+                    $itemName = $itemObj['name'];
+                    $pesan = "Qty retur dari barang $itemName melebihi stock";
+                    break;
+                }
+            }
+
+            if ($isSuccess === true) {
+                DB::commit();
+                return response()->json([
+                    'status' => 'valid',
+                    'pesan' => 'Retur Barang berhasil ditambah',
+                ]);
+            }
+            else {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'error',
+                    'pesan' => $pesan,
                 ]);
             }
 
-            DB::commit();
-            return response()->json([
-                'status' => 'valid',
-                'pesan' => 'Retur Barang berhasil ditambah',
-            ]);
         } catch (Exception $exc) {
             DB::rollBack();
             return response()->json([
@@ -106,7 +127,10 @@ class ReturnItemController extends Controller
      */
     public function show($id)
     {
-        //
+        $returnItem = ReturnItem::with('user', 'suplier', 'details.item')->findOrFail($id);
+        return response()->json([
+            'return_item' => $returnItem
+        ]);
     }
 
     /**
@@ -181,9 +205,9 @@ class ReturnItemController extends Controller
                 $sql = "users.name like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
-            ->addColumn('action', function ($opname) {
-                $btn = '<button data-remote_destroy="' . route('opname.destroy', $opname->id) . '" type="button" class="btn btn-danger btn-sm btnDelete" title="Hapus"><i class="fas fa-trash fa-fw"></i></button> ';
-                $btn .= '<button data-remote_show="' . route('opname.show', $opname->id) . '" type="button" class="btn btn-info btn-sm btnOpen" title="Lihat"><i class="fas fa-eye fa-fw"></i></button> ';
+            ->addColumn('action', function ($returnItem) {
+                $btn = '<button data-remote_show="' . route('return_item.show', $returnItem->id) . '" type="button" class="btn btn-info btn-sm btnOpen" title="Lihat"><i class="fas fa-eye fa-fw"></i></button> ';
+                return $btn;
             })
             ->toJson();
     }
@@ -243,8 +267,11 @@ class ReturnItemController extends Controller
         $offset = ($page - 1) * $limit;
 
         $items = Item::select('*')
-            ->where('barcode', 'like', "%$search%")
-            ->orWhere('name', 'like', "%$search%")
+            ->where('stock', '>', '0')
+            ->where(function($query) use ($search){
+                $query->where('barcode', 'like', "%$search%")
+                      ->orWhere('name', 'like', "%$search%");
+            })
             ->orderby('name', 'asc')
             ->skip($offset)->take($limit)
             ->get();
@@ -271,16 +298,4 @@ class ReturnItemController extends Controller
         ]);
     }
 
-    /**
-     * Validate request
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function validateAddItem(ReturnItemValidateAddItemRequest $request)
-    {
-        return response()->json([
-            'status' => 'valid',
-        ]);
-    }
 }

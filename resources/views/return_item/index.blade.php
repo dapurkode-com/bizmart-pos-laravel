@@ -116,13 +116,6 @@
                                                     <div class="invalid-feedback"></div>
                                                 </div>
                                             </div>
-                                            <!-- <div class="col-lg-3">
-                                                <div class="form-group">
-                                                    <label>Qty Retur</label>
-                                                    <input type="number" name="qty" class="form-control" placeholder="Tulis qty retur">
-                                                    <div class="invalid-feedback"></div>
-                                                </div>
-                                            </div> -->
                                             <div class="col-lg-1">
                                                 <div class="form-group">
                                                     <label>Aksi</label>
@@ -182,6 +175,24 @@
                     <div class="modal-footer justify-content-between">
                         <button type="reset" class="myReset btn btn-default">Reset</button>
                         <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- modal detail -->
+    <form>
+        <div class="modal fade" id="modalDetail" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Title</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning float-right">Print PDF</button>
                     </div>
                 </div>
             </div>
@@ -326,38 +337,6 @@
 
                     itemsElm.val('').trigger('change');
                 }
-
-                // const qtyElm = parentElm.querySelector('input[name="qty"]');
-                
-                // let dataJson = JSON.stringify({
-                //     'items': itemsElm.val(),
-                //     'qty': qtyElm.value
-                // });
-                
-                // // loading and disabled button
-                // const buttonText = thisElm.innerHTML;
-                // thisElm.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i>`
-                // for (const elm of parentElm.querySelectorAll('button')) {
-                //     elm.disabled = true;
-                // }
-                // validateToServer(`{{ route('return_item.validate_add_item') }}`, dataJson)
-                //     .then((result) => {
-                //         if(result.status == 'invalid'){
-                //             drawError(parentElm, result.validators);
-                //         }
-                //         if(result.status == 'valid'){
-                //             let itemObj = JSON.parse(itemsElm.val());
-                //             let qty = qtyElm.value;
-
-                //             renderTableListItem(itemObj, qty);
-                //         }
-
-                //         // loading and disabled button
-                //         thisElm.innerHTML = `${buttonText}`
-                //         for (const elm of parentElm.querySelectorAll('button')) {
-                //             elm.disabled = false;
-                //         }
-                //     });
             });
 
             addListenToEvent('#modalForm table.listItem tbody .btnDeleteItem', 'click', (e) => {
@@ -418,6 +397,11 @@
                         submitModalForm(thisElm);
                     });
             });
+
+            addListenToEvent('.mainContent .btnOpen', 'click', (e) => {
+                const thisElm = e.target.closest('button');
+                showModalDetail(thisElm, 'open');
+            });
         });
         // dom event
 
@@ -431,13 +415,14 @@
             const modalTitle = parentElm.querySelector('.modal-title');
             const modalBody = parentElm.querySelector('.modal-body');
             const modalFooter = parentElm.querySelector('.modal-footer');
+            const resetBtn = parentElm.querySelector('button[type="reset"]');
 
             modalTitle.innerHTML = `Loading data...`;
             modalBody.classList.add('d-none');
             modalFooter.classList.add('d-none');
-            $(parentElm).modal('show');
-
+            simulateEvent(resetBtn, 'click');
             renderNoDataOnTableListItem();
+            $(parentElm).modal('show');
 
             if (action == 'store') {
                 parentElm.querySelector(`[name="_remote"]`).value = `{{ route('return_item.store') }}`;
@@ -475,7 +460,7 @@
                 </td>
                 <td class="text-right">
                     <input type="hidden" name="items[]" value='${JSON.stringify(itemObj)}'>
-                    <button type="button" class="btn btn-danger btn-block btn-xs btnDeleteItem" title="Hapus"><i class="fas fa-trash fa-fw"></i></button>
+                    <button type="button" class="btn btn-danger btn-xs btnDeleteItem d-block float-right" title="Hapus"><i class="fas fa-trash fa-fw"></i></button>
                 </td>
             `;
 
@@ -587,8 +572,6 @@
             for (const elm of parentElm.querySelectorAll('button')) {
                 elm.disabled = true;
             }
-
-            console.log(remoteElm.value, methodElm.value);
             
             fetch(remoteElm.value, {
                     method: methodElm.value,
@@ -655,6 +638,144 @@
 
                 }
             }
+        }
+
+        function showModalDetail(thisElm, action) {
+            const parentElm = document.querySelector('#modalDetail');
+            const modalTitle = parentElm.querySelector('.modal-title');
+            const modalBody = parentElm.querySelector('.modal-body');
+            const modalFooter = parentElm.querySelector('.modal-footer');
+            const resetBtn = parentElm.querySelector('button[type="reset"]');
+
+            modalTitle.innerHTML = `Loading data...`;
+            modalBody.classList.add('d-none');
+            modalFooter.classList.add('d-none');
+            $(parentElm).modal('show');
+
+            if (action == 'open') {
+                fetch(`${thisElm.dataset.remote_show}`)
+                    .then(response => response.json())
+                    .then(result => {
+                        renderModalDetail(result);
+                        modalTitle.innerHTML = `Detail Retur Barang`;
+                        modalBody.classList.remove('d-none');
+                        modalFooter.classList.remove('d-none');
+                    });
+            }
+        }
+
+        function renderModalDetail(data) {
+            const parentElm = document.querySelector('#modalDetail');
+            const returnItem = data.return_item;
+
+            let subHtml = ``;
+            for (let i in returnItem.details) {
+                if (returnItem.details.hasOwnProperty(i)) {
+                    const item = returnItem.details[i];
+
+                    let buyPriceTotal = parseFloat(item.qty) * parseFloat(item.buy_price);
+
+                    subHtml += `
+                        <tr>
+                            <td>${++i}</td>
+                            <td>${item.item.barcode}</td>
+                            <td>${item.item.name}</td>
+                            <td class="text-right">${item.qty}</td>
+                            <td class="text-right">${getIsoNumberWithSeparator(item.buy_price)}</td>
+                            <td class="text-right">${getIsoNumberWithSeparator(buyPriceTotal)}</td>
+                        </tr>
+                    `;
+                    
+                }
+            }
+
+            let html = `
+                <div class="row">
+                    <div class="col-lg-7">
+                        <div class="card bg-info">
+                            <div class="card-header">
+                                <h3 class="card-title">Informasi Umum</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <dl class="row mb-0">
+                                    <dt class="col-sm-4">Unik ID</dt>
+                                    <dd class="col-sm-8">${returnItem.uniq_id}</dd>
+                                    <dt class="col-sm-4">Nama Supplier</dt>
+                                    <dd class="col-sm-8">${returnItem.suplier.name}</dd>
+                                    <dt class="col-sm-4">No Telp</dt>
+                                    <dd class="col-sm-8">${returnItem.suplier.phone}</dd>
+                                    <dt class="col-sm-4">Alamat</dt>
+                                    <dd class="col-sm-8">${returnItem.suplier.address}</dd>
+                                    <dt class="col-sm-4">Keterangan</dt>
+                                    <dd class="col-sm-8">${returnItem.note}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="card bg-info">
+                            <div class="card-header">
+                                <h3 class="card-title">Metadata</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <dl class="row mb-0">
+                                    <dt class="col-sm-4">Tgl Input</dt>
+                                    <dd class="col-sm-8">${getIndoDate(returnItem.created_at)}</dd>
+                                    <dt class="col-sm-4">Tgl Update</dt>
+                                    <dd class="col-sm-8">${getIndoDate(returnItem.updated_at)}</dd>
+                                    <dt class="col-sm-4">Pembuat</dt>
+                                    <dd class="col-sm-8">${returnItem.user.name}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card bg-default mb-0">
+                            <div class="card-header">
+                                <h3 class="card-title">List Barang yang Diretur</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hovered table-bordered" style="width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Barcode</th>
+                                                <th>Nama Barang</th>
+                                                <th class="text-right">Qty Retur</th>
+                                                <th class="text-right">Harga Beli</th>
+                                                <th class="text-right">Harga Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>${subHtml}</tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="5" class="text-right">Total</th>
+                                                <th class="text-right">${getIsoNumberWithSeparator(returnItem.summary)}</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            parentElm.querySelector('.modal-body').innerHTML = html;
         }
         // other function
 
@@ -877,6 +998,10 @@
             let date = new Date(val).toDateString();
             let date_split = date.split(' ');
             return `${date_split[2]} ${date_split[1]} ${date_split[3]}`;
+        }
+
+        function getIsoNumberWithSeparator(isoNumber){
+            return (isoNumber.toFixed(2)).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
         }
 
         function simulateEvent(elm, eventName) {
