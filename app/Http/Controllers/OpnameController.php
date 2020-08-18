@@ -139,7 +139,7 @@ class OpnameController extends Controller
                     ],
                     'opname' => $opname,
                     'statusText' => $opname->statusText(),
-                    'count_item' => Item::count(),
+                    'count_item' => Item::where('is_stock_active', 1)->count(),
                     'count_item_in_opname_detail' => OpnameDetail::where('opname_id', $request->opname_id)->count(),
                 ]);
             }
@@ -165,15 +165,16 @@ class OpnameController extends Controller
             
             // update opname detail
             OpnameDetail::where([
-                'opname_id' => $request->opname_id,
-                'item_id' => $request->item_id,
-            ])->update([
-                'description' => $request->description
-            ]);
+                    'opname_id' => $request->opname_id,
+                    'item_id' => $request->item_id,
+                ])
+                ->update([
+                    'description' => $request->description
+                ]);
 
             // store data to stock log
-            $stockDeviation = $request->old_stock - $request->new_stock;
-            $inOutPosition = ($stockDeviation > 0) ? 'OUT' : 'IN';
+            $stockDeviation = $request->new_stock - $request->old_stock;
+            $inOutPosition = ($stockDeviation < 0) ? 'OUT' : 'IN';
             $stockDeviationAbs = abs($stockDeviation);
             StockLog::create([
                 'ref_uniq_id' => $request->ref_uniq_id,
@@ -195,9 +196,21 @@ class OpnameController extends Controller
             // update status opname
             $this->updateStatusOnOpname($request->opname_id);
 
+            // update summary opname
+            $opname = Opname::with('user')->findOrFail($request->opname_id);
+
+            $oldSummary = $opname->summary;
+            $thisSummary = $stockDeviation * $request->buy_price;
+            $newSummary = $oldSummary + $thisSummary;
+
+            Opname::findOrFail($request->opname_id)
+                ->update([
+                    'summary' => $newSummary
+                ]);
+            // end update summary opname
+
             DB::commit();
             
-            $opname = Opname::with('user')->findOrFail($request->opname_id);
             return response()->json([
                 'status' => 'valid',
                 'pesan' => 'Alasan berhasil disimpan',
@@ -226,7 +239,7 @@ class OpnameController extends Controller
         return response()->json([
             'opname' => $opname,
             'statusText' => $opname->statusText(),
-            'count_item' => Item::count(),
+            'count_item' => Item::where('is_stock_active', 1)->count(),
             'count_item_in_opname_detail' => OpnameDetail::where('opname_id', $id)->count(),
         ]);
     }
@@ -330,6 +343,7 @@ class OpnameController extends Controller
                 DB::raw("DATE_FORMAT(opnames.created_at, '%d %b %Y') AS created_at_idn"),
                 'opnames.uniq_id',
                 'opnames.created_by',
+                DB::raw("FORMAT(opnames.summary, 2) AS summary_iso"),
                 'opnames.status',
                 'look_ups.label as status_text',
             ])
@@ -348,6 +362,14 @@ class OpnameController extends Controller
             ->rawColumns(['action', 'status_color'])
             ->filterColumn('created_at_idn', function ($query, $keyword) {
                 $sql = "DATE_FORMAT(opnames.created_at, '%d %b %Y') like ?";
+                $query->whereRaw($sql, ["%{$keyword}%"]);
+            })
+            ->filterColumn('summary_iso', function ($query, $keyword) {
+                $sql = "FORMAT(opnames.summary, 2) like ?";
+                $query->whereRaw($sql, ["%{$keyword}%"]);
+            })
+            ->filterColumn('status_text', function ($query, $keyword) {
+                $sql = "look_ups.label like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->addColumn('action', function ($opname) {
@@ -439,14 +461,15 @@ class OpnameController extends Controller
         $offset = ($page - 1) * $limit;
 
         $items = Item::select('*')
+            ->where('is_stock_active', 1)
             ->whereNotIn('id', function($query) use ($opname_id) {
                 $query->select('item_id')->from('opname_details')->where('opname_id', $opname_id);
             })
             ->where(function($query) use ($search){
                 $query->where('barcode', 'like', '%' . $search . '%')
-                    ->orWhere('name', 'like', '%' . $search . '%');
+                      ->orWhere('name', 'like', '%' . $search . '%');
             })
-            ->orderby('name', 'asc')
+            ->orderBy('name', 'asc')
             ->skip($offset)->take($limit)
             ->get();
 
@@ -480,7 +503,7 @@ class OpnameController extends Controller
      */
     private function updateStatusOnOpname($opname_id)
     {
-        $count_item = Item::count();
+        $count_item = Item::where('is_stock_active', 1)->count();
         $count_item_in_opname_detail = OpnameDetail::where('opname_id', $opname_id)->count();
 
         if($count_item == $count_item_in_opname_detail) {

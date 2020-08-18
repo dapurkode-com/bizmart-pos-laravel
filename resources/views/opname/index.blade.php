@@ -37,9 +37,11 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>ID</th>
                                 <th>Tgl</th>
                                 <th>Uniq ID</th>
                                 <th>Oleh</th>
+                                <th>Total</th>
                                 <th>Status</th>
                                 <th class="text-right">Aksi</th>
                             </tr>
@@ -354,9 +356,11 @@
                 ajax: "{{ route('opname.datatables') }}",
                 columns: [
                     {data: 'DT_RowIndex', orderable: false, searchable: false },
+                    {data: 'id', searchable: false, visible: false, printable: false},
                     {data: 'created_at_idn'},
                     {data: 'uniq_id'},
                     {data: 'created_by'},
+                    {data: 'summary_iso'},
                     {data: 'status_color', name: 'status_text'},
                     {data: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'},
                 ],
