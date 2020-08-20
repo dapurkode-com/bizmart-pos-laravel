@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ReturnItemStoreRequest;
-use App\Http\Requests\ReturnItemValidateAddItemRequest;
 use App\Item;
 use App\ReturnItem;
 use App\ReturnItemDetail;
@@ -12,6 +11,7 @@ use App\Suplier;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
+use Knp\Snappy\Pdf;
 
 class ReturnItemController extends Controller
 {
@@ -296,6 +296,25 @@ class ReturnItemController extends Controller
                 "more" => $more_pages,
             ],
         ]);
+    }
+
+    /**
+     * Display a spesifict data in form of PDF.
+     *
+     * @param  int  $id
+     * @return Knp\Snappy\Pdf;
+     */
+    public function generatePdf($id)
+    {
+        $snappy = new Pdf(base_path('helper/wkhtmltox/bin/wkhtmltopdf.exe'));
+
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: inline; filename=makan.pdf');
+        header("Cache-Control: private, max-age=0, must-revalidate");
+        header('Pragma: public');
+
+        $html = view('return_item.pdf')->render();
+        echo $snappy->getOutputFromHtml($html);
     }
 
 }

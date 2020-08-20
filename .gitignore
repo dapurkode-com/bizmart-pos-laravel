@@ -13,3 +13,4 @@ yarn-error.log
 /.idea
 .blueprint
 draft.yaml
+.bash_profile
