@@ -1,9 +1,6 @@
 <?php
 
-use App\SystemParam;
 use Illuminate\Support\Facades\Route;
-use Dompdf\Dompdf;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -69,18 +66,4 @@ Route::group(['middleware' => ['auth']], function () {
         'sell' => 'SellController',
         'return_item' => 'ReturnItemController'
     ]);
-
-    Route::get('test', function () {
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('return_item.pdf')->render());
-        $dompdf->setPaper('A5', 'landscape');
-        $dompdf->render();
-        $dompdf->stream("dompdf_out.pdf", array("Attachment" => false));
-
-        exit(0);
-    });
-
-    Route::get('test2', function () {
-        return view('return_item.pdf');
-    });
 });
