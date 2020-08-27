@@ -10,9 +10,11 @@ use App\StockLog;
 use App\Suplier;
 use App\SystemParam;
 use DB;
+use Dompdf\Dompdf;
 use Exception;
 use Illuminate\Http\Request;
-use Knp\Snappy\Pdf;
+
+use function GuzzleHttp\json_decode;
 
 class ReturnItemController extends Controller
 {
@@ -130,7 +132,8 @@ class ReturnItemController extends Controller
     {
         $returnItem = ReturnItem::with('user', 'suplier', 'details.item')->findOrFail($id);
         return response()->json([
-            'return_item' => $returnItem
+            'return_item' => $returnItem,
+            'url_pdf' => route('return_item.generate_pdf', $id)
         ]);
     }
 
@@ -303,19 +306,23 @@ class ReturnItemController extends Controller
      * Display a spesifict data in form of PDF.
      *
      * @param  int  $id
-     * @return Knp\Snappy\Pdf;
+     * @return Dompdf\Dompdf
      */
     public function generatePdf($id)
     {
-        $snappy = new Pdf(base_path('helper/wkhtmltox/bin/wkhtmltopdf.exe'));
+        $sys_param = json_decode(json_encode([
+            'mrch_name' => SystemParam::where('param_code', 'MRCH_NAME')->first()->param_value,
+            'mrch_addr' => SystemParam::where('param_code', 'MRCH_ADDR')->first()->param_value,
+        ]));
+        $return_item = ReturnItem::with('user', 'suplier', 'details.item')->findOrFail($id);
 
-        header('Content-Type: application/pdf');
-        header('Content-Disposition: inline; filename=makan.pdf');
-        header("Cache-Control: private, max-age=0, must-revalidate");
-        header('Pragma: public');
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml(view('return_item.pdf', compact('sys_param', 'return_item'))->render());
+        $dompdf->setPaper('A5', 'landscape');
+        $dompdf->render();
+        $dompdf->stream("Retur Barang $return_item->uniq_id bizmart.pdf", array("Attachment" => false));
 
-        $html = view('return_item.pdf')->render();
-        echo $snappy->getOutputFromHtml($html);
+        exit(0);
     }
 
 }

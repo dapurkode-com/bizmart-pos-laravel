@@ -191,9 +191,7 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body"></div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-warning float-right">Print PDF</button>
-                    </div>
+                    <div class="modal-footer"></div>
                 </div>
             </div>
         </div>
@@ -776,6 +774,18 @@
             `;
 
             parentElm.querySelector('.modal-body').innerHTML = html;
+
+            let htmlFooter = `
+                <a href="${data.url_pdf}" target="_blank" class="btn btn-warning float-right">Print PDF</a>
+            `;
+
+            parentElm.querySelector('.modal-footer').innerHTML = htmlFooter;
+        }
+        
+        function renderModalDetailFooter(data) {
+            const parentElm = document.querySelector('#modalDetail');
+            
+            
         }
         // other function
 
