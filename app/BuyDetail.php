@@ -60,6 +60,6 @@ class BuyDetail extends Model
      */
     public function item()
     {
-        return $this->belongsTo(\App\Item::class);
+        return $this->belongsTo(\App\Item::class)->withTrashed();
     }
 }

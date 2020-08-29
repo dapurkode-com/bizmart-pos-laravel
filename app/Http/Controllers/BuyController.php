@@ -11,6 +11,7 @@ use App\BuyDetail;
 use Illuminate\Support\Facades\DB;
 use App\StockLog;
 use App\Http\Requests\BuyStoreRequest;
+use App\SystemParam;
 
 class BuyController extends Controller
 {
@@ -21,7 +22,7 @@ class BuyController extends Controller
      */
     public function index()
     {
-        //
+        return response()->view('buy.index');
     }
 
     /**
@@ -126,9 +127,15 @@ class BuyController extends Controller
      * @param  \App\Buy  $buy
      * @return \Illuminate\Http\Response
      */
-    public function show(Buy $buy)
+    public function show($uniq_id)
     {
-        //
+        $buys = Buy::with('suplier')->where('uniq_id',$uniq_id)->first();
+        // dd($buys);
+        $mrch_name = SystemParam::where('param_code', 'MRCH_NAME')->first();
+        $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
+        $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
+        
+        return view('buy.show', compact('buys','mrch_name','mrch_addr','mrch_phone'));
     }
 
     /**
@@ -197,6 +204,17 @@ class BuyController extends Controller
         }
     }
 
+    public function printReport($uniq_id)
+    {
+        $buys = Buy::with('suplier')->where('uniq_id',$uniq_id)->get();
+        $details = BuyDetail::with('item')->where('buy_id',$buys->id)->get();
+        $mrch_name = SystemParam::where('param_code', 'MRCH_NAME')->first();
+        $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
+        $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
+        
+        return view('buy.print', compact('buys','details','mrch_name','mrch_addr','mrch_phone'));
+    }
+
 
     public function datatables()
     {
@@ -216,5 +234,38 @@ class BuyController extends Controller
         })
         ->rawColumns(['action', 'categories'])
             ->make(true);
+    }
+
+    public function datatablesReport()
+    {
+        $data = Buy::with('suplier');
+        return datatables()
+        ->of($data)
+        ->addIndexColumn()
+        ->editColumn('created_at', function ($buy){
+            return $buy->created_at->isoFormat('dddd, D MMMM Y');
+        })
+        ->addColumn('action', function ($buy) {
+            $btn = '<a href="' . route('buy.show', $buy->uniq_id) . '" class=" btn btn-info btn-sm" title="Lihat Data"><i class="fa fa-eye"></i></a>';
+
+            // $btn .= '<button data-remote_delete="'. route('buy.delete', $buy->id).'" class="btn btn-danger btn-sm my_btn"><i class="fa fa-trash"></i></button>';
+            return $btn;
+        })
+        ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    public function datatablesReportDetail(Request $request)
+    {
+        $buy = Buy::where('uniq_id',$request->uniq_id)->first();
+        $data = BuyDetail::with('item')->where('buy_id',$buy->id)->get();
+        return datatables()
+        ->of($data)
+        ->addIndexColumn()
+        ->addColumn('subtotal', function ($buy_detail) {
+            $subtotal = $buy_detail->qty * $buy_detail->buy_price;
+            return $subtotal;
+        })
+        ->make(true);
     }
 }

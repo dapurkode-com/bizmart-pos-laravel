@@ -31,7 +31,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('suplier/datatables', 'SuplierController@datatables')->name('suplier.datatables');
     Route::get('buy/datatables', 'BuyController@datatables')->name('buy.datatables');
+    Route::get('buy/datatablesReport', 'BuyController@datatablesReport')->name('buy.datatables_report');
+    Route::get('buy/datatablesReportDetail', 'BuyController@datatablesReportDetail')->name('buy.datatables_report_detail');
     Route::post('buy/select', 'BuyController@select')->name('buy.select');
+    Route::get('buy/print_report/{uniq_id}', 'BuyController@printReport')->name('buy.print_report');
     Route::get('member/datatables', 'MemberController@datatables')->name('member.datatables');
     Route::get('item/datatables', 'ItemController@datatables')->name('item.datatables');
     Route::get('unit/datatables', 'UnitController@datatables')->name('unit.datatables');

@@ -261,6 +261,11 @@ return [
             'url'       => '/home',
             'icon'      => 'fas fa-fw fa-tachometer-alt'
         ],
+        [
+            'text'    => 'Daftar Pembelian',
+            'icon'    => 'fas fa-clipboard-list',
+            'url'     => '/buy',
+        ],
         ['header' => 'MASTER DATA'],
         [
             'text'    => 'User',
