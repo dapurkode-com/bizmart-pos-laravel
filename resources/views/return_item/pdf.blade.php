@@ -56,8 +56,8 @@
 					<td>
 						<div>Kepada:</div>
 						<div class="has-text-weight-bold">{{ $return_item->suplier->name }}</div>
-						<div>{{ $return_item->suplier->address }}t</div>
-						<div>Telp/HP: {{ $return_item->suplier->phone }}</div>
+						<div>{{ $return_item->suplier->address ?? '-' }}</div>
+						<div>Telp/HP: {{ $return_item->suplier->phone ?? '-' }}</div>
 					</td>
 				</tr>
 			</table>
