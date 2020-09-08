@@ -1,6 +1,9 @@
 <?php
 
+use App\SystemParam;
 use Illuminate\Support\Facades\Route;
+use Dompdf\Dompdf;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +49,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('opname/store_stock_log', 'OpnameController@storeStockLog')->name('opname.store_stock_log');
     Route::get('sell/list', 'SellController@list')->name('sell.list');
     Route::get('sell/datatables', 'SellController@datatables')->name('sell.datatables');
+    
+    Route::get('return_item/datatables', 'ReturnItemController@datatables')->name('return_item.datatables');
+    Route::get('return_item/get_suppliers', 'ReturnItemController@getSuppliers')->name('return_item.get_suppliers');
+    Route::get('return_item/get_items', 'ReturnItemController@getItems')->name('return_item.get_items');
+    Route::post('return_item/validate_add_item', 'ReturnItemController@validateAddItem')->name('return_item.validate_add_item');
+    Route::get('return_item/generate_pdf/{id}', 'ReturnItemController@generatePdf')->name('return_item.generate_pdf');
 
     Route::resource('unit', 'UnitController')->only('index', 'store', 'update', 'show', 'destroy');
     Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');
@@ -57,6 +66,7 @@ Route::group(['middleware' => ['auth']], function () {
         'item'  => 'ItemController',
         'user' => 'UserController',
         'opname' => 'OpnameController',
-        'sell' => 'SellController'
+        'sell' => 'SellController',
+        'return_item' => 'ReturnItemController'
     ]);
 });

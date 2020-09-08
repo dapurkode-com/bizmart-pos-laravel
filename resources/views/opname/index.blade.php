@@ -572,6 +572,7 @@
             const modalBody = parentElm.querySelector('.modal-body');
             const modalFooter = parentElm.querySelector('.modal-footer');
             const insertBarangElm = parentElm.querySelector('.insertBarangElm');
+            let modalTitleText = null;
 
             modalTitle.innerHTML = `Loading data...`;
             modalBody.classList.add('d-none');
@@ -579,9 +580,11 @@
             $(parentElm).modal('show');
 
             if (action == 'show') {
+                modalTitleText = `Detail Opname`;
                 insertBarangElm.classList.add('d-none');
             }
             if (action == 'update') {
+                modalTitleText = `Proses Opname`;
                 insertBarangElm.classList.remove('d-none');
             }
 
@@ -602,7 +605,7 @@
                 parentElm.querySelector('#insertItemForm input[name="opname_id"]').value = result.opname.id;
                 parentElm.querySelector('#insertItemForm input[name="ref_uniq_id"]').value = result.opname.uniq_id;
 
-                modalTitle.innerHTML = `Proses Opname`;
+                modalTitle.innerHTML = modalTitleText;
                 modalBody.classList.remove('d-none');
                 modalFooter.classList.remove('d-none');
 
