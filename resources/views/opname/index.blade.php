@@ -37,9 +37,11 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>ID</th>
                                 <th>Tgl</th>
                                 <th>Uniq ID</th>
                                 <th>Oleh</th>
+                                <th>Total</th>
                                 <th>Status</th>
                                 <th class="text-right">Aksi</th>
                             </tr>
@@ -354,9 +356,11 @@
                 ajax: "{{ route('opname.datatables') }}",
                 columns: [
                     {data: 'DT_RowIndex', orderable: false, searchable: false },
+                    {data: 'id', searchable: false, visible: false, printable: false},
                     {data: 'created_at_idn'},
                     {data: 'uniq_id'},
                     {data: 'created_by'},
+                    {data: 'summary_iso'},
                     {data: 'status_color', name: 'status_text'},
                     {data: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'},
                 ],
@@ -568,6 +572,7 @@
             const modalBody = parentElm.querySelector('.modal-body');
             const modalFooter = parentElm.querySelector('.modal-footer');
             const insertBarangElm = parentElm.querySelector('.insertBarangElm');
+            let modalTitleText = null;
 
             modalTitle.innerHTML = `Loading data...`;
             modalBody.classList.add('d-none');
@@ -575,9 +580,11 @@
             $(parentElm).modal('show');
 
             if (action == 'show') {
+                modalTitleText = `Detail Opname`;
                 insertBarangElm.classList.add('d-none');
             }
             if (action == 'update') {
+                modalTitleText = `Proses Opname`;
                 insertBarangElm.classList.remove('d-none');
             }
 
@@ -598,7 +605,7 @@
                 parentElm.querySelector('#insertItemForm input[name="opname_id"]').value = result.opname.id;
                 parentElm.querySelector('#insertItemForm input[name="ref_uniq_id"]').value = result.opname.uniq_id;
 
-                modalTitle.innerHTML = `Proses Opname`;
+                modalTitle.innerHTML = modalTitleText;
                 modalBody.classList.remove('d-none');
                 modalFooter.classList.remove('d-none');
 
