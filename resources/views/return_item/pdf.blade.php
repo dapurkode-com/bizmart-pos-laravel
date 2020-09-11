@@ -98,7 +98,7 @@
 			<table class="table mt-3 is-borderless is-paddingless">
 				<tr>
 					<td width="50%"></td>
-					<td width="50%" class="has-text-right">Singaraja, {{ date("j F Y", strtotime($return_item->updated_at)) }}</td>
+					<td width="50%" class="has-text-right">Singaraja, {{ $return_item->updated_at->format('j F Y') }}</td>
 				</tr>
 				<tr>
 					<td class="has-text-centered">Penerima,</td>

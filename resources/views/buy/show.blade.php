@@ -94,13 +94,17 @@
                 <div class="row">
                     <div class="col-sm-12">
                         Keterangan : <br>
-                        {{ ($buys->note == null) ? '-' : $buys->note }}
+                        {{ $buys->note ?? '-' }}
                     </div>
                 </div>
                 <div class="row no-print">
                     <div class="col-12">
-                        <a href="{{ route('buy.print_report', $buys->uniq_id)}}"  class="btn btn-primary"><i class="fas fa-print"></i> Print</a>
+                        <a href="{{ route('buy.print_report', $buys->uniq_id)}}"  class="btn btn-default float-right"><i class="fas fa-print"></i> Print</a>
+                        <a href="{{ route('buy.pdf_report', $buys->uniq_id)}}" class="btn btn-primary float-right" style="margin-right: 5px;">
+                            <i class="fas fa-download"></i> Generate PDF
+                        </a>
                     </div>
+                    
                 </div>
            </div>
        </div>

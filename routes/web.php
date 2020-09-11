@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('buy/datatablesReportDetail', 'BuyController@datatablesReportDetail')->name('buy.datatables_report_detail');
     Route::post('buy/select', 'BuyController@select')->name('buy.select');
     Route::get('buy/print_report/{uniq_id}', 'BuyController@printReport')->name('buy.print_report');
+    Route::get('buy/pdf_report/{uniq_id}', 'BuyController@generatePdfReport')->name('buy.pdf_report');
     Route::get('member/datatables', 'MemberController@datatables')->name('member.datatables');
     Route::get('item/datatables', 'ItemController@datatables')->name('item.datatables');
     Route::get('unit/datatables', 'UnitController@datatables')->name('unit.datatables');

@@ -34,7 +34,7 @@
 </head>
 <body>
     <section>
-    <img src="{{ asset(config('adminlte.logo_img', 'vendor/adminlte/dist/img/AdminLTELogo.png')) }}" style="height: 9.5mm; width: 9.5mm; position: absolute">
+    <img src="images/logo.png" style="height: 9.5mm; width: 9.5mm; position: absolute">
 
     <table class="table is-paddingless">
         <tr>
@@ -115,8 +115,5 @@
         </tr>
     </table>
     </section>
-    <script type="text/javascript"> 
-        window.addEventListener("load", window.print());
-    </script>
 </body>
 </html>

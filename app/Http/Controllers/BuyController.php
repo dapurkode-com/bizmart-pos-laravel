@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use App\StockLog;
 use App\Http\Requests\BuyStoreRequest;
 use App\SystemParam;
+use Dompdf\Dompdf;
+use Exception;
 
 class BuyController extends Controller
 {
@@ -206,13 +208,29 @@ class BuyController extends Controller
 
     public function printReport($uniq_id)
     {
-        $buys = Buy::with('suplier')->where('uniq_id',$uniq_id)->get();
+        $buys = Buy::with('suplier')->where('uniq_id',$uniq_id)->first();
         $details = BuyDetail::with('item')->where('buy_id',$buys->id)->get();
         $mrch_name = SystemParam::where('param_code', 'MRCH_NAME')->first();
         $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
         $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
         
         return view('buy.print', compact('buys','details','mrch_name','mrch_addr','mrch_phone'));
+    }
+
+    public function generatePdfReport($uniq_id)
+    {
+        $buys = Buy::with('suplier')->where('uniq_id',$uniq_id)->first();
+        $details = BuyDetail::with('item')->where('buy_id',$buys->id)->get();
+        $mrch_name = SystemParam::where('param_code', 'MRCH_NAME')->first();
+        $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
+        $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
+        
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml(view('buy.pdf', compact('buys','details','mrch_name','mrch_addr','mrch_phone'))->render());
+        $dompdf->setPaper('A5', 'landscape');
+        $dompdf->render();
+        $dompdf->stream("Pembelian $uniq_id bizmart.pdf", array("Attachment" => false));
+        // return view('buy.print', compact('buys','details','mrch_name','mrch_addr','mrch_phone'));
     }
 
 

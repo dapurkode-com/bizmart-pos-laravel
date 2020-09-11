@@ -45,7 +45,7 @@ Generate key encryption aplikasi dengan menjalankan sintaks _**php artisan key:g
 
 **4. Jalankan migrasi database dan seeder.**
 
-Jalankan sintaks _**php artisan migration --seed**_ untuk melakukan migrasi database dan seeding.
+Jalankan sintaks _**php artisan migrate --seed**_ untuk melakukan migrasi database dan seeding.
 
 **5. Jalankan aplikasi.**
 
