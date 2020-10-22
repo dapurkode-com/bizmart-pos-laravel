@@ -243,7 +243,7 @@ return [
         //        ],
         [
             'text'      => 'Penjualan',
-            'url'       => '/sell',
+            'url'       => '/sell/create',
             'topnav'    => 'true'
         ],
         [
@@ -271,6 +271,28 @@ return [
             'icon'    => 'fas fa-clipboard-list',
             'url'     => '/buy',
         ],
+
+
+        
+        [
+            'header' => 'PENJUALAN',
+            'classes' => 'menu-penjualan',
+        ],
+        [
+            'text'      => 'Daftar Penjualan',
+            'url'       => '/sell',
+            'icon'      => 'fas fa-fw fa-list-alt',
+            'classes'   => 'menu-penjualan hide',
+        ],
+        [
+            'text' => 'Laporan Penjualan',
+            'url' => '/sell/report',
+            'icon' => 'fas fa-fw fa-list-alt',
+            'classes' => 'menu-penjualan d-none',
+        ],
+
+
+
         ['header' => 'MASTER DATA'],
         [
             'text'    => 'User',
