@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Item;
 use App\Sell;
+use App\SellDetail;
+use App\StockLog;
 use Illuminate\Http\Request;
 
 class SellController extends Controller
@@ -14,35 +17,7 @@ class SellController extends Controller
      */
     public function index()
     {
-        return response()->view('sell.index');
-    }
-
-    public function list()
-    {
-        return response()->view('sell.list');
-    }
-
-    public function datatables(Request $request)
-    {
-        $sells = Sell::leftJoin('members','members.id','=','sells.id')->select([
-            'sells.*',
-            'members.name',
-            'members.phone',
-
-        ]);
-        return datatables()
-            ->of($sells)
-            ->addIndexColumn()
-            ->addColumn('action', function ($sell) {
-                $btn     = '<div class="btn-group">';
-                $btn    .= '<button data-remote_show="' . route('sell.show', $sell->id) . '" type="button" class="btn btn-default btn-sm btnDetail" title="Detail"><i class="fas fa-folder-open"></i></button> ';
-                $btn    .= '<button data-remote_show="' . route('sell.show', $sell->id) . '" data-remote_update="' . route('sell.update', $sell->id) . '" type="button" class="btn btn-default btn-sm btnEdit" title="Edit"><i class="fas fa-pencil-alt"></i></button> ';
-                $btn    .= '<button data-remote_destroy="' . route('sell.destroy', $sell->id) . '" type="button" class="btn btn-default btn-sm btnDelete" title="Hapus"><i class="fas fa-trash"></i></button> ';
-                $btn    .= '</div>';
-                return $btn;
-            })
-            ->rawColumns(['action'])
-            ->toJson();
+       //
     }
 
     /**
@@ -52,7 +27,7 @@ class SellController extends Controller
      */
     public function create()
     {
-        //
+        return response()->view('sell.create');
     }
 
     /**
@@ -63,7 +38,87 @@ class SellController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        /*
+        request {
+            summary,
+            tax,
+            note,
+            paid_amount,
+            sell_details {
+                items_id,
+                qty,
+                sell_price,
+            }
+        }
+        */
+
+        try {
+            DB::beginTransaction();
+
+            $isSummaryGreaterThanPaidAmount = $request->summary > $request->paid_amount;
+            
+            $sellStatus = ($isSummaryGreaterThanPaidAmount) ? 'RE' : 'PO';
+
+            $sellItemArr = [
+                'user_id' => auth()->user()->id,
+                'member_id' => $request->member_id,
+                'summary' => $request->summary,
+                'tax' => $request->tax,
+                'note' => $request->note,
+                'paid_amount' => $request->paid_amount,
+                'sell_status' => $sellStatus,
+            ];
+
+            Sell::create($sellItemArr);
+
+            $newSellObj = Sell::where($sellItemArr)->orderBy('id', 'desc')->first();
+            $sellId = $newSellObj->id;
+            $sellUniqId = $newSellObj->uniq_id;
+
+            // details
+            foreach ($request->sell_details as $i => $sellDetailItemArr) {
+                $itemId = $sellDetailItemArr['items_id'];
+
+                $itemObj = Item::findOrFail($itemId);
+
+                SellDetail::create([
+                    'items_id' => $itemId,
+                    'qty' => $sellDetailItemArr['qty'],
+                    'sell_price' => $itemObj->sell_price,
+                ]);
+
+                // store to stock log
+                StockLog::create([
+                    'ref_uniq_id' => $sellUniqId,
+                    'cause' => 'SELL',
+                    'in_out_position' => 'OUT',
+                    'qty' => $sellDetailItemArr['qty'],
+                    'old_stock' => $itemObj['stock'],
+                    'new_stock' => $itemObj['stock'] - $sellDetailItemArr['qty'],
+                    'buy_price' => $itemObj['buy_price'],
+                    'sell_price' => $itemObj['sell_price'],
+                    'item_id' => $itemId,
+                ]);
+
+                // update stock on item
+                Item::findOrFail($itemId)->update([
+                    'stock' => $itemObj['stock'] - $sellDetailItemArr['qty'],
+                ]);
+            }
+
+            DB::commit();
+            return response()->json([
+                'status' => 'valid',
+                'pesan' => 'Penjualan berhasil disimpan',
+            ]);
+
+        } catch (Exception $exc) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'pesan' => $exc->getMessage(),
+            ]);
+        }
     }
 
     /**

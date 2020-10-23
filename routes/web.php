@@ -45,20 +45,27 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('category/datatables', 'CategoryController@datatables')->name('category.datatables');
     Route::get('user/datatables', 'UserController@datatables')->name('user.datatables');
 
+    // for opname
     Route::get('opname/datatables', 'OpnameController@datatables')->name('opname.datatables');
     Route::get('opname/datatablesOpnameDetail', 'OpnameController@datatablesOpnameDetail')->name('opname.datatables_opname_detail');
     Route::get('opname/get_items', 'OpnameController@getItems')->name('opname.get_items');
     Route::get('opname/show_opname_detail/{id}', 'OpnameController@showOpnameDetail')->name('opname.show_opname_detail');
     Route::post('opname/store_opname_detail', 'OpnameController@storeOpnameDetail')->name('opname.store_opname_detail');
     Route::post('opname/store_stock_log', 'OpnameController@storeStockLog')->name('opname.store_stock_log');
-    Route::get('sell/list', 'SellController@list')->name('sell.list');
-    Route::get('sell/datatables', 'SellController@datatables')->name('sell.datatables');
+    // for opname
+
+    // for sell
+    // Route::get('sell/create', 'SellController@list')->name('sell.list');
+    // Route::get('sell/datatables', 'SellController@datatables')->name('sell.datatables');
+    // for sell
     
+    // for return item
     Route::get('return_item/datatables', 'ReturnItemController@datatables')->name('return_item.datatables');
     Route::get('return_item/get_suppliers', 'ReturnItemController@getSuppliers')->name('return_item.get_suppliers');
     Route::get('return_item/get_items', 'ReturnItemController@getItems')->name('return_item.get_items');
     Route::post('return_item/validate_add_item', 'ReturnItemController@validateAddItem')->name('return_item.validate_add_item');
     Route::get('return_item/generate_pdf/{id}', 'ReturnItemController@generatePdf')->name('return_item.generate_pdf');
+    // for return item
 
     Route::resource('unit', 'UnitController')->only('index', 'store', 'update', 'show', 'destroy');
     Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');

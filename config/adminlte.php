@@ -274,21 +274,20 @@ return [
 
 
         
+        ['header' => 'TRANSAKSI'],
         [
-            'header' => 'PENJUALAN',
-            'classes' => 'menu-penjualan',
-        ],
-        [
-            'text'      => 'Daftar Penjualan',
-            'url'       => '/sell',
+            'text'      => 'Penjualan',
             'icon'      => 'fas fa-fw fa-list-alt',
-            'classes'   => 'menu-penjualan hide',
-        ],
-        [
-            'text' => 'Laporan Penjualan',
-            'url' => '/sell/report',
-            'icon' => 'fas fa-fw fa-list-alt',
-            'classes' => 'menu-penjualan d-none',
+            'submenu' => [
+                [
+                    'text'      => 'Daftar Penjualan',
+                    'url'       => '/sell',
+                ],
+                [
+                    'text' => 'Laporan Penjualan',
+                    'url' => '/sell/report',
+                ],
+            ]
         ],
 
 
