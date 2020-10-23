@@ -34,6 +34,8 @@ class Sell extends Model
         'summary',
         'tax',
         'note',
+        'sell_status',
+        'paid_amount',
         'created_by',
         'updated_by',
     ];
@@ -49,6 +51,7 @@ class Sell extends Model
         'member_id' => 'integer',
         'summary' => 'double',
         'tax' => 'double',
+        'paid_amount' => 'double'
     ];
 
     /**
