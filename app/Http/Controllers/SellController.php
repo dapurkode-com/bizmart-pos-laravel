@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Item;
+use App\Member;
 use App\Sell;
 use App\SellDetail;
 use App\StockLog;
@@ -40,6 +41,7 @@ class SellController extends Controller
     {
         /*
         request {
+            member_id,
             summary,
             tax,
             note,
@@ -84,7 +86,7 @@ class SellController extends Controller
                 SellDetail::create([
                     'items_id' => $itemId,
                     'qty' => $sellDetailItemArr['qty'],
-                    'sell_price' => $itemObj->sell_price,
+                    'sell_price' => $sellDetailItemArr->sell_price,
                 ]);
 
                 // store to stock log
@@ -96,7 +98,7 @@ class SellController extends Controller
                     'old_stock' => $itemObj['stock'],
                     'new_stock' => $itemObj['stock'] - $sellDetailItemArr['qty'],
                     'buy_price' => $itemObj['buy_price'],
-                    'sell_price' => $itemObj['sell_price'],
+                    'sell_price' => $sellDetailItemArr['sell_price'],
                     'item_id' => $itemId,
                 ]);
 
@@ -164,5 +166,91 @@ class SellController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Display a listing of items in form of select2.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getItems(Request $request)
+    {
+        $page = $request->page;
+        $search = $request->term;
+        $limit = 25;
+        $offset = ($page - 1) * $limit;
+
+        $items = Item::select('*')
+            ->where('stock', '>', '0')
+            ->where(function($query) use ($search){
+                $query->where('barcode', 'like', "%$search%")
+                      ->orWhere('name', 'like', "%$search%");
+            })
+            ->orderby('name', 'asc')
+            ->skip($offset)->take($limit)
+            ->get();
+
+        $results = [];
+        foreach ($items as $i => $item) {
+            $results[] = array(
+                'id' => json_encode($item),
+                'text' => "$item->barcode - $item->name",
+            );
+        }
+
+        if (count($results) < $limit) {
+            $more_pages = false;
+        } else {
+            $more_pages = true;
+        }
+
+        return response()->json([
+            "results" => $results,
+            "pagination" => [
+                "more" => $more_pages,
+            ],
+        ]);
+    }
+
+    /**
+     * Display a listing of members in form of select2.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getMembers(Request $request)
+    {
+        $page = $request->page;
+        $search = $request->term;
+        $limit = 25;
+        $offset = ($page - 1) * $limit;
+
+        $members = Member::select('*')
+            ->where('name', 'like', "%$search%")
+            ->orderby('name', 'asc')
+            ->skip($offset)->take($limit)
+            ->get();
+
+        $results = [];
+        foreach ($members as $i => $member) {
+            $results[] = array(
+                'id' => json_encode($member),
+                'text' => "$member->name",
+            );
+        }
+
+        if (count($results) < $limit) {
+            $more_pages = false;
+        } else {
+            $more_pages = true;
+        }
+
+        return response()->json([
+            "results" => $results,
+            "pagination" => [
+                "more" => $more_pages,
+            ],
+        ]);
     }
 }
