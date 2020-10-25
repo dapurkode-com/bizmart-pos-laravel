@@ -488,11 +488,6 @@ return [
                     'asset' => true,
                     'location' => 'plugins/custom/global.style.css',
                 ],
-                [
-                    'type' => 'js',
-                    'asset' => true,
-                    'location' => 'plugins/custom/global.app.js',
-                ]
             ]
         ],
     ],
