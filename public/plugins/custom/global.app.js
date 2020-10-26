@@ -61,10 +61,35 @@ function swalAlert(content, type){
     });
 }
 
+function swalConfirm(text){
+    return new Promise((resolve, reject) => {
+        Swal.fire({
+            customClass: {
+                confirmButton: 'btn btn-info',
+                cancelButton: 'btn btn-default'
+            },
+            buttonsStyling: false,
+            focusCancel: true,
+            position: 'center',
+            icon: 'question',
+            text: `Apakah anda yakin untuk ${text}?`,
+            showCancelButton: true,
+            confirmButtonText: 'Yakin',
+            cancelButtonText: 'Batal'
+        })
+        .then((result) => {
+            if (result.value) {
+                resolve();
+            }
+        });
+    });
+}
+
 export { 
     domReady,
     addListenToEvent,
     drawError,
     eraseErrorInit,
     swalAlert,
+    swalConfirm,
 }

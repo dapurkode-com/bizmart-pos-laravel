@@ -6,6 +6,7 @@ use App\Item;
 use App\Member;
 use App\Sell;
 use App\SellDetail;
+use App\SellPaymentHs;
 use App\StockLog;
 use Illuminate\Http\Request;
 
@@ -47,9 +48,11 @@ class SellController extends Controller
             note,
             paid_amount,
             sell_details {
-                items_id,
-                qty,
-                sell_price,
+                [
+                    items_id,
+                    qty,
+                    sell_price,
+                ]
             }
         }
         */
@@ -84,6 +87,7 @@ class SellController extends Controller
                 $itemObj = Item::findOrFail($itemId);
 
                 SellDetail::create([
+                    'sell_id' => $sellId,
                     'items_id' => $itemId,
                     'qty' => $sellDetailItemArr['qty'],
                     'sell_price' => $sellDetailItemArr->sell_price,
@@ -107,6 +111,14 @@ class SellController extends Controller
                     'stock' => $itemObj['stock'] - $sellDetailItemArr['qty'],
                 ]);
             }
+
+            // store to sell payment history
+            SellPaymentHs::create([
+                'sell_id' => $sellId,
+                'amount' => $request->paid_amount,
+                'note' => $request->note,
+                'payment_date' => date('Y-m-d H:i:s'),
+            ]);
 
             DB::commit();
             return response()->json([
