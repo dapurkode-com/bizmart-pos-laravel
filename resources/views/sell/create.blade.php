@@ -76,7 +76,7 @@
                                         <tbody></tbody>
                                         <tfoot>
                                             <tr>
-                                                <th colspan="4" class="text-right">Total</th>
+                                                <th colspan="4" class="text-right">Subtotal</th>
                                                 <th class="p-1">
                                                     <div class="form-group mb-0">
                                                         <input type="number" name="summary_before_tax" value="0" class="form-control text-right" placeholder="0" readonly>
@@ -102,7 +102,7 @@
                                                 <th></th>
                                             </tr>
                                             <tr>
-                                                <th colspan="4" class="text-right">Grand Total</th>
+                                                <th colspan="4" class="text-right">Total</th>
                                                 <th class="p-1">
                                                     <div class="form-group mb-0">
                                                         <input type="number" name="summary" value="0" class="form-control text-right" placeholder="0" readonly>
@@ -181,7 +181,8 @@
                                 <button type="reset" class="btn btn-danger btn-block" title="Bersihkan semua form"><i class="fas fa-fw fa-times"></i> Reset</button>
                             </div>
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-success btn-block submitButton" title="Bersihkan semua form"><i class="fas fa-fw fa-check"></i> Simpan</button>
+                                <button type="button" class="mt-0 btn btn-success btn-block submitButtonLoading d-none" disabled><i class="fas fa-spin fa-fw fa-spinner"></i> Simpan...</button>
+                                <button type="button" class="mt-0 btn btn-success btn-block submitButton" title="Proses penjualan"><i class="fas fa-fw fa-check"></i> Simpan</button>
                             </div>
                         </div>
                     </div>
@@ -205,8 +206,9 @@
 
 @section('js')
     <script type="module">
-        import { domReady, addListenToEvent, drawError, eraseErrorInit, swalAlert, swalConfirm } from '{{ asset("plugins/custom/global.app.js") }}'
+        import { domReady, addListenToEvent, drawError, eraseErrorInit, swalAlert, swalConfirm, simulateEvent } from '{{ asset("plugins/custom/global.app.js") }}'
         
+        const mainContentElm = document.querySelector('.mainContent');
         const itemsSelect = $('.mainContent [name="items"]').select2({
             width: '100%',
             placeholder: () => {
@@ -322,66 +324,64 @@
                 swalConfirm('melakukan ini')
                     .then(() => {
                         // prepare data
-                        
+                        const paidAmountInput = itemsTable.querySelector('[name="paid_amount"]');
+                        const summaryInput = itemsTable.querySelector('[name="summary"]');
+                        const itemsInputs = itemsTable.querySelectorAll('[name="items[]"]');
+                        const resetButton = mainContentElm.querySelector('button[type="reset"]');
                         let memberObj = JSON.parse(membersSelect.val());
+                        let paidAmount = (Number(paidAmountInput.value) > Number(summaryInput.value)) ? summaryInput.value : paidAmountInput.value;
 
                         let data = {
-                            'member_id': (memberObj) ? memberObj.id : '',
-                            // 'summary': parentElm.querySelector('input[name="summary"]').value,
-                            // 'note': parentElm.querySelector('textarea[name="note"]').value,
-                            // 'items': []
+                            member_id : (memberObj) ? memberObj.id : '',
+                            summary : summaryInput.value,
+                            tax : itemsTable.querySelector('[name="tax"]').value,
+                            note : mainContentElm.querySelector('[name="note"]').value,
+                            paid_amount : paidAmount,
+                            sell_details : []
                         }
 
-                        // for (const i in itemsElms) {
-                        //     if (itemsElms.hasOwnProperty(i)) {
-                        //         const itemsElm = itemsElms[i];
-                        //         const qtyElm = qtyElms[i];
-                        //         const buyPriceElm = buyPriceElms[i];
-                        //         let itemObj = JSON.parse(itemsElm.value);
-                                
-                        //         data.items[i] = itemObj;
-                        //         data.items[i].qty = qtyElm.value;
-                        //         data.items[i].buy_price = buyPriceElm.value;
-                        //     }
-                        // }
-                        // // end prepare data
+                        itemsInputs.forEach((itemsInput, index) => {
+                            console.log(data, index);
+                            const itemObj = JSON.parse(itemsInput.value);
+                            const qtyInput = itemsTable.querySelectorAll('[name="qty[]"]')[index];
+
+                            data.sell_details[index] = {};
+                            data.sell_details[index].item_id = (itemObj) ? itemObj.id : '';
+                            data.sell_details[index].qty = qtyInput.value;
+                            data.sell_details[index].sell_price = (itemObj) ? itemObj.sell_price : '';
+                        });
+                        // end prepare data
                         
-                        // // loading and disabled button
-                        // const buttonText = thisElm.innerHTML;
-                        // thisElm.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> ${buttonText}...`
-                        // for (const elm of parentElm.querySelectorAll('button')) {
-                        //     elm.disabled = true;
-                        // }
+                        // loading and disabled button
+                        document.querySelector('.submitButton').classList.toggle('d-none');
+                        document.querySelector('.submitButtonLoading').classList.toggle('d-none');
                         
-                        // fetch(remoteElm.value, {
-                        //         method: methodElm.value,
-                        //         headers: {
-                        //             'Content-Type': 'application/json',
-                        //             'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                        //         },
-                        //         body: JSON.stringify(data)
-                        //     })
-                        //     .then(response => response.json())
-                        //     .then(result => {
-                        //         if(result.status == 'invalid'){
-                        //             drawErrorOnModalForm(parentElm, result.validators);
-                        //         }
-                        //         if(result.status == 'valid'){
-                        //             swalAlert(result.pesan, 'success');
-                        //             tbIndex.ajax.reload();
-                        //             $(parentElm).find('.modal').modal('hide');
-                        //         }
-                        //         if(result.status == 'error'){
-                        //             swalAlert(result.pesan, 'warning');
-                        //         }
-                        //     })
-                        //     .finally(() => {
-                        //         // loading and disabled button
-                        //         thisElm.innerHTML = `${buttonText}`
-                        //         for (const elm of parentElm.querySelectorAll('button')) {
-                        //             elm.disabled = false;
-                        //         }
-                        //     });
+                        fetch("{{ route('sell.store') }}", {
+                                method: "POST",
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                                },
+                                body: JSON.stringify(data)
+                            })
+                            .then(response => response.json())
+                            .then(result => {
+                                if(result.status == 'invalid'){
+                                    customDrawError(mainContentElm, result.validators);
+                                }
+                                if(result.status == 'valid'){
+                                    swalAlert(result.pesan, 'success');
+                                    simulateEvent(resetButton, 'click');
+                                }
+                                if(result.status == 'error'){
+                                    swalAlert(result.pesan, 'warning');
+                                }
+                            })
+                            .finally(() => {
+                                // loading and disabled button
+                                document.querySelector('.submitButton').classList.toggle('d-none');
+                                document.querySelector('.submitButtonLoading').classList.toggle('d-none');
+                            });
                     });
             });
         });
@@ -396,7 +396,7 @@
                     <td>${itemObj.name}</td>
                     <td class="p-1">
                         <div class="form-group mb-0">
-                            <input type="number" name="qty[]" value="0" class="form-control text-right" placeholder="0">
+                            <input type="number" name="qty[]" class="form-control text-right" placeholder="0">
                             <div class="invalid-feedback"></div>
                         </div>
                     </td>
@@ -441,6 +441,42 @@
             taxInput.value = tax;
             summaryInput.value = summary;
             paidReturnInput.value = paidReturn;
+        }
+
+        function customDrawError(parentElm, validators) {
+            for (let keyName in validators) {
+                if (validators.hasOwnProperty(keyName)) {
+                    const value = validators[keyName][0];
+
+                    if (keyName.includes('.')) {
+                        const keyNameSplited = keyName.split('.');
+                        const index = keyNameSplited[1];
+                        const elmName = keyNameSplited[2];
+
+                        keyName = `${elmName}[]`;
+                         
+                        parentElm.querySelectorAll(`[name="${keyName}"]`)[index].classList.add('is-invalid');
+                        parentElm.querySelectorAll(`[name="${keyName}"]`)[index].closest('.form-group').querySelector('.invalid-feedback').innerHTML = `${value}`;
+                    }
+                    else {
+                        let isDraw = true;
+                        
+                        if (keyName == 'member_id') {
+                            keyName = 'members';
+                        }
+                        if (keyName == 'sell_details') {
+                            isDraw = false;
+                            swalAlert('List barang harus diisi', 'warning');
+                        }
+
+                        if (isDraw === true) {
+                            parentElm.querySelector(`[name="${keyName}"]`).classList.add('is-invalid');
+                            parentElm.querySelector(`[name="${keyName}"]`).closest('.form-group').querySelector('.invalid-feedback').innerHTML = `${value}`;
+                        }
+                    }
+
+                }
+            }
         }
     </script>
 @stop

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SellStoreRequest;
 use App\Item;
 use App\Member;
 use App\Sell;
 use App\SellDetail;
 use App\SellPaymentHs;
 use App\StockLog;
+use DB;
 use Illuminate\Http\Request;
 
 class SellController extends Controller
@@ -38,7 +40,7 @@ class SellController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SellStoreRequest $request)
     {
         /*
         request {
@@ -49,7 +51,7 @@ class SellController extends Controller
             paid_amount,
             sell_details {
                 [
-                    items_id,
+                    item_id,
                     qty,
                     sell_price,
                 ]
@@ -82,15 +84,15 @@ class SellController extends Controller
 
             // details
             foreach ($request->sell_details as $i => $sellDetailItemArr) {
-                $itemId = $sellDetailItemArr['items_id'];
+                $itemId = $sellDetailItemArr['item_id'];
 
                 $itemObj = Item::findOrFail($itemId);
 
                 SellDetail::create([
                     'sell_id' => $sellId,
-                    'items_id' => $itemId,
+                    'item_id' => $itemId,
                     'qty' => $sellDetailItemArr['qty'],
-                    'sell_price' => $sellDetailItemArr->sell_price,
+                    'sell_price' => $sellDetailItemArr['sell_price'],
                 ]);
 
                 // store to stock log

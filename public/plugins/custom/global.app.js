@@ -85,6 +85,15 @@ function swalConfirm(text){
     });
 }
 
+function simulateEvent(elm, eventName) {
+    let evt = new MouseEvent(eventName, {
+        bubbles: true,
+        cancelable: true,
+        view: window
+    });
+    let canceled = !elm.dispatchEvent(evt);
+};
+
 export { 
     domReady,
     addListenToEvent,
@@ -92,4 +101,5 @@ export {
     eraseErrorInit,
     swalAlert,
     swalConfirm,
+    simulateEvent,
 }
