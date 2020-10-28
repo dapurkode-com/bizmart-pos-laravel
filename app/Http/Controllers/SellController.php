@@ -21,7 +21,7 @@ class SellController extends Controller
      */
     public function index()
     {
-       //
+        return response()->view('sell.index');
     }
 
     /**

@@ -91,8 +91,20 @@ function simulateEvent(elm, eventName) {
         cancelable: true,
         view: window
     });
-    let canceled = !elm.dispatchEvent(evt);
-};
+    !elm.dispatchEvent(evt);
+}
+
+function select2DatatableInit() {
+    for (const elm of document.querySelectorAll('.dataTables_length select')) {
+        $(elm).select2({
+            minimumResultsForSearch: Infinity
+        });
+    }
+    for (const elm of document.querySelectorAll('.dataTables_length span.select2')) {
+        elm.style.width = '5rem';
+    }
+
+}
 
 export { 
     domReady,
@@ -102,4 +114,5 @@ export {
     swalAlert,
     swalConfirm,
     simulateEvent,
+    select2DatatableInit,
 }

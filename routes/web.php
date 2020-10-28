@@ -57,7 +57,7 @@ Route::group(['middleware' => ['auth']], function () {
     // for sell
     Route::get('sell/get_items', 'SellController@getItems')->name('sell.get_items');
     Route::get('sell/get_members', 'SellController@getMembers')->name('sell.get_members');
-    // Route::get('sell/datatables', 'SellController@datatables')->name('sell.datatables');
+    Route::get('sell/datatables', 'SellController@datatables')->name('sell.datatables');
     // for sell
     
     // for return item
