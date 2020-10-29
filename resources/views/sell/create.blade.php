@@ -27,9 +27,13 @@
                     <div class="col-sm-12">
                         <div class="card bg-default">
                             <div class="card-header">
-                                <h3 class="card-title">Form Pilih Barang</h3>
-                                <div class="card-tools">
-                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                <div class="row align-items-center">
+                                    <div class="col-6">
+                                        <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Form Pilih Barang</h5>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <button type="button" class="btn btn-default" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -55,9 +59,13 @@
                     <div class="col-sm-12">
                         <div class="card bg-default">
                             <div class="card-header">
-                                <h3 class="card-title">List Barang yang Dijual</h3>
-                                <div class="card-tools">
-                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                <div class="row align-items-center">
+                                    <div class="col-6">
+                                        <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> List Barang yang Dijual</h5>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <button type="button" class="btn btn-default" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -145,9 +153,13 @@
                     <div class="col-sm-12">
                         <div class="card bg-default">
                             <div class="card-header">
-                                <h3 class="card-title">Form Lainnya</h3>
-                                <div class="card-tools">
-                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                <div class="row align-items-center">
+                                    <div class="col-8">
+                                        <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Form Lainnya  </h5>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <button type="button" class="btn btn-default" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -280,19 +292,21 @@
                 } else {
                     const itemObj = JSON.parse(itemsSelect.val());
                     let isItemExistInTable = false;
-                    itemsTable.querySelectorAll('[name="items[]"]').forEach((_elm) => {
+                    itemsTable.querySelectorAll('[name="items[]"]').forEach((_elm, index) => {
                         const _itemObj = JSON.parse(_elm.value);
                         if (_itemObj.id === itemObj.id) {
+                            const qtyBefore = itemsTable.querySelectorAll('[name="qty[]"]')[index].value;
+                            const qtyNew = Number(qtyBefore) + Number(1);
+                            itemsTable.querySelectorAll('[name="qty[]"]')[index].value = qtyNew;
                             isItemExistInTable = true;
                             return false;
                         }
                     });
-                    if (isItemExistInTable) {
-                        swalAlert('Barang ini sudah ada dalam table', 'error');
-                    } else {
+                    if (!isItemExistInTable) {
                         itemsTable.querySelector('tbody').append(drawItemToTable(itemObj));
-                        calculateTable();
                     }
+                    calculateTable();
+                    itemsSelect.html('').trigger('change');
                 }
             });
 
@@ -396,7 +410,7 @@
                     <td>${itemObj.name}</td>
                     <td class="p-1">
                         <div class="form-group mb-0">
-                            <input type="number" name="qty[]" class="form-control text-right" placeholder="0">
+                            <input type="number" name="qty[]" value="1" class="form-control text-right" placeholder="0">
                             <div class="invalid-feedback"></div>
                         </div>
                     </td>

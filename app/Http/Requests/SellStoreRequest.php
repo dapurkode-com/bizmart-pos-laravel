@@ -29,7 +29,7 @@ class SellStoreRequest extends FormRequest
             'member_id' => 'required|numeric',
             'summary' => 'required|numeric|min:0',
             'tax' => 'required|numeric|min:0',
-            'note' => 'required|string',
+            'note' => 'nullable|string',
             'paid_amount' => 'required|numeric',
             'sell_details' => 'required|array',
             'sell_details.*.item_id' => 'required|numeric',
