@@ -23,6 +23,16 @@
     <div class="row mainContent">
         <div class="col-sm-12">
             <div class="card bg-default">
+                <div class="card-body">
+                    <div class="sellTableFilter">
+                        <input type="date" name="date_start" class="form-control">
+                        <p class="mb-0">sampai</p>
+                        <input type="date" name="date_end" class="form-control">
+                        <button type="button" class="btn btn-info filterButton"><i class="fas fa-search mr-2"></i>Cari</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card bg-default">
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-6">
@@ -34,7 +44,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <table id="sellTable" class="table table-striped">
+                    <table id="sellTable" class="table table-striped" style="width: 100%">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -57,6 +67,26 @@
 
 @section('css')
     <style>
+        .sellTableFilter {
+            display: grid;
+            grid-template-columns: 0fr 0fr 0fr 1fr;
+            gap: 1rem;
+            align-items: center;
+        }
+        .sellTableFilter .filterButton {
+            width: 80px;
+            justify-self: end;
+        }
+
+        @media only screen and (max-width: 617px) {
+            .sellTableFilter {
+                grid-template-columns: 1fr;
+                justify-items: center;
+            }
+            .sellTableFilter .filterButton {
+                width: 100%;
+            }
+        }
     </style>
 @stop
 
@@ -92,16 +122,24 @@
                 searchPlaceholder: 'Cari data',
             },
             scrollX: true,
-            ajax: "{{ route('sell.datatables') }}",
+            ajax: {
+                url: "{{ route('sell.datatables') }}",
+                data: function (d) {
+                    const filterElm = mainContentElm.querySelector('.sellTableFilter');
+                    d.filter = {
+                        'date_start': filterElm.querySelector('[name="date_start"]').value,
+                        'date_end': filterElm.querySelector('[name="date_end"]').value,
+                    };
+                },
+            },
             columns: [
                 {data: 'DT_RowIndex', orderable: false, searchable: false },
-                {data: 'id_at_idn', searchable: false, visible: false, printable: false},
-                {data: 'updated_at_idn'},
-                {data: 'member_name'},
-                {data: 'suplier_name'},
-                {data: 'summary_iso'},
-                {data: 'user_name', name: 'status_text'},
-                {data: 'status', name: 'status_text'},
+                {data: '_id'},
+                {data: '_updated_at'},
+                {data: '_member_name'},
+                {data: 'summary'},
+                {data: '_user_name'},
+                {data: '_status'},
                 {data: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'},
             ],
             order: [[1, 'desc']],
@@ -109,7 +147,6 @@
                 select2DatatableInit();
             },
         });
-
         const itemsSelect = $('.mainContent [name="items"]').select2({
             width: '100%',
             placeholder: () => {

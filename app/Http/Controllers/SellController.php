@@ -267,4 +267,59 @@ class SellController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Display a listing of the resource in form of datatable.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function datatables(Request $request)
+    {
+        $sells = Sell::select([
+                'sells.id',
+                DB::raw("CONCAT('PJ-', LPAD(sells.id, 5, '0')) AS _id"),
+                DB::raw("DATE_FORMAT(sells.updated_at, '%d %b %Y') AS _updated_at"),
+                'members.name AS _member_name',
+                'sells.summary',
+                'users.name AS _user_name',
+                'look_ups.label as _status',
+            ])
+            ->leftJoin('members', 'members.id', '=', 'sells.member_id')
+            ->leftJoin('users', 'users.id', '=', 'sells.user_id')
+            ->leftJoin('look_ups', function ($join) {
+                $join->on('look_ups.key', '=', 'sells.sell_status');
+                $join->where('look_ups.group_code', '=', 'SELL_STATUS');
+            });
+
+        if ($request->filter['date_start'] != null && $request->filter['date_end'] != null) {
+            $sells->where('sells.updated_at', '>=', $request->filter['date_start'])
+                ->where('sells.updated_at', '<=', $request->filter['date_end'] . " 23:59:59");
+        }
+
+        return datatables()
+            ->of($sells)
+            ->addIndexColumn()
+            // ->filterColumn('updated_at_idn', function ($query, $keyword) {
+            //     $sql = "DATE_FORMAT(return_items.updated_at, '%d %b %Y') like ?";
+            //     $query->whereRaw($sql, ["%{$keyword}%"]);
+            // })
+            // ->filterColumn('suplier_name', function ($query, $keyword) {
+            //     $sql = "supliers.name like ?";
+            //     $query->whereRaw($sql, ["%{$keyword}%"]);
+            // })
+            // ->filterColumn('summary_iso', function ($query, $keyword) {
+            //     $sql = "FORMAT(return_items.summary, 2) like ?";
+            //     $query->whereRaw($sql, ["%{$keyword}%"]);
+            // })
+            // ->filterColumn('user_name', function ($query, $keyword) {
+            //     $sql = "users.name like ?";
+            //     $query->whereRaw($sql, ["%{$keyword}%"]);
+            // })
+            ->addColumn('action', function ($sell) {
+                $btn = '<button data-remote_get="' . route('sell.show', $sell->id) . '" type="button" class="btn btn-info btn-sm btnOpen" title="Lihat"><i class="fas fa-eye fa-fw"></i></button> ';
+                return $btn;
+            })
+            ->toJson();
+    }
 }
