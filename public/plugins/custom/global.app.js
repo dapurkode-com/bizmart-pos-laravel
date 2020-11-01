@@ -106,6 +106,16 @@ function select2DatatableInit() {
 
 }
 
+function getIndoDate(val){
+    let date = new Date(val).toDateString();
+    let date_split = date.split(' ');
+    return `${date_split[2]} ${date_split[1]} ${date_split[3]}`;
+}
+
+function getIsoNumberWithSeparator(isoNumber){
+    return (isoNumber.toFixed(2)).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+}
+
 export { 
     domReady,
     addListenToEvent,
@@ -115,4 +125,6 @@ export {
     swalConfirm,
     simulateEvent,
     select2DatatableInit,
+    getIndoDate,
+    getIsoNumberWithSeparator,
 }

@@ -83,4 +83,18 @@ class Sell extends Model
     {
         return $this->belongsTo(\App\Member::class);
     }
+
+    /**
+     * Label status
+     *
+     * @return string
+     */
+    public function statusText()
+    {
+        $lookUp = LookUp::where('group_code', 'SELL_STATUS')
+            ->where('key', $this->sell_status)
+            ->first();
+
+        return $lookUp != null ? $lookUp->label : '-';
+    }
 }

@@ -277,9 +277,6 @@
 
 
 
-        $(document).ready(() => {   
-        });
-
         domReady(() => {
             eraseErrorInit();
 

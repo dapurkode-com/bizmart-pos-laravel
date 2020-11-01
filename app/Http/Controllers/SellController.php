@@ -145,7 +145,12 @@ class SellController extends Controller
      */
     public function show($id)
     {
-        //
+        $sell = Sell::with('user', 'member', 'sellDetails', 'sellDetails.item')->findOrFail($id);
+        $sell->kode = "PJ-" . str_pad($sell->id, 5, '0', STR_PAD_LEFT);
+        $sell->status_text = $sell->statusText();
+        return response()->json([
+            'sell' => $sell,
+        ]);
     }
 
     /**
@@ -283,6 +288,7 @@ class SellController extends Controller
                 'members.name AS _member_name',
                 'sells.summary',
                 'users.name AS _user_name',
+                'sells.sell_status',
                 'look_ups.label as _status',
             ])
             ->leftJoin('members', 'members.id', '=', 'sells.member_id')
@@ -300,26 +306,38 @@ class SellController extends Controller
         return datatables()
             ->of($sells)
             ->addIndexColumn()
-            // ->filterColumn('updated_at_idn', function ($query, $keyword) {
-            //     $sql = "DATE_FORMAT(return_items.updated_at, '%d %b %Y') like ?";
-            //     $query->whereRaw($sql, ["%{$keyword}%"]);
-            // })
-            // ->filterColumn('suplier_name', function ($query, $keyword) {
-            //     $sql = "supliers.name like ?";
-            //     $query->whereRaw($sql, ["%{$keyword}%"]);
-            // })
-            // ->filterColumn('summary_iso', function ($query, $keyword) {
-            //     $sql = "FORMAT(return_items.summary, 2) like ?";
-            //     $query->whereRaw($sql, ["%{$keyword}%"]);
-            // })
-            // ->filterColumn('user_name', function ($query, $keyword) {
-            //     $sql = "users.name like ?";
-            //     $query->whereRaw($sql, ["%{$keyword}%"]);
-            // })
-            ->addColumn('action', function ($sell) {
-                $btn = '<button data-remote_get="' . route('sell.show', $sell->id) . '" type="button" class="btn btn-info btn-sm btnOpen" title="Lihat"><i class="fas fa-eye fa-fw"></i></button> ';
+            ->filterColumn('_id', function ($query, $keyword) {
+                $sql = "CONCAT('PJ-', LPAD(sells.id, 5, '0')) like ?";
+                $query->whereRaw($sql, ["%{$keyword}%"]);
+            })
+            ->filterColumn('_updated_at', function ($query, $keyword) {
+                $sql = "DATE_FORMAT(sells.updated_at, '%d %b %Y') like ?";
+                $query->whereRaw($sql, ["%{$keyword}%"]);
+            })
+            ->filterColumn('_member_name', function ($query, $keyword) {
+                $sql = "members.name like ?";
+                $query->whereRaw($sql, ["%{$keyword}%"]);
+            })
+            ->filterColumn('_user_name', function ($query, $keyword) {
+                $sql = "users.name like ?";
+                $query->whereRaw($sql, ["%{$keyword}%"]);
+            })
+            ->filterColumn('_status', function ($query, $keyword) {
+                $sql = "look_ups.label like ?";
+                $query->whereRaw($sql, ["%{$keyword}%"]);
+            })
+            ->addColumn('_status_raw', function ($sell) {
+                if ($sell->sell_status == 'PO') {
+                    return '<p class="text-success">' . $sell->_status . '</p>';
+                } else {
+                    return '<p class="text-warning">' . $sell->_status . '</p>';
+                }
+            })
+            ->addColumn('_action_raw', function ($sell) {
+                $btn = '<button data-remote_get="' . route('sell.show', $sell->id) . '" type="button" class="btn btn-info btn-sm openBtn" title="Lihat"><i class="fas fa-eye fa-fw"></i></button> ';
                 return $btn;
             })
+            ->rawColumns(['_action_raw', '_status_raw'])
             ->toJson();
     }
 }

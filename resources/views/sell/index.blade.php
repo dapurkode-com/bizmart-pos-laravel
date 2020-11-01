@@ -25,9 +25,15 @@
             <div class="card bg-default">
                 <div class="card-body">
                     <div class="sellTableFilter">
-                        <input type="date" name="date_start" class="form-control">
+                        <div class="form-group mb-0">
+                            <input type="date" name="date_start" class="form-control">
+                            <div class="invalid-feedback"></div>
+                        </div>
                         <p class="mb-0">sampai</p>
-                        <input type="date" name="date_end" class="form-control">
+                        <div class="form-group mb-0">
+                            <input type="date" name="date_end" class="form-control">
+                            <div class="invalid-feedback"></div>
+                        </div>
                         <button type="button" class="btn btn-info filterButton"><i class="fas fa-search mr-2"></i>Cari</button>
                     </div>
                 </div>
@@ -39,6 +45,7 @@
                             <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Daftar Penjualan</h5>
                         </div>
                         <div class="col-6 text-right">
+                            <button type="button" class="btn btn-default sellTableRefreshBtn"><i class="fas fa-sync-alt" title="Refresh Table"></i></button>
                             <button type="button" class="btn btn-default" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                         </div>
                     </div>
@@ -63,6 +70,22 @@
             </div>
         </div>
     </div>
+
+    <!-- modal detail -->
+    <form>
+        <div class="modal fade" id="detailModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Detail Penjualan</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body"></div>
+                    <div class="modal-footer"></div>
+                </div>
+            </div>
+        </div>
+    </form>
 @stop
 
 @section('css')
@@ -82,9 +105,12 @@
             .sellTableFilter {
                 grid-template-columns: 1fr;
                 justify-items: center;
+                gap: 0;
             }
             .sellTableFilter .filterButton {
-                width: 100%;
+                margin-top: 1rem;
+                width: 185.19px;
+                justify-self: center;
             }
         }
     </style>
@@ -92,7 +118,7 @@
 
 @section('js')
     <script type="module">
-        import { select2DatatableInit, domReady, addListenToEvent, drawError, eraseErrorInit, swalAlert, swalConfirm, simulateEvent } from '{{ asset("plugins/custom/global.app.js") }}'
+        import { select2DatatableInit, domReady, addListenToEvent, getIndoDate, getIsoNumberWithSeparator } from '{{ asset("plugins/custom/global.app.js") }}'
         
         const mainContentElm = document.querySelector('.mainContent');
         const sellTable = $('#sellTable').DataTable({
@@ -139,282 +165,168 @@
                 {data: '_member_name'},
                 {data: 'summary'},
                 {data: '_user_name'},
-                {data: '_status'},
-                {data: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'},
+                {data: '_status_raw', name:"_status"},
+                {data: '_action_raw', orderable: false, searchable: false, className: 'text-right text-nowrap'},
             ],
             order: [[1, 'desc']],
             initComplete: () => {
                 select2DatatableInit();
             },
         });
-        const itemsSelect = $('.mainContent [name="items"]').select2({
-            width: '100%',
-            placeholder: () => {
-                return $(this).data('placeholder');
-            },
-            language: {
-                errorLoading: function(){
-                    return "Searching..."
-                }
-            },
-            allowClear: true,
-            ajax: {
-                url: function () {
-                    return $(this).data('url');
-                },
-                dataType: 'json',
-                data: function (params) {
-                    return {
-                        _token: `{{ csrf_token() }}`,
-                        term: params.term || '',
-                        page: params.page || 1
-                    }
-                },
-                cache: true
-            }
-        });
-        const membersSelect = $('.mainContent [name="members"]').select2({
-            width: '100%',
-            placeholder: () => {
-                return $(this).data('placeholder');
-            },
-            language: {
-                errorLoading: function(){
-                    return "Searching..."
-                }
-            },
-            allowClear: true,
-            ajax: {
-                url: function () {
-                    return $(this).data('url');
-                },
-                dataType: 'json',
-                data: function (params) {
-                    return {
-                        _token: `{{ csrf_token() }}`,
-                        term: params.term || '',
-                        page: params.page || 1
-                    }
-                },
-                cache: true
-            }
-        });
-        const itemsTable = document.querySelector('.mainContent .itemsTable');
+        const detailModal = document.querySelector('#detailModal');
+        const sellTableFilterElm = mainContentElm.querySelector('.sellTableFilter');
 
 
-
-        $(document).ready(() => {   
-        });
 
         domReady(() => {
-            eraseErrorInit();
-
-            addListenToEvent('.mainContent .addItemBtn', 'click', (event) => {
-                const isItemsSelectEmpty = itemsSelect.val() === '' || itemsSelect.val() === null;
-                if (isItemsSelectEmpty) {
-                    drawError(itemsSelect[0].parentElement.parentElement, {
-                        items: ['Barang wajib diisi.']
-                    })
-                } else {
-                    const itemObj = JSON.parse(itemsSelect.val());
-                    let isItemExistInTable = false;
-                    itemsTable.querySelectorAll('[name="items[]"]').forEach((_elm) => {
-                        const _itemObj = JSON.parse(_elm.value);
-                        if (_itemObj.id === itemObj.id) {
-                            isItemExistInTable = true;
-                            return false;
-                        }
-                    });
-                    if (isItemExistInTable) {
-                        swalAlert('Barang ini sudah ada dalam table', 'error');
-                    } else {
-                        itemsTable.querySelector('tbody').append(drawItemToTable(itemObj));
-                        calculateTable();
-                    }
-                }
+            addListenToEvent('.mainContent .filterButton', 'click', (event) => {
+                sellTable.ajax.reload();
             });
 
-            addListenToEvent('.mainContent .itemsTable .deleteItemBtn', 'click', (event) => {
+            addListenToEvent('.mainContent .sellTableRefreshBtn', 'click', (event) => {
+                sellTableFilterElm.querySelectorAll('input').forEach((elm) => {
+                    elm.value = '';
+                });
+                sellTable.ajax.reload();
+            });
+
+            addListenToEvent('#sellTable .openBtn', 'click', (event) => {
                 const thisBtn = event.target.closest('button');
-                thisBtn.closest('tr').remove();
-                calculateTable();
-            });
 
-            addListenToEvent('.mainContent .itemsTable [name="qty[]"]', 'input', (event) => {
-                calculateTable();
-            });
-            
-            addListenToEvent('.mainContent .itemsTable [name="tax_percent"]', 'input', (event) => {
-                calculateTable();
-            });
-            
-            addListenToEvent('.mainContent .itemsTable [name="paid_amount"]', 'input', (event) => {
-                calculateTable();
-            });
+                detailModal.querySelector('.modal-title').innerHTML = `Loading data...`;
+                detailModal.querySelector('.modal-body').classList.add('d-none');
+                detailModal.querySelector('.modal-footer').classList.add('d-none');
+                $(detailModal).modal('show');
 
-            addListenToEvent('.mainContent button[type="reset"]', 'click', (event) => {
-                itemsTable.querySelector('tbody').innerHTML = '';
-                itemsSelect.html('').trigger('change');
-                membersSelect.html('').trigger('change');
-            });
+                fetch(`${thisBtn.dataset.remote_get}`)
+                    .then(response => response.json())
+                    .then(result => {
+                        detailModal.querySelector('.modal-body').innerHTML = drawToDetailModalBody(result.sell);
 
-            addListenToEvent('.mainContent .submitButton', 'click', (event) => {
-                swalConfirm('melakukan ini')
-                    .then(() => {
-                        // prepare data
-                        const paidAmountInput = itemsTable.querySelector('[name="paid_amount"]');
-                        const summaryInput = itemsTable.querySelector('[name="summary"]');
-                        const itemsInputs = itemsTable.querySelectorAll('[name="items[]"]');
-                        const resetButton = mainContentElm.querySelector('button[type="reset"]');
-                        let memberObj = JSON.parse(membersSelect.val());
-                        let paidAmount = (Number(paidAmountInput.value) > Number(summaryInput.value)) ? summaryInput.value : paidAmountInput.value;
-
-                        let data = {
-                            member_id : (memberObj) ? memberObj.id : '',
-                            summary : summaryInput.value,
-                            tax : itemsTable.querySelector('[name="tax"]').value,
-                            note : mainContentElm.querySelector('[name="note"]').value,
-                            paid_amount : paidAmount,
-                            sell_details : []
-                        }
-
-                        itemsInputs.forEach((itemsInput, index) => {
-                            console.log(data, index);
-                            const itemObj = JSON.parse(itemsInput.value);
-                            const qtyInput = itemsTable.querySelectorAll('[name="qty[]"]')[index];
-
-                            data.sell_details[index] = {};
-                            data.sell_details[index].item_id = (itemObj) ? itemObj.id : '';
-                            data.sell_details[index].qty = qtyInput.value;
-                            data.sell_details[index].sell_price = (itemObj) ? itemObj.sell_price : '';
-                        });
-                        // end prepare data
-                        
-                        // loading and disabled button
-                        document.querySelector('.submitButton').classList.toggle('d-none');
-                        document.querySelector('.submitButtonLoading').classList.toggle('d-none');
-                        
-                        fetch("{{ route('sell.store') }}", {
-                                method: "POST",
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                                },
-                                body: JSON.stringify(data)
-                            })
-                            .then(response => response.json())
-                            .then(result => {
-                                if(result.status == 'invalid'){
-                                    customDrawError(mainContentElm, result.validators);
-                                }
-                                if(result.status == 'valid'){
-                                    swalAlert(result.pesan, 'success');
-                                    simulateEvent(resetButton, 'click');
-                                }
-                                if(result.status == 'error'){
-                                    swalAlert(result.pesan, 'warning');
-                                }
-                            })
-                            .finally(() => {
-                                // loading and disabled button
-                                document.querySelector('.submitButton').classList.toggle('d-none');
-                                document.querySelector('.submitButtonLoading').classList.toggle('d-none');
-                            });
+                        detailModal.querySelector('.modal-title').innerHTML = `Detail Penjualan`;
+                        detailModal.querySelector('.modal-body').classList.remove('d-none');
+                        detailModal.querySelector('.modal-footer').classList.remove('d-none');
                     });
             });
         });
 
 
 
-        function drawItemToTable (itemObj) {
-            const htmlNode = document.createElement('tr');
-            htmlNode.innerHTML = `
-                <tr>
-                    <td>${itemObj.barcode}</td>
-                    <td>${itemObj.name}</td>
-                    <td class="p-1">
-                        <div class="form-group mb-0">
-                            <input type="number" name="qty[]" class="form-control text-right" placeholder="0">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                    </td>
-                    <td class="text-right">${itemObj.sell_price}</td>
-                    <td class="p-1">
-                        <div class="form-group mb-0">
-                            <input type="number" name="sell_price_total[]" class="form-control text-right" placeholder="0" readonly>
-                            <div class="invalid-feedback"></div>
-                        </div>
-                    </td>
-                    <td class="text-right">
-                        <button type="button" class="btn btn-danger btn-xs deleteItemBtn d-block float-right" title="Hapus"><i class="fas fa-trash fa-fw"></i></button>
-                        <input type="hidden" name="items[]" value='${JSON.stringify(itemObj)}'>
-                    </td>
-                </tr>
-            `;
-            return htmlNode;
-        }
-
-        function calculateTable() {
-            const summaryBeforeTaxInput = itemsTable.querySelector('[name="summary_before_tax"]');
-            const summaryInput = itemsTable.querySelector('[name="summary"]');
-            const taxPercentInput = itemsTable.querySelector('[name="tax_percent"]');
-            const taxInput = itemsTable.querySelector('[name="tax"]');
-            const paidAmountInput = itemsTable.querySelector('[name="paid_amount"]');
-            const paidReturnInput = itemsTable.querySelector('[name="paid_return"]');
-            let summaryBeforeTax = Number(0);
-            itemsTable.querySelectorAll('[name="qty[]"]').forEach((qtyInput, index) => {
-                const itemsInput = itemsTable.querySelectorAll('[name="items[]"]')[index];
-                const itemsObj = JSON.parse(itemsInput.value);
-                const sellPriceTotalInput = itemsTable.querySelectorAll('[name="sell_price_total[]"]')[index];
-                let sellPriceTotal = Number(qtyInput.value) * Number(itemsObj.sell_price);
-                summaryBeforeTax = summaryBeforeTax + Number(sellPriceTotal);
-
-                sellPriceTotalInput.value = sellPriceTotal;
+        function drawToDetailModalBody(obj) {
+            let subHtml = ``;
+            let subTotal = Number(0);
+            obj.sell_details.forEach((sell_detail, index) => {
+                let sellPriceTotal = Number(sell_detail.qty) * Number(sell_detail.sell_price);
+                subTotal += sellPriceTotal;
+                subHtml += `
+                    <tr>
+                        <td>${++index}</td>
+                        <td>${sell_detail.item.barcode}</td>
+                        <td>${sell_detail.item.name}</td>
+                        <td class="text-right">${sell_detail.qty}</td>
+                        <td class="text-right">${getIsoNumberWithSeparator(sell_detail.sell_price)}</td>
+                        <td class="text-right">${getIsoNumberWithSeparator(sellPriceTotal)}</td>
+                    </tr>
+                `;
             });
-            let tax = (summaryBeforeTax * Number(taxPercentInput.value) / Number(100));
-            let summary = summaryBeforeTax + tax;
-            let paidReturn = Number(paidAmountInput.value) - summary;
+
+            let html = `
+                <div class="row">
+                    <div class="col-lg-7">
+                        <div class="card bg-info">
+                            <div class="card-header">
+                                <h3 class="card-title">Informasi Umum</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <dl class="row mb-0">
+                                    <dt class="col-sm-4">Kode</dt>
+                                    <dd class="col-sm-8">${obj.kode}</dd>
+                                    <dt class="col-sm-4">Nama Member</dt>
+                                    <dd class="col-sm-8">${obj.member.name}</dd>
+                                    <dt class="col-sm-4">Keterangan</dt>
+                                    <dd class="col-sm-8">${obj.note}</dd>
+                                    <dt class="col-sm-4">Status</dt>
+                                    <dd class="col-sm-8">${obj.status_text}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="card bg-info">
+                            <div class="card-header">
+                                <h3 class="card-title">Metadata</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <dl class="row mb-0">
+                                    <dt class="col-sm-4">Tgl Input</dt>
+                                    <dd class="col-sm-8">${getIndoDate(obj.created_at)}</dd>
+                                    <dt class="col-sm-4">Tgl Update</dt>
+                                    <dd class="col-sm-8">${getIndoDate(obj.updated_at)}</dd>
+                                    <dt class="col-sm-4">Pembuat</dt>
+                                    <dd class="col-sm-8">${obj.user.name}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card bg-default mb-0">
+                            <div class="card-header">
+                                <h3 class="card-title">List Barang yang Dijual</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hovered table-bordered" style="width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Barcode</th>
+                                                <th>Nama</th>
+                                                <th class="text-right">Qty</th>
+                                                <th class="text-right">Harga</th>
+                                                <th class="text-right">Harga Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>${subHtml}</tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="5" class="text-right">Subtotal</th>
+                                                <th class="text-right">${getIsoNumberWithSeparator(subTotal)}</th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="5" class="text-right">PPN</th>
+                                                <th class="text-right">${getIsoNumberWithSeparator(obj.tax)}</th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="5" class="text-right">Total</th>
+                                                <th class="text-right">${getIsoNumberWithSeparator(obj.summary)}</th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="5" class="text-right">Nonimal Bayar</th>
+                                                <th class="text-right">${getIsoNumberWithSeparator(obj.paid_amount)}</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
             
-            summaryBeforeTaxInput.value = summaryBeforeTax;
-            taxInput.value = tax;
-            summaryInput.value = summary;
-            paidReturnInput.value = paidReturn;
-        }
-
-        function customDrawError(parentElm, validators) {
-            for (let keyName in validators) {
-                if (validators.hasOwnProperty(keyName)) {
-                    const value = validators[keyName][0];
-
-                    if (keyName.includes('.')) {
-                        const keyNameSplited = keyName.split('.');
-                        const index = keyNameSplited[1];
-                        const elmName = keyNameSplited[2];
-
-                        keyName = `${elmName}[]`;
-                         
-                        parentElm.querySelectorAll(`[name="${keyName}"]`)[index].classList.add('is-invalid');
-                        parentElm.querySelectorAll(`[name="${keyName}"]`)[index].closest('.form-group').querySelector('.invalid-feedback').innerHTML = `${value}`;
-                    }
-                    else {
-                        let isDraw = true;
-                        
-                        if (keyName == 'member_id') {
-                            keyName = 'members';
-                        }
-                        if (keyName == 'sell_details') {
-                            isDraw = false;
-                            swalAlert('List barang harus diisi', 'warning');
-                        }
-
-                        if (isDraw === true) {
-                            parentElm.querySelector(`[name="${keyName}"]`).classList.add('is-invalid');
-                            parentElm.querySelector(`[name="${keyName}"]`).closest('.form-group').querySelector('.invalid-feedback').innerHTML = `${value}`;
-                        }
-                    }
-
-                }
-            }
+            return html;
         }
     </script>
 @stop
