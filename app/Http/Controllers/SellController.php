@@ -117,6 +117,7 @@ class SellController extends Controller
             // store to sell payment history
             SellPaymentHs::create([
                 'sell_id' => $sellId,
+                'user_id' => auth()->user()->id,
                 'amount' => $request->paid_amount,
                 'note' => $request->note,
                 'payment_date' => date('Y-m-d H:i:s'),
@@ -145,7 +146,7 @@ class SellController extends Controller
      */
     public function show($id)
     {
-        $sell = Sell::with('user', 'member', 'sellDetails', 'sellDetails.item')->findOrFail($id);
+        $sell = Sell::with('user', 'member', 'sellDetails', 'sellDetails.item', 'sellPaymentHs', 'sellPaymentHs.user')->findOrFail($id);
         $sell->kode = "PJ-" . str_pad($sell->id, 5, '0', STR_PAD_LEFT);
         $sell->status_text = $sell->statusText();
         return response()->json([
@@ -300,7 +301,7 @@ class SellController extends Controller
 
         if ($request->filter['date_start'] != null && $request->filter['date_end'] != null) {
             $sells->where('sells.updated_at', '>=', $request->filter['date_start'])
-                ->where('sells.updated_at', '<=', $request->filter['date_end'] . " 23:59:59");
+                  ->where('sells.updated_at', '<=', $request->filter['date_end'] . " 23:59:59");
         }
 
         return datatables()

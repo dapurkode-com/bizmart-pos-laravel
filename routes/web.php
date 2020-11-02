@@ -59,6 +59,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('sell/get_items', 'SellController@getItems')->name('sell.get_items');
     Route::get('sell/get_members', 'SellController@getMembers')->name('sell.get_members');
     // for sell
+
+    // for sell_payment_hs
+    Route::get('sell_payment_hs/datatables', 'SellPaymentHsController@datatables')->name('sell_payment_hs.datatables');
+    // for sell_payment_hs
     
     // for return item
     Route::get('return_item/datatables', 'ReturnItemController@datatables')->name('return_item.datatables');
@@ -79,6 +83,7 @@ Route::group(['middleware' => ['auth']], function () {
         'user' => 'UserController',
         'opname' => 'OpnameController',
         'sell' => 'SellController',
-        'return_item' => 'ReturnItemController'
+        'return_item' => 'ReturnItemController',
+        'sell_payment_hs' => 'SellPaymentHsController',
     ]);
 });

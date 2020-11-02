@@ -284,6 +284,10 @@ return [
                     'url'       => '/sell',
                 ],
                 [
+                    'text'      => 'Pembayaran Piutang',
+                    'url'       => '/sell_payment_hs',
+                ],
+                [
                     'text' => 'Laporan Penjualan',
                     'url' => '/sell/report',
                 ],

@@ -6,12 +6,12 @@
     <div class="row mb-2">
         <div class="col-sm-6">
             <blockquote style="margin: 0; background: unset;">
-                <h1 class="m-0 text-dark">Daftar Penjualan</h1>
+                <h1 class="m-0 text-dark">Daftar Piutang</h1>
             </blockquote>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Penjualan</li>
+                <li class="breadcrumb-item active">Piutang</li>
                 <li class="breadcrumb-item active">List</li>
             </ol>
         </div>
@@ -42,7 +42,7 @@
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-6">
-                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Daftar Penjualan</h5>
+                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Daftar Piutang</h5>
                         </div>
                         <div class="col-6 text-right">
                             <button type="button" class="btn btn-default sellTableRefreshBtn"><i class="fas fa-sync-alt" title="Refresh Table"></i></button>
@@ -77,7 +77,7 @@
             <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Detail Penjualan</h4>
+                        <h4 class="modal-title">Detail Piutang</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body"></div>
@@ -149,7 +149,7 @@
             },
             scrollX: true,
             ajax: {
-                url: "{{ route('sell.datatables') }}",
+                url: "{{ route('sell_payment_hs.datatables') }}",
                 data: function (d) {
                     const filterElm = mainContentElm.querySelector('.sellTableFilter');
                     d.filter = {
@@ -203,7 +203,7 @@
                     .then(result => {
                         detailModal.querySelector('.modal-body').innerHTML = drawToDetailModalBody(result.sell);
 
-                        detailModal.querySelector('.modal-title').innerHTML = `Detail Penjualan`;
+                        detailModal.querySelector('.modal-title').innerHTML = `Detail Piutang`;
                         detailModal.querySelector('.modal-body').classList.remove('d-none');
                         detailModal.querySelector('.modal-footer').classList.remove('d-none');
                     });
@@ -327,10 +327,6 @@
                                             <tr>
                                                 <th colspan="5" class="text-right">Total</th>
                                                 <th class="text-right">${getIsoNumberWithSeparator(obj.summary)}</th>
-                                            </tr>
-                                            <tr>
-                                                <th colspan="5" class="text-right">Nonimal Bayar</th>
-                                                <th class="text-right">${getIsoNumberWithSeparator(obj.paid_amount)}</th>
                                             </tr>
                                         </tfoot>
                                     </table>

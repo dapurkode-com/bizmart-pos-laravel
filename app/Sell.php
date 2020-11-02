@@ -97,4 +97,14 @@ class Sell extends Model
 
         return $lookUp != null ? $lookUp->label : '-';
     }
+
+    /**
+     * [Relationship] from sell payment hs table
+     *
+     * @return hasMany [SellPaymentHs]
+     */
+    public function sellPaymentHs()
+    {
+        return $this->hasMany(\App\SellPaymentHs::class);
+    }
 }

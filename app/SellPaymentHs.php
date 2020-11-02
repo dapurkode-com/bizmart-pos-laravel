@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Traits\Blameable;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -15,6 +16,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SellPaymentHs extends Model
 {
+    use Blameable;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -22,6 +25,7 @@ class SellPaymentHs extends Model
      */
     protected $fillable = [
         'sell_id',
+        'user_id',
         'payment_date',
         'amount',
         'note',
@@ -35,6 +39,27 @@ class SellPaymentHs extends Model
     protected $casts = [
         'id' => 'integer',
         'sell_id' => 'integer',
+        'user_id' => 'integer',
         'amount' => 'double',
     ];
+
+    /**
+     * [Relationship] to sell table
+     *
+     * @return belongsTo [Sell]
+     */
+    public function sell()
+    {
+        return $this->belongsTo(\App\Sell::class);
+    }
+
+    /**
+     * [Relationship] to user table
+     *
+     * @return belongsTo [User]
+     */
+    public function user()
+    {
+        return $this->belongsTo(\App\User::class);
+    }
 }
