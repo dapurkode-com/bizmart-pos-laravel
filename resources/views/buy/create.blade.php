@@ -20,6 +20,9 @@
 	</div>
 	<!-- /.col -->
 </div>
+<div class="row mb-2">
+    
+</div>
 @stop
 
 @section('content')
@@ -54,15 +57,15 @@
     <div class="alert alert-danger">
         <ul>
             @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
+            <li>{{ $error }}</li>
             @endforeach
         </ul>
     </div>
-@endif
+    @endif
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-            <form action="{{ route('buy.store') }}" method="post">
+                <form action="{{ route('buy.store') }}" method="post">
                 @csrf
                 <div class="card-header">
                     <h3 class="card-title">Pembelian</h3>
@@ -70,33 +73,42 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-6 border p-3">
-                            <b>Barang yang dibeli</b>
-                            <table id="my_table" class="table table-bordered table-sm mt-2" >
-                                <thead>
-                                    <tr>
-                                        <th style="width: 40%">Nama</th>
-                                        <th style="width: 20%">Qty</th>
-                                        <th style="width: 30%">Harga Beli</th>
-                                        <th style="width: 10%">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if(count(old('items_id',[]))>0)
-                                        @for($i =0; $i < count(old('items_id')); $i++)                            
-                                            <tr class="my_tr">
-                                                <td><input type="hidden" name="items_id[]" value="{{ old('items_id.'.$i)}}">
-                                                    <input type="hidden" name="name[]" value="{{ old('name.'.$i)}}">{{ old('name.'.$i)}}</td>
-                                                <td><input name="qty[]" data-val="{{ old('qty.'.$i)}}" id="qty" type="number" class="form-control" value="{{ old('qty.'.$i)}}"></td>
-                                                <td><input name="buy_price[]" data-val="{{ old('buy_price.'.$i)}}" id="buy_price" type="number" class="form-control" value="{{ old('buy_price.'.$i)}}"></td>
-                                                <td><button id= "btn_delete" data-id="{{ old('items_id.'.$i)}}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></td> 
-                                            </tr>                            
-                                        @endfor
-                                    @endif
-                                </tbody>
-                                <tfoot>
+                            <div class="row">
 
-                                </tfoot>
-                            </table>
+                                <b>Barang yang dibeli</b>
+                                <table id="my_table" class="table table-bordered table-sm mt-2" >
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 40%">Nama</th>
+                                            <th style="width: 20%">Qty</th>
+                                            <th style="width: 30%">Harga Beli</th>
+                                            <th style="width: 10%">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(count(old('items_id',[]))>0)
+                                            @for($i =0; $i < count(old('items_id')); $i++)                            
+                                                <tr class="my_tr">
+                                                    <td><input type="hidden" name="items_id[]" value="{{ old('items_id.'.$i)}}">
+                                                        <input type="hidden" name="name[]" value="{{ old('name.'.$i)}}">{{ old('name.'.$i)}}</td>
+                                                    <td><input name="qty[]" data-val="{{ old('qty.'.$i)}}" id="qty" type="number" class="form-control" value="{{ old('qty.'.$i)}}"></td>
+                                                    <td><input name="buy_price[]" data-val="{{ old('buy_price.'.$i)}}" id="buy_price" type="number" class="form-control" value="{{ old('buy_price.'.$i)}}"></td>
+                                                    <td><button id= "btn_delete" data-id="{{ old('items_id.'.$i)}}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></td> 
+                                                </tr>                            
+                                            @endfor
+                                        @endif
+                                    </tbody>
+                                    <tfoot>
+                                        
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <b>Nominal Bayar</b>
+                                <div class="input-group">
+                                    <input type="number" name="paid_amount" class="form-control" value="0" aria-label="Tulis barcode" aria-describedby="basic-addon2">
+                                </div>
+                            </div>
                         </div>
                         <div class="col-sm-6 border p-3">
                             <div class="form-group">
@@ -125,7 +137,7 @@
                             <hr>
                             <div class="form-group">
                                 <label for="note">Keterangan</label>
-                                <textarea  class="form-control" name="note" id="note" cols="10" rows="5"></textarea>
+                                <textarea  class="form-control" name="note" id="note" cols="10" rows="2"></textarea>
                             </div>
                         </div>
                     </div>
@@ -136,7 +148,7 @@
                             <button id="reset" type="reset" class="btn btn-lg btn-block btn-danger"><i class="fa fa-times"></i> Batalkan</button>
                         </div>
                         <div class="col-6">
-                            <button type="submit" class="btn btn-lg btn-block btn-success"><i class="fa fa-check"></i> Bayar</button>
+                            <button type="submit" class="btn btn-lg btn-block btn-success"><i class="fa fa-check"></i> Simpan</button>
                         </div>
                     </div>
                 </div>

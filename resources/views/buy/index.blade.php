@@ -20,28 +20,52 @@
 @stop
 
 @section('content')
-   <div class="row">
-       <div class="col-sm-12">
-           <div class="card">
-               <div class="card-header">
-                <h3 class="card-title">Daftar List Pembelian</h3>
-               </div>
-               <div class="card-body">
-                <table class="table table-striped" id="tbIndex">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Tanggal</th>
-                            <th>Kode Pembelian</th>
-                            <th>Suplier</th>
-                            <th>Total Harga</th>
-                            <th class="text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <form class="form-inline">
+                        <div class="col-sm-5 form-group" style="white-space:nowrap">
+                            <label for="start_date">Tanggal Awal</label>
+                            <input type="date" class="form-control" name="start_date">
 
-                    </tbody>
-                </table>
+                        </div>
+                        <div class="col-sm-5 form-group" style="white-space:nowrap">
+                            <label for="finish_date">Tanggal Akhir</label>
+                            <input type="date" class="form-control" name="finish_date">
+
+                        </div>
+                            <button type="button" class="btn btn-primary float-right">Cari</button>
+
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Daftar List Pembelian</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped" id="tbIndex" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tanggal</th>
+                                <th>Kode Pembelian</th>
+                                <th>Suplier</th>
+                                <th>Total Harga</th>
+                                <th>Status</th>
+                                <th class="text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+    
+                        </tbody>
+                    </table>
                </div>
            </div>
        </div>
@@ -88,6 +112,7 @@
                 {data: 'uniq_id'},
                 {data: 'suplier.name'},
                 {data: 'summary'},
+                {data: 'buy_status'},
                 {data: 'action', orderable: false, searchable: false, className: 'text-right'},
             ],
             order: [[1, 'asc']]

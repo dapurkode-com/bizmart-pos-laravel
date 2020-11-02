@@ -10,6 +10,7 @@ use App\Helpers\BadgeHelper;
 use App\BuyDetail;
 use Illuminate\Support\Facades\DB;
 use App\StockLog;
+use App\BuyPaymentHs;
 use App\Http\Requests\BuyStoreRequest;
 use App\SystemParam;
 use Dompdf\Dompdf;
@@ -56,7 +57,9 @@ class BuyController extends Controller
             $note       = $request->input('note');
             $qty  = $request->input('qty');
             $item_id = $request->input('items_id');
+            $paid_amount = $request->input('paid_amount');
             $total = 0;
+            // dd($paid_amount);
             // dd($qty);
 
             $buy = Buy::create([
@@ -80,14 +83,14 @@ class BuyController extends Controller
                 $item->buy_price = $new_buy_price;
                 $item->save();
                 
-                $data = array(
+                $dataDetail = array(
                     'buy_id'    => $buy->id,
                     'item_id'   => $item_id[$i],
                     'buy_price' => $buy_price,
                     'qty'       => $qty[$i],
                 );
 
-                BuyDetail::create($data);
+                BuyDetail::create($dataDetail);
 
                 $total +=$buy_price * $qty[$i];
 
@@ -108,12 +111,46 @@ class BuyController extends Controller
             }
 
             $buy->summary = $total;
-            $buy->save();
+            
+            if($paid_amount > $total){
+                return redirect()->back()
+                ->with('message', "Nominal tidak boleh melebihi total pembelian.");
+            } 
+            elseif ($paid_amount == $total) {
+                $buy->paid_amount = $paid_amount;
+                $buy->buy_status = 'PO';
+                $buy->save();
 
-            DB::commit();
-            $request->session()->flash('buy.summary', $buy->summary);
-            return redirect()->back()
+                $dataPayment = array(
+                    'buy_id' => $buy->id,
+                    'payment_date'  => $buy->created_at,
+                    'amount'        => $paid_amount,
+                );
+                
+                BuyPaymentHs::create($dataPayment);
+                
+                DB::commit();
+                $request->session()->flash('buy.summary', $buy->summary);
+                return redirect()->back()
                 ->with('message', "Data berhasil tersimpan.");
+            } else {
+                $buy->paid_amount = $paid_amount;
+                $buy->save();
+                
+                $dataPayment = array(
+                    'buy_id' => $buy->id,
+                    'payment_date'  => $buy->created_at,
+                    'amount'        => $paid_amount,
+                    // 'created_by'    => 
+                );
+                
+                BuyPaymentHs::create($dataPayment);
+
+                DB::commit();
+                $request->session()->flash('buy.summary', $buy->summary);
+                return redirect()->back()
+                    ->with('message', "Data berhasil tersimpan.");
+            }
         } catch (Exception $exception) {
             DB::rollBack();
             return redirect()->back()
@@ -230,7 +267,6 @@ class BuyController extends Controller
         $dompdf->setPaper('A5', 'landscape');
         $dompdf->render();
         $dompdf->stream("Pembelian $uniq_id bizmart.pdf", array("Attachment" => false));
-        // return view('buy.print', compact('buys','details','mrch_name','mrch_addr','mrch_phone'));
     }
 
 
@@ -260,6 +296,9 @@ class BuyController extends Controller
         return datatables()
         ->of($data)
         ->addIndexColumn()
+        ->editColumn('buy_status', function ($buy){
+            return $buy->statusText();
+        })
         ->editColumn('created_at', function ($buy){
             return $buy->created_at->isoFormat('dddd, D MMMM Y');
         })
