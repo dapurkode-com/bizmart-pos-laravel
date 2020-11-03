@@ -238,7 +238,7 @@
                     <tr>
                         <td>${++index}</td>
                         <td>${getIndoDate(sell_payment_h.updated_at)}</td>
-                        <td>${sell_payment_h.note}</td>
+                        <td>${(sell_payment_h.note) ? sell_payment_h.note : '-'}</td>
                         <td>${sell_payment_h.user.name}</td>
                         <td class="text-right">${getIsoNumberWithSeparator(sell_payment_h.amount)}</td>
                     </tr>
@@ -262,7 +262,7 @@
                                     <dt class="col-sm-4">Nama Member</dt>
                                     <dd class="col-sm-8">${obj.member.name}</dd>
                                     <dt class="col-sm-4">Keterangan</dt>
-                                    <dd class="col-sm-8">${obj.note}</dd>
+                                    <dd class="col-sm-8">${(obj.note) ? obj.note : '-'}</dd>
                                     <dt class="col-sm-4">Status</dt>
                                     <dd class="col-sm-8">${obj.status_text}</dd>
                                 </dl>
@@ -344,7 +344,7 @@
                     <div class="col-sm-12">
                         <div class="card bg-default mb-0">
                             <div class="card-header">
-                                <h3 class="card-title">Histori Pembayaran</h3>
+                                <h3 class="card-title">Histori Penagihan</h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                                 </div>

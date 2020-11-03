@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SellPaymentHsUpdateRequest;
 use App\Sell;
 use App\SellPaymentHs;
 use DB;
+use Exception;
 use Illuminate\Http\Request;
 
 class SellPaymentHsController extends Controller
@@ -74,42 +76,61 @@ class SellPaymentHsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(SellPaymentHsUpdateRequest $request, $id)
     {
-        $sellId = $id;
         /*
         request {
             amount,
             note,
         }
         */
+        $sellId = $id;
+        $summary = Sell::findOrFail($sellId)->summary;
+        $sumPaymentAmount = SellPaymentHs::findOrFail($sellId)->sum('amount');
+        $amountLeft = $summary - $sumPaymentAmount;
 
-        //todo amount harus di check ke sisa
-
-        try {
-            DB::beginTransaction();
-
-            SellPaymentHs::create([
-                'sell_id' => $sellId,
-                'user_id' => auth()->user()->id,
-                'amount' => $request->amount,
-                'note' => $request->note,
-                'payment_date' => date('Y-m-d H:i:s'),
-            ]);
-
-            DB::commit();
-            return response()->json([
-                'status' => 'valid',
-                'pesan' => 'Pembayaran piutang berhasil disimpan',
-            ]);
-
-        } catch (Exception $exc) {
-            DB::rollBack();
+        $isAmountGreaterThanAmountLeft = $request->amount > $amountLeft;
+        if ($isAmountGreaterThanAmountLeft) {
             return response()->json([
                 'status' => 'error',
-                'pesan' => $exc->getMessage(),
+                'pesan' => 'Nominal Tagihan melebihi sisa piutang',
             ]);
+        } else {
+            try {
+                DB::beginTransaction();
+    
+                SellPaymentHs::create([
+                    'sell_id' => $sellId,
+                    'user_id' => auth()->user()->id,
+                    'amount' => $request->amount,
+                    'note' => $request->note,
+                    'payment_date' => date('Y-m-d H:i:s'),
+                ]);
+
+                //update status on sell table
+                $sumPaymentAmount = SellPaymentHs::findOrFail($sellId)->sum('amount');
+                $isPaidOut = $sumPaymentAmount === $summary;
+                if ($isPaidOut) {
+                    Sell::findOrFail($sellId)->update([
+                        'sell_status' => 'PO',
+                    ]);
+                }
+    
+                DB::commit();
+                return response()->json([
+                    'status' => 'valid',
+                    'pesan' => 'Pembayaran piutang berhasil disimpan',
+                ]);
+    
+            } catch (Exception $exc) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'error',
+                    'pesan' => $exc->getMessage(),
+                ]);
+            }
         }
+
     }
 
     /**
@@ -185,7 +206,7 @@ class SellPaymentHsController extends Controller
                 }
             })
             ->addColumn('_action_raw', function ($sell) {
-                $btn = '<button data-remote_get="' . route('sell_payment_hs.show', $sell->id) . '" type="button" class="btn btn-primary btn-sm addBtn" title="Tambah"><i class="fas fa-plus fa-fw"></i></button> ';
+                $btn = '<button data-remote_get="' . route('sell_payment_hs.show', $sell->id) . '" data-remote_set="' . route('sell_payment_hs.update', $sell->id) . '" type="button" class="btn btn-primary btn-sm addBtn" title="Tambah"><i class="fas fa-plus fa-fw"></i></button> ';
                 $btn .= '<button data-remote_get="' . route('sell_payment_hs.show', $sell->id) . '" type="button" class="btn btn-info btn-sm openBtn" title="Lihat"><i class="fas fa-eye fa-fw"></i></button> ';
                 return $btn;
             })

@@ -284,7 +284,7 @@ return [
                     'url'       => '/sell',
                 ],
                 [
-                    'text'      => 'Pembayaran Piutang',
+                    'text'      => 'Penagihan Piutang',
                     'url'       => '/sell_payment_hs',
                 ],
                 [
