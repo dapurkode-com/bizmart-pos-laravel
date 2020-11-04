@@ -118,7 +118,7 @@
 
 @section('js')
     <script type="module">
-        import { select2DatatableInit, domReady, addListenToEvent, getIndoDate, getIsoNumberWithSeparator, swalConfirm, drawError, eraseErrorInit } from '{{ asset("plugins/custom/global.app.js") }}'
+        import { select2DatatableInit, domReady, addListenToEvent, getIndoDate, getIsoNumberWithSeparator, swalConfirm, drawError, eraseErrorInit, swalAlert } from '{{ asset("plugins/custom/global.app.js") }}'
         
         const mainContentElm = document.querySelector('.mainContent');
         const sellTable = $('#sellTable').DataTable({
@@ -244,6 +244,7 @@
                         let data = {
                             amount : detailModal.querySelector('[name="amount"]').value,
                             note : detailModal.querySelector('[name="note"]').value,
+                            _method : 'PUT',
                         }
                         // end prepare data
                         
@@ -269,7 +270,7 @@
                                 }
                                 if(result.status == 'valid'){
                                     swalAlert(result.pesan, 'success');
-                                    simulateEvent(resetButton, 'click');
+                                    detailModal('hide');
                                 }
                                 if(result.status == 'error'){
                                     swalAlert(result.pesan, 'warning');

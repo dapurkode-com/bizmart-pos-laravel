@@ -78,6 +78,8 @@ class SellPaymentHsController extends Controller
      */
     public function update(SellPaymentHsUpdateRequest $request, $id)
     {
+        // dd($id);
+        // dd($request);
         /*
         request {
             amount,
@@ -86,11 +88,12 @@ class SellPaymentHsController extends Controller
         */
         $sellId = $id;
         $summary = Sell::findOrFail($sellId)->summary;
-        $sumPaymentAmount = SellPaymentHs::findOrFail($sellId)->sum('amount');
+        $sumPaymentAmount = SellPaymentHs::where('sell_id', $sellId)->sum('amount');
         $amountLeft = $summary - $sumPaymentAmount;
 
         $isAmountGreaterThanAmountLeft = $request->amount > $amountLeft;
         if ($isAmountGreaterThanAmountLeft) {
+            dd($summary, $sumPaymentAmount, $amountLeft);
             return response()->json([
                 'status' => 'error',
                 'pesan' => 'Nominal Tagihan melebihi sisa piutang',
@@ -108,7 +111,7 @@ class SellPaymentHsController extends Controller
                 ]);
 
                 //update status on sell table
-                $sumPaymentAmount = SellPaymentHs::findOrFail($sellId)->sum('amount');
+                $sumPaymentAmount = SellPaymentHs::where('sell_id', $sellId)->sum('amount');
                 $isPaidOut = $sumPaymentAmount === $summary;
                 if ($isPaidOut) {
                     Sell::findOrFail($sellId)->update([
@@ -119,7 +122,7 @@ class SellPaymentHsController extends Controller
                 DB::commit();
                 return response()->json([
                     'status' => 'valid',
-                    'pesan' => 'Pembayaran piutang berhasil disimpan',
+                    'pesan' => 'Penagihan piutang berhasil disimpan',
                 ]);
     
             } catch (Exception $exc) {
