@@ -239,7 +239,7 @@
                         <td>${++index}</td>
                         <td>${getIndoDate(sell_payment_h.updated_at)}</td>
                         <td>${(sell_payment_h.note) ? sell_payment_h.note : '-'}</td>
-                        <td>${sell_payment_h.user.name}</td>
+                        <td>${sell_payment_h.user?.name || '-'}</td>
                         <td class="text-right">${getIsoNumberWithSeparator(sell_payment_h.amount)}</td>
                     </tr>
                 `;

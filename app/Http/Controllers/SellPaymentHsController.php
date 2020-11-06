@@ -78,8 +78,6 @@ class SellPaymentHsController extends Controller
      */
     public function update(SellPaymentHsUpdateRequest $request, $id)
     {
-        // dd($id);
-        // dd($request);
         /*
         request {
             amount,
@@ -93,7 +91,6 @@ class SellPaymentHsController extends Controller
 
         $isAmountGreaterThanAmountLeft = $request->amount > $amountLeft;
         if ($isAmountGreaterThanAmountLeft) {
-            dd($summary, $sumPaymentAmount, $amountLeft);
             return response()->json([
                 'status' => 'error',
                 'pesan' => 'Nominal Tagihan melebihi sisa piutang',

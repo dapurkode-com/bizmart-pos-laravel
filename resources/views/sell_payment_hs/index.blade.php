@@ -100,7 +100,6 @@
             width: 80px;
             justify-self: end;
         }
-
         @media only screen and (max-width: 617px) {
             .sellTableFilter {
                 grid-template-columns: 1fr;
@@ -112,6 +111,9 @@
                 width: 185.19px;
                 justify-self: center;
             }
+        }
+        .sisaPiutangBtn {
+            border-radius: 0 4px 4px 0 !important;
         }
     </style>
 @stop
@@ -176,6 +178,7 @@
         const detailModal = document.querySelector('#detailModal');
         const sellTableFilterElm = mainContentElm.querySelector('.sellTableFilter');
         let REMOTE_SET = null;
+        let SISA_PIUTANG = '';
 
         domReady(() => {
             eraseErrorInit();
@@ -214,7 +217,7 @@
             addListenToEvent('#sellTable .addBtn', 'click', (event) => {
                 const thisBtn = event.target.closest('button');
                 REMOTE_SET = thisBtn.dataset.remote_set;
-                console.log(REMOTE_SET);
+                SISA_PIUTANG = '';
 
                 detailModal.querySelector('.modal-title').innerHTML = `Loading data...`;
                 detailModal.querySelector('.modal-body').classList.add('d-none');
@@ -270,7 +273,7 @@
                                 }
                                 if(result.status == 'valid'){
                                     swalAlert(result.pesan, 'success');
-                                    detailModal('hide');
+                                    $(detailModal).modal('hide');
                                 }
                                 if(result.status == 'error'){
                                     swalAlert(result.pesan, 'warning');
@@ -284,6 +287,10 @@
                                 }
                             });
                     });
+            });
+
+            addListenToEvent('#detailModal .sisaPiutangBtn', 'click', (event) => {
+                detailModal.querySelector('[name="amount"]').value = SISA_PIUTANG;
             });
         });
 
@@ -316,11 +323,13 @@
                         <td>${++index}</td>
                         <td>${getIndoDate(sell_payment_h.updated_at)}</td>
                         <td>${(sell_payment_h.note) ? sell_payment_h.note : '-'}</td>
-                        <td>${sell_payment_h.user.name}</td>
+                        <td>${sell_payment_h.user?.name || '-'}</td>
                         <td class="text-right">${getIsoNumberWithSeparator(sell_payment_h.amount)}</td>
                     </tr>
                 `;
             });
+
+            SISA_PIUTANG = sisa;
 
             let html = `
                 <div class="row">
@@ -468,9 +477,13 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
-                                        <label>Nominal Tagihan</label>
-                                        <input type="number" name="amount" class="form-control" placeholder="Tulis nominal tagihan"/>
-                                        <div class="invalid-feedback"></div>
+                                        <div class="input-group">
+                                            <input type="number" name="amount" class="form-control" placeholder="Tulis nominal tagihan"/>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary sisaPiutangBtn" type="button">Sisa Piutang</button>
+                                            </div>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-12">
