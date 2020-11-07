@@ -285,6 +285,7 @@
                                 for (const elm of detailModal.querySelectorAll('button')) {
                                     elm.disabled = false;
                                 }
+                                sellTable.ajax.reload();
                             });
                     });
             });
