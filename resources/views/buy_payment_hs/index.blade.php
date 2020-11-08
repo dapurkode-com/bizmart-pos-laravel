@@ -6,13 +6,13 @@
 <div class="row mb-2">
 	<div class="col-sm-6">
 		<blockquote style="margin: 0; background: unset;">
-            <h1 class="m-0 text-dark">Daftar Pembelian</h1>
+            <h1 class="m-0 text-dark">Pembayaran Hutang</h1>
         </blockquote>
 	</div>
 	<!-- /.col -->
 	<div class="col-sm-6">
 		<ol class="breadcrumb float-sm-right">
-			<li class="breadcrumb-item active">Daftar Pembelian</li>
+			<li class="breadcrumb-item active">Pembayaran Hutang</li>
 		</ol>
 	</div>
 	<!-- /.col -->
@@ -47,17 +47,18 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Daftar List Pembelian</h3>
+                    <h3 class="card-title">Daftar List Hutang</h3>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped" id="tbIndex" style="width: 100%">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Tanggal</th>
                                 <th>Kode Pembelian</th>
+                                <th>Tanggal</th>
                                 <th>Suplier</th>
-                                <th>Total Harga</th>
+                                <th>Total</th>
+                                <th>Oleh</th>
                                 <th>Status</th>
                                 <th class="text-right">Aksi</th>
                             </tr>
@@ -116,8 +117,8 @@
             },
             columns: [
                 {data: 'DT_RowIndex', orderable: false, searchable: false },
-                {data: 'created_at'},
                 {data: 'uniq_id'},
+                {data: 'created_at'},
                 {data: 'suplier.name'},
                 {data: 'summary'},
                 {data: 'buy_status'},

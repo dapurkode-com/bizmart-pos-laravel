@@ -13,6 +13,7 @@ use App\StockLog;
 use App\BuyPaymentHs;
 use App\Http\Requests\BuyStoreRequest;
 use App\SystemParam;
+use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Exception;
 
@@ -141,7 +142,6 @@ class BuyController extends Controller
                     'buy_id' => $buy->id,
                     'payment_date'  => $buy->created_at,
                     'amount'        => $paid_amount,
-                    // 'created_by'    => 
                 );
                 
                 BuyPaymentHs::create($dataPayment);
@@ -290,9 +290,17 @@ class BuyController extends Controller
             ->make(true);
     }
 
-    public function datatablesReport()
+    public function datatablesReport(Request $request)
     {
+        $start_date = $request->filter["start_date"];
+        $end_date = $request->filter["end_date"];
         $data = Buy::with('suplier');
+        // dd($start_date);
+        
+        if ($start_date != null && $end_date != null) {
+            $data->whereBetween('created_at', [$start_date." 00:00:00",$end_date." 23:59:59"]);
+        }
+        
         return datatables()
         ->of($data)
         ->addIndexColumn()
