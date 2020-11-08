@@ -66,7 +66,7 @@ class ItemController extends Controller
                 'stock'
             ]);
             //Menyimpan data barang
-            $item = Item::create(array_filter($data));
+            $item = Item::create(array_filter($data, 'strlen'));
 
             //Menyimpan kategori barang
             $categories_list = [];
