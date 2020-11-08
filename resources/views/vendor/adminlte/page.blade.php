@@ -59,7 +59,7 @@
             <div class="float-right d-none d-sm-block">
                 <b>Version</b> 1
             </div>
-            <strong>Copyright © {{ date('Y') }} <a href="https://dapurkode.com" target="_blank">Dapurkode.com</a>.</strong>
+            <!--<strong>Copyright © {{ date('Y') }}.</strong> <a href="https://dapurkode.com" target="_blank">Dapurkode.com</a>-->
         </footer>
 
         {{-- Right Control Sidebar --}}
