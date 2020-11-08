@@ -403,11 +403,11 @@
                                         </thead>
                                         <tbody>${subHtml}</tbody>
                                         <tfoot>
-                                            <tr>
+                                            <tr class="d-none">
                                                 <th colspan="5" class="text-right">Subtotal</th>
                                                 <th class="text-right">${getIsoNumberWithSeparator(subTotal)}</th>
                                             </tr>
-                                            <tr>
+                                            <tr class="d-none">
                                                 <th colspan="5" class="text-right">PPN</th>
                                                 <th class="text-right">${getIsoNumberWithSeparator(obj.tax)}</th>
                                             </tr>
@@ -479,7 +479,7 @@
                                 <div class="col-sm-12">
                                     <div class="form-group">
                                         <div class="input-group">
-                                            <input type="number" name="amount" class="form-control" placeholder="Tulis nominal tagihan"/>
+                                            <input type="number" name="amount" min="0" oninput="this.value = Math.abs(this.value)" class="form-control" placeholder="Tulis nominal tagihan"/>
                                             <div class="input-group-append">
                                                 <button class="btn btn-outline-secondary sisaPiutangBtn" type="button">Sisa Piutang</button>
                                             </div>

@@ -203,6 +203,7 @@ class SellController extends Controller
 
         $items = Item::select('*')
             ->where('stock', '>', '0')
+            ->orWhere('is_stock_active', '0')
             ->where(function($query) use ($search){
                 $query->where('barcode', 'like', "%$search%")
                       ->orWhere('name', 'like', "%$search%");
