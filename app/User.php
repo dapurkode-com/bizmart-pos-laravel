@@ -48,4 +48,13 @@ class User extends Authenticatable
     {
         return '/images/user.png';
     }
+
+    public function privilegeText()
+    {
+        $lookUp = LookUp::where('group_code', 'PRIV_CODE')
+            ->where('key', $this->privilege_code)
+            ->first();
+
+        return $lookUp != null ? $lookUp->label : '-';
+    }
 }
