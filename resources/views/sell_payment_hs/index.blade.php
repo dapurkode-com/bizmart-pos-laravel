@@ -6,12 +6,12 @@
     <div class="row mb-2">
         <div class="col-sm-6">
             <blockquote style="margin: 0; background: unset;">
-                <h1 class="m-0 text-dark">Daftar Penjualan</h1>
+                <h1 class="m-0 text-dark">Daftar Piutang</h1>
             </blockquote>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Penjualan</li>
+                <li class="breadcrumb-item active">Piutang</li>
                 <li class="breadcrumb-item active">List</li>
             </ol>
         </div>
@@ -42,7 +42,7 @@
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-6">
-                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Daftar Penjualan</h5>
+                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Daftar Piutang</h5>
                         </div>
                         <div class="col-6 text-right">
                             <button type="button" class="btn btn-default sellTableRefreshBtn"><i class="fas fa-sync-alt" title="Refresh Table"></i></button>
@@ -77,11 +77,11 @@
             <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Detail Penjualan</h4>
+                        <h4 class="modal-title">Detail Piutang</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body"></div>
-                    <div class="modal-footer"></div>
+                    <div class="modal-footer justify-content-between"></div>
                 </div>
             </div>
         </div>
@@ -100,7 +100,6 @@
             width: 80px;
             justify-self: end;
         }
-
         @media only screen and (max-width: 617px) {
             .sellTableFilter {
                 grid-template-columns: 1fr;
@@ -113,12 +112,15 @@
                 justify-self: center;
             }
         }
+        .sisaPiutangBtn {
+            border-radius: 0 4px 4px 0 !important;
+        }
     </style>
 @stop
 
 @section('js')
     <script type="module">
-        import { select2DatatableInit, domReady, addListenToEvent, getIndoDate, getIsoNumberWithSeparator } from '{{ asset("plugins/custom/global.app.js") }}'
+        import { select2DatatableInit, domReady, addListenToEvent, getIndoDate, getIsoNumberWithSeparator, swalConfirm, drawError, eraseErrorInit, swalAlert } from '{{ asset("plugins/custom/global.app.js") }}'
         
         const mainContentElm = document.querySelector('.mainContent');
         const sellTable = $('#sellTable').DataTable({
@@ -149,7 +151,7 @@
             },
             scrollX: true,
             ajax: {
-                url: "{{ route('sell.datatables') }}",
+                url: "{{ route('sell_payment_hs.datatables') }}",
                 data: function (d) {
                     const filterElm = mainContentElm.querySelector('.sellTableFilter');
                     d.filter = {
@@ -175,10 +177,12 @@
         });
         const detailModal = document.querySelector('#detailModal');
         const sellTableFilterElm = mainContentElm.querySelector('.sellTableFilter');
-
-
+        let REMOTE_SET = null;
+        let SISA_PIUTANG = '';
 
         domReady(() => {
+            eraseErrorInit();
+
             addListenToEvent('.mainContent .filterButton', 'click', (event) => {
                 sellTable.ajax.reload();
             });
@@ -202,11 +206,92 @@
                     .then(response => response.json())
                     .then(result => {
                         detailModal.querySelector('.modal-body').innerHTML = drawToDetailModalBody(result.sell);
+                        detailModal.querySelector('.modal-footer').innerHTML = '';
 
-                        detailModal.querySelector('.modal-title').innerHTML = `Detail Penjualan`;
+                        detailModal.querySelector('.modal-title').innerHTML = `Detail Piutang`;
                         detailModal.querySelector('.modal-body').classList.remove('d-none');
                         detailModal.querySelector('.modal-footer').classList.remove('d-none');
                     });
+            });
+
+            addListenToEvent('#sellTable .addBtn', 'click', (event) => {
+                const thisBtn = event.target.closest('button');
+                REMOTE_SET = thisBtn.dataset.remote_set;
+                SISA_PIUTANG = '';
+
+                detailModal.querySelector('.modal-title').innerHTML = `Loading data...`;
+                detailModal.querySelector('.modal-body').classList.add('d-none');
+                detailModal.querySelector('.modal-footer').classList.add('d-none');
+                $(detailModal).modal('show');
+
+                fetch(`${thisBtn.dataset.remote_get}`)
+                    .then(response => response.json())
+                    .then(result => {
+                        detailModal.querySelector('.modal-body').innerHTML = drawToDetailModalBody(result.sell);
+                        detailModal.querySelector('.modal-body').append(drawFormNodeToDetailModalBody());
+                        detailModal.querySelector('.modal-footer').innerHTML = drawToDetailModalFooter();
+
+                        detailModal.querySelector('.modal-title').innerHTML = `Penagihan Piutang`;
+                        detailModal.querySelector('.modal-body').classList.remove('d-none');
+                        detailModal.querySelector('.modal-footer').classList.remove('d-none');
+                    });
+            });
+
+            addListenToEvent('#detailModal .submitButton', 'click', (event) => {
+                event.preventDefault();
+                const thisBtn = event.target.closest('button');
+
+                swalConfirm('melakukan ini')
+                    .then(() => {
+                        // prepare data
+                        let data = {
+                            amount : detailModal.querySelector('[name="amount"]').value,
+                            note : detailModal.querySelector('[name="note"]').value,
+                            _method : 'PUT',
+                        }
+                        // end prepare data
+                        
+                        // loading and disabled button
+                        const thisBtnText = thisBtn.innerHTML;
+                        thisBtn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> ${thisBtnText}...`
+                        for (const elm of detailModal.querySelectorAll('button')) {
+                            elm.disabled = true;
+                        }
+                        
+                        fetch(`${REMOTE_SET}`, {
+                                method: "PUT",
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                                },
+                                body: JSON.stringify(data)
+                            })
+                            .then(response => response.json())
+                            .then(result => {
+                                if(result.status == 'invalid'){
+                                    drawError(detailModal, result.validators);
+                                }
+                                if(result.status == 'valid'){
+                                    swalAlert(result.pesan, 'success');
+                                    $(detailModal).modal('hide');
+                                }
+                                if(result.status == 'error'){
+                                    swalAlert(result.pesan, 'warning');
+                                }
+                            })
+                            .finally(() => {
+                                // loading and disabled button
+                                thisBtn.innerHTML = `${thisBtnText}`
+                                for (const elm of detailModal.querySelectorAll('button')) {
+                                    elm.disabled = false;
+                                }
+                                sellTable.ajax.reload();
+                            });
+                    });
+            });
+
+            addListenToEvent('#detailModal .sisaPiutangBtn', 'click', (event) => {
+                detailModal.querySelector('[name="amount"]').value = SISA_PIUTANG;
             });
         });
 
@@ -244,6 +329,8 @@
                     </tr>
                 `;
             });
+
+            SISA_PIUTANG = sisa;
 
             let html = `
                 <div class="row">
@@ -328,10 +415,6 @@
                                                 <th colspan="5" class="text-right">Total</th>
                                                 <th class="text-right">${getIsoNumberWithSeparator(obj.summary)}</th>
                                             </tr>
-                                            <tr>
-                                                <th colspan="5" class="text-right">Nonimal Bayar</th>
-                                                <th class="text-right">${getIsoNumberWithSeparator(obj.paid_amount)}</th>
-                                            </tr>
                                         </tfoot>
                                     </table>
                                 </div>
@@ -377,6 +460,54 @@
             `;
             
             return html;
+        }
+
+        function drawFormNodeToDetailModalBody() {
+            const html = document.createElement('div');
+            html.classList.add('row');
+            html.innerHTML = `
+                <div class="col-sm-12">
+                    <div class="card bg-default" style="margin-top: 1rem">
+                        <div class="card-header">
+                            <h3 class="card-title">Form Penagihan Piutang</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="number" name="amount" min="0" oninput="this.value = Math.abs(this.value)" class="form-control" placeholder="Tulis nominal tagihan"/>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary sisaPiutangBtn" type="button">Sisa Piutang</button>
+                                            </div>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label>Keterangan</label>
+                                        <textarea name="note" rows="5" class="form-control" placeholder="Tulis keterangan tambahan"></textarea>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return html;
+        }
+
+        function drawToDetailModalFooter() {            
+            return `
+                <button type="reset" class="myReset btn btn-default">Reset</button>
+                <button type="submit" class="btn btn-primary submitButton">Simpan</button>
+            `;
         }
     </script>
 @stop

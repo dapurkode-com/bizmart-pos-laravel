@@ -128,7 +128,7 @@
                                                 <div class="col-lg-3">
                                                     <div class="form-group">
                                                         <label>Qty Sekarang</label>
-                                                        <input type="number" name="new_stock" class="form-control" placeholder="Tulis qty barang saat ini">
+                                                        <input type="number" name="new_stock" min="0" oninput="this.value = Math.abs(this.value)" class="form-control" placeholder="Tulis qty barang saat ini">
                                                         <div class="invalid-feedback"></div>
                                                     </div>
                                                 </div>

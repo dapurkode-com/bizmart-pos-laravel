@@ -49,8 +49,8 @@ class ItemController extends Controller
     {
         try {
             DB::beginTransaction();
-            //Menyimpan data barang
-            $item = Item::create($request->only([
+
+            $data = $request->only([
                 'name',
                 'barcode',
                 'description',
@@ -64,7 +64,9 @@ class ItemController extends Controller
                 'buy_price',
                 'sell_price',
                 'stock'
-            ]));
+            ]);
+            //Menyimpan data barang
+            $item = Item::create(array_filter($data, 'strlen'));
 
             //Menyimpan kategori barang
             $categories_list = [];
@@ -126,7 +128,8 @@ class ItemController extends Controller
     {
         try {
             DB::beginTransaction();
-            $item->update($request->only([
+
+            $data = $request->only([
                 'name',
                 'barcode',
                 'description',
@@ -140,7 +143,9 @@ class ItemController extends Controller
                 'buy_price',
                 'sell_price',
                 'stock'
-            ]));
+            ]);
+
+            $item->update(array_filter($data, 'strlen'));
 
             $categories_list = [];
             $categories      = explode(',', $request->categories);

@@ -1,0 +1,27 @@
+/* is-invalid on select2 */
+select.is-invalid + .select2 .selection .select2-selection{
+    border-color: #dc3545;
+}
+/* end is-invalid on select2 */
+
+/* sweetalert */
+.swal2-container .swal2-actions button {
+    margin: 0 2px 1rem;
+}
+.swal2-container .swal2-validation-message {
+    margin-top: 1rem;
+}
+/* end sweetalert */
+
+/* navbar */
+ul.navbar-nav li.nav-item.active{
+    box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+    background: #0079fa;
+    border-radius: .25rem;
+}
+ul.navbar-nav li.nav-item.active a.nav-link{
+    color: white;
+    padding-right: 16px;
+    padding-left: 16px;
+}
+/* end navbar */

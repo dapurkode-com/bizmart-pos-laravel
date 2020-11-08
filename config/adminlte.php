@@ -14,9 +14,9 @@ return [
     |
     */
 
-    'title' => 'Bizmart POS',
+    'title' => 'Sistem Informasi Penjualan DS Grafika', //'Bizmart POS',
     'title_prefix' => '',
-    'title_postfix' => ' | BizPOS',
+    'title_postfix' => ' | SIPDS ',
 
     /*
     |--------------------------------------------------------------------------
@@ -45,12 +45,12 @@ return [
     |
     */
 
-    'logo' => '<b>Bizmart</b> POS',
-    'logo_img' => '/images/logo.png',
-    'logo_img_class' => 'brand-image img-circle elevation-3',
+    'logo' => '<b>SIP</b> DS Grafika', //'<b>Bizmart</b> POS',
+    'logo_img' => '/images/logo1.png',
+    'logo_img_class' => 'brand-image elevation-3 img-circle',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'Bizmart POS',
+    'logo_img_alt' => 'SIPDS logo',
 
     /*
     |--------------------------------------------------------------------------
@@ -243,7 +243,7 @@ return [
         //        ],
         [
             'text'      => 'Penjualan',
-            'url'       => '/sell',
+            'url'       => '/sell/create',
             'topnav'    => 'true'
         ],
         [
@@ -266,15 +266,67 @@ return [
             'url'       => '/home',
             'icon'      => 'fas fa-fw fa-tachometer-alt'
         ],
+        ['header' => 'TRANSAKSI'],
+        [
+            'text'      => 'Pembelian',
+            'icon'      => 'fas fa-fw fa-truck',
+            'submenu' => [
+                [
+                    'text'      => 'Pembelian Baru',
+                    'url'       => '/buy/create',
+                ],
+                [
+                    'text'      => 'Pembayaran Hutang',
+                    'url'       => '',
+                ],
+            ]
+        ],
+        [
+            'text'      => 'Penjualan',
+            'icon'      => 'fas fa-fw fa-shopping-cart',
+            'submenu' => [
+                [
+                    'text'      => 'Penjualan Baru',
+                    'url'       => '/sell/create',
+                ],
+                [
+                    'text'      => 'Penagihan Piutang',
+                    'url'       => '/sell_payment_hs',
+                ],
+            ]
+        ],
+        [
+            'text'      => 'Retur',
+            'url'       => '/return_item',
+            'icon'      => 'fas fa-fw fa-cart-arrow-down'
+        ],
+        [
+            'text'      => 'Opname',
+            'url'       => '/opname',
+            'icon'      => 'fas fa-fw fa-balance-scale'
+        ],
+        ['header' => 'LAPORAN'],
         [
             'text'    => 'Daftar Pembelian',
-            'icon'    => 'fas fa-clipboard-list',
+            'icon'    => 'fas fa-fw fa-clipboard-list',
             'url'     => '/buy',
         ],
+        [
+            'text'    => 'Daftar Penjualan',
+            'icon'    => 'fas fa-fw fa-clipboard-list',
+            'url'     => '/sell',
+        ],
+        [
+            'text'    => 'Laporan Penjualan',
+            'icon'    => 'fas fa-fw  fa-chart-line',
+            'url'     => '/sell/report',
+        ],
+
+
         ['header' => 'MASTER DATA'],
         [
             'text'    => 'User',
-            'icon'    => 'fas fa-user-cog',
+            'icon'    => 'fas fa-fw  fa-user-cog',
             'url'     => '/user',
         ],
         [
@@ -467,11 +519,6 @@ return [
                     'asset' => true,
                     'location' => 'plugins/custom/global.style.css',
                 ],
-                [
-                    'type' => 'js',
-                    'asset' => true,
-                    'location' => 'plugins/custom/global.app.js',
-                ]
             ]
         ],
     ],
