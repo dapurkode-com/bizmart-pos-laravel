@@ -45,8 +45,8 @@ class AddBuyAndSellStatusLookUp extends Migration
 
             ], [
                 'group_code' => 'BUY_STATUS',
-                'key' => 'RE',
-                'look_up_key' => 'BUY_STATUS.RE',
+                'key' => 'DE',
+                'look_up_key' => 'BUY_STATUS.DE',
                 'group_label' => 'Status Pembayaran Pembelian',
                 'label' => 'Hutang',
                 'created_at' => Carbon::now(),

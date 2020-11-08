@@ -2,12 +2,12 @@
 
 namespace App;
 
+use App\Traits\Blameable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BuyPaymentHs extends Model
 {
-    use SoftDeletes;
+    use Blameable;
 
     /**
      * The attributes that are mass assignable.
