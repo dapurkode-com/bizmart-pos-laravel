@@ -37,7 +37,7 @@ class ItemUpdateRequest extends FormRequest
             'name'                   => 'required|string|max:255', // nama barang
             'description'            => 'string|nullable', // deskripsi barnag
             'is_stock_active'        => 'required|boolean', // status stok
-            'unit_id'                => 'required_if:is_stock_active,true|integer|exists:units,id',
+            'unit_id'                => 'required_if:is_stock_active,true|integer|exists:units,id|nullable',
             'min_stock'              => 'numeric|min:0|nullable', // stok minimal
             'buy_price'              => 'required|numeric|min:0', // harga beli
             'sell_price_determinant' => 'required|numeric', // penentu harga jual
