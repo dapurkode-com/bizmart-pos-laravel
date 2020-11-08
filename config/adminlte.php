@@ -243,7 +243,7 @@ return [
         //        ],
         [
             'text'      => 'Penjualan',
-            'url'       => '/sell',
+            'url'       => '/sell/create',
             'topnav'    => 'true'
         ],
         [
@@ -271,6 +271,31 @@ return [
             'icon'    => 'fas fa-clipboard-list',
             'url'     => '/buy',
         ],
+
+
+        
+        ['header' => 'TRANSAKSI'],
+        [
+            'text'      => 'Penjualan',
+            'icon'      => 'fas fa-fw fa-list-alt',
+            'submenu' => [
+                [
+                    'text'      => 'Daftar Penjualan',
+                    'url'       => '/sell',
+                ],
+                [
+                    'text'      => 'Penagihan Piutang',
+                    'url'       => '/sell_payment_hs',
+                ],
+                [
+                    'text' => 'Laporan Penjualan',
+                    'url' => '/sell/report',
+                ],
+            ]
+        ],
+
+
+
         ['header' => 'MASTER DATA'],
         [
             'text'    => 'User',
@@ -467,11 +492,6 @@ return [
                     'asset' => true,
                     'location' => 'plugins/custom/global.style.css',
                 ],
-                [
-                    'type' => 'js',
-                    'asset' => true,
-                    'location' => 'plugins/custom/global.app.js',
-                ]
             ]
         ],
     ],
