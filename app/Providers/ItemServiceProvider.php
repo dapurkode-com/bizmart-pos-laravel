@@ -37,7 +37,7 @@ class ItemServiceProvider extends ServiceProvider
         // Pada proses create data barang
         Item::creating(function ($item) {
             $rounding = SystemParam::where('param_code', 'RND_SELL_PRC')->first()->param_value; //mengambil nilai rounding dari system_params
-            if ($item->buy_price != 0) {
+            if ($item->buy_price != 0 && $item->buy_price != null) {
                 if ($item->sell_price_determinant == 0) {
                     //Harga jual ditentukan sendiri
                     $item->profit = $item->sell_price - $item->buy_price;
@@ -68,7 +68,7 @@ class ItemServiceProvider extends ServiceProvider
         //Pada proses update data barang
         Item::updating(function ($item) {
             $rounding = SystemParam::where('param_code', 'RND_SELL_PRC')->first()->param_value; //mengambil nilai rounding dari system_params
-            if ($item->buy_price != 0) {
+            if ($item->buy_price != 0 && $item->buy_price != null) {
                 if ($item->sell_price_determinant == 0) {
                     // Harga jual ditentukan sendiri
                     $item->profit = $item->sell_price - $item->buy_price;
