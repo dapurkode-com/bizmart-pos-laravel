@@ -83,7 +83,7 @@
                                         </thead>
                                         <tbody></tbody>
                                         <tfoot>
-                                            <tr>
+                                            <tr class="d-none">
                                                 <th colspan="4" class="text-right">Subtotal</th>
                                                 <th class="p-1">
                                                     <div class="form-group mb-0">
@@ -93,11 +93,11 @@
                                                 </th>
                                                 <th></th>
                                             </tr>
-                                            <tr>
+                                            <tr class="d-none">
                                                 <th colspan="3" class="text-right">PPN (%)</th>
                                                 <th class="p-1">
                                                     <div class="form-group mb-0">
-                                                        <input type="number" name="tax_percent" value="0" class="form-control text-right" placeholder="0">
+                                                        <input type="number" name="tax_percent" value="0" min="0" oninput="this.value = Math.abs(this.value)" class="form-control text-right" placeholder="0">
                                                         <div class="invalid-feedback"></div>
                                                     </div>
                                                 </th>
@@ -123,7 +123,7 @@
                                                 <th colspan="4" class="text-right">Nominal Bayar</th>
                                                 <th class="p-1">
                                                     <div class="form-group mb-0">
-                                                        <input type="number" name="paid_amount" class="form-control text-right" placeholder="0">
+                                                        <input type="number" name="paid_amount" min="0" oninput="this.value = Math.abs(this.value)" class="form-control text-right" placeholder="0">
                                                         <div class="invalid-feedback"></div>
                                                     </div>
                                                 </th>
@@ -407,7 +407,7 @@
                     <td>${itemObj.name}</td>
                     <td class="p-1">
                         <div class="form-group mb-0">
-                            <input type="number" name="qty[]" value="1" class="form-control text-right" placeholder="0">
+                            <input type="number" name="qty[]" value="1" min="0" oninput="this.value = Math.abs(this.value)" class="form-control text-right" placeholder="0">
                             <div class="invalid-feedback"></div>
                         </div>
                     </td>
