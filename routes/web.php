@@ -63,7 +63,11 @@ Route::group(['middleware' => ['auth']], function () {
     // for sell_payment_hs
     Route::get('sell_payment_hs/datatables', 'SellPaymentHsController@datatables')->name('sell_payment_hs.datatables');
     // for sell_payment_hs
-    
+
+    // for sell_payment_hs
+    Route::get('buy_payment_hs/datatables', 'BuyPaymentHsController@datatables')->name('buy_payment_hs.datatables');
+    // for sell_payment_hs
+
     // for return item
     Route::get('return_item/datatables', 'ReturnItemController@datatables')->name('return_item.datatables');
     Route::get('return_item/get_suppliers', 'ReturnItemController@getSuppliers')->name('return_item.get_suppliers');
@@ -84,6 +88,7 @@ Route::group(['middleware' => ['auth']], function () {
         'opname' => 'OpnameController',
         'sell' => 'SellController',
         'return_item' => 'ReturnItemController',
+        'buy_payment_hs' => 'BuyPaymentHsController',
         'sell_payment_hs' => 'SellPaymentHsController',
     ]);
 });

@@ -92,6 +92,11 @@ class Buy extends Model
         return $this->belongsTo(\App\Suplier::class);
     }
 
+    public function buyPaymentHs()
+    {
+        return $this->hasMany(\App\buyPaymentHs::class);
+    }
+
     public function statusText()
     {
         $lookUp = LookUp::where('group_code', 'BUY_STATUS')

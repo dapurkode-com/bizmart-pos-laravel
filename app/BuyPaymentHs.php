@@ -16,6 +16,7 @@ class BuyPaymentHs extends Model
      */
     protected $fillable = [
         'buy_id',
+        'user_id',
         'payment_date',
         'amount',
         'note',
@@ -29,6 +30,7 @@ class BuyPaymentHs extends Model
     protected $casts = [
         'id' => 'integer',
         'buy_id' => 'integer',
+        'user_id' => 'integer',
         'payment_date' => 'datetime',
         'amount' => 'double',
     ];
@@ -42,5 +44,15 @@ class BuyPaymentHs extends Model
     public function buy()
     {
         return $this->belongsTo(\App\Buy::class);
+    }
+
+    /**
+     * [Relationship] to user table
+     *
+     * @return belongsTo [User]
+     */
+    public function user()
+    {
+        return $this->belongsTo(\App\User::class);
     }
 }
