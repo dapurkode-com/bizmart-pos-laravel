@@ -62,6 +62,10 @@ class ItemServiceProvider extends ServiceProvider
                     $item->margin = (($item->sell_price - $item->buy_price) / $item->sell_price) * 100;
                     $item->markup = (($item->sell_price - $item->buy_price) / $item->buy_price) * 100;
                 }
+            } else {
+                $item->profit = $item->sell_price;
+                $item->markup = 100;
+                $item->margin = 100;
             }
         });
 
@@ -93,6 +97,10 @@ class ItemServiceProvider extends ServiceProvider
                     $item->margin = (($item->sell_price - $item->buy_price) / $item->sell_price) * 100;
                     $item->markup = (($item->sell_price - $item->buy_price) / $item->buy_price) * 100;
                 }
+            } else {
+                $item->profit = $item->sell_price;
+                $item->markup = 100;
+                $item->margin = 100;
             }
         });
     }
