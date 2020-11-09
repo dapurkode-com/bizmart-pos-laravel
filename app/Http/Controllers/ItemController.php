@@ -194,11 +194,12 @@ class ItemController extends Controller
             ->addIndexColumn()
             ->addColumn('categories', function ($item) {
                 return $item->categories->map(function ($item) {
-                    return join('', ["<span class='badge ", BadgeHelper::getBadgeClass($item->id), "'>", $item->name, '</span>']); //Customize warna badge
+                    return join('', ["<span class='badge ", BadgeHelper::getBadgeClass($item->id), "'>", ucfirst($item->name), '</span>']); //Customize warna badge
                 })->implode(' ');
             })
             ->addColumn('action', function ($item) {
-                $btn = "<button data-remote='" . route('item.show', $item->slug) . "' type='button' class='btn btn-sm btn-danger' title='Hapus Data'><i class='fa fa-trash'></i></button> ";
+                $btn = '';
+                // $btn = "<button data-remote='" . route('item.show', $item->slug) . "' type='button' class='btn btn-sm btn-danger' title='Hapus Data'><i class='fa fa-trash'></i></button> ";
                 $btn .= " <a href='" . route('item.edit', $item->slug) . "' class='edit btn btn-warning btn-sm' title='Ubah Data'><i class='fa fa-edit'></i></a> ";
                 $btn .= " <a href='" . route('item.show', $item->slug) . "' class=' btn btn-info btn-sm' title='Lihat Data'><i class='fa fa-eye'></i></a> ";
 

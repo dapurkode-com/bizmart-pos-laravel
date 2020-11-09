@@ -336,44 +336,47 @@ return [
         [
             'text'    => 'Suplier',
             'icon'    => 'fas fa-fw fa-truck',
-            'submenu' => [
-                [
-                    'text' => 'Daftar Suplier',
-                    'url'  => '/suplier',
-                ],
-                [
-                    'text' => 'Tambah Suplier Baru',
-                    'url'  => '/suplier/create',
-                ],
-            ],
+            'url'     => '/suplier'
+            // 'submenu' => [
+            //     [
+            //         'text' => 'Daftar Suplier',
+            //         'url'  => '/suplier',
+            //     ],
+            //     [
+            //         'text' => 'Tambah Suplier Baru',
+            //         'url'  => '/suplier/create',
+            //     ],
+            // ],
         ],
         [
             'text'    => 'Member',
             'icon'    => 'fas fa-fw fa-user',
-            'submenu' => [
-                [
-                    'text' => 'Daftar Member',
-                    'url'  => '/member',
-                ],
-                [
-                    'text' => 'Tambah Member Baru',
-                    'url'  => '/member/create',
-                ],
-            ],
+            'url'     => '/member'
+            // 'submenu' => [
+            //     [
+            //         'text' => 'Daftar Member',
+            //         'url'  => '/member',
+            //     ],
+            //     [
+            //         'text' => 'Tambah Member Baru',
+            //         'url'  => '/member/create',
+            //     ],
+            // ],
         ],
         [
             'text'    => 'Barang',
             'icon'    => 'fas fa-fw fa-box',
-            'submenu' => [
-                [
-                    'text' => 'Daftar Barang',
-                    'url'  => '/item',
-                ],
-                [
-                    'text' => 'Tambah Barang Baru',
-                    'url'  => '/item/create',
-                ],
-            ],
+            'url'     => '/item'
+            // 'submenu' => [
+            //     [
+            //         'text' => 'Daftar Barang',
+            //         'url'  => '/item',
+            //     ],
+            //     [
+            //         'text' => 'Tambah Barang Baru',
+            //         'url'  => '/item/create',
+            //     ],
+            // ],
         ],
         [
             'text'      => 'Kategori Barang',

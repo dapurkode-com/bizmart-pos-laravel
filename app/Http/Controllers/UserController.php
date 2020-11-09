@@ -171,7 +171,8 @@ class UserController extends Controller
                 return $user->privilegeText();
             })
             ->addColumn('action', function ($user) {
-                $btn = '<button data-remote_destroy="' . route('user.destroy', $user->id) . '" type="button" class="btn btn-danger btn-sm btnDelete" title="Hapus"><i class="fas fa-trash fa-fw"></i></button> ';
+                $btn = '';
+                // $btn = '<button data-remote_destroy="' . route('user.destroy', $user->id) . '" type="button" class="btn btn-danger btn-sm btnDelete" title="Hapus"><i class="fas fa-trash fa-fw"></i></button> ';
                 $btn .= '<button data-remote_show="' . route('user.show', $user->id) . '" data-remote_update="' . route('user.update', $user->id) . '" type="button" class="btn btn-warning btn-sm btnEdit" title="Edit"><i class="fas fa-pencil-alt fa-fw"></i></button> ';
                 return $btn;
             })
