@@ -91,4 +91,18 @@ class Buy extends Model
     {
         return $this->belongsTo(\App\Suplier::class);
     }
+
+    /**
+     * Label status
+     *
+     * @return string
+     */
+    public function statusText()
+    {
+        $lookUp = LookUp::where('group_code', 'BUY_STATUS')
+            ->where('key', $this->buy_status)
+            ->first();
+
+        return $lookUp != null ? $lookUp->label : '-';
+    }
 }
