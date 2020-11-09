@@ -40,7 +40,7 @@
             </div>
 
             <div class="row ">
-                <div class="col-lg-3 col-6">
+                <div class="col-lg-4 col-sm-12">
                     <div class="small-box bg-info">
                         <div class="inner">
                             <h3 id="transactionCount"><i class="fas fa-spin fa-sync-alt"></i></h3>
@@ -52,7 +52,7 @@
                     </div>
                 </div>
                 
-                <div class="col-lg-3 col-6">
+                <div class="col-lg-4 col-sm-6">
                     <div class="small-box bg-success">
                         <div class="inner">
                             <h3 id="incomeNowSum"><i class="fas fa-spin fa-sync-alt"></i></h3>
@@ -65,7 +65,7 @@
                     </div>
                 </div>
                 
-                <div class="col-lg-3 col-6">
+                <div class="col-lg-4 col-sm-6">
                     <div class="small-box bg-warning">
                         <div class="inner">
                             <h3 id="piutangSum"><i class="fas fa-spin fa-sync-alt"></i></h3>
@@ -78,7 +78,7 @@
                     </div>
                 </div>
                 
-                <div class="col-lg-3 col-6">
+                <!-- <div class="col-lg-3 col-6">
                     <div class="small-box bg-danger">
                         <div class="inner">
                             <h3 id="incomeSum"><i class="fas fa-spin fa-sync-alt"></i></h3>
@@ -89,14 +89,14 @@
                             <i class="fas fa-hand-holding-usd"></i>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <div class="card bg-default">
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-6">
-                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Daftar Penjualan</h5>
+                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> List Barang</h5>
                         </div>
                         <div class="col-6 text-right">
                             <button type="button" class="btn btn-default sellTableRefreshBtn"><i class="fas fa-sync-alt" title="Refresh Table"></i></button>
@@ -105,17 +105,15 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <table id="sellTable" class="table table-striped" style="width: 100%">
+                    <table id="itemTable" class="table table-striped" style="width: 100%">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>ID</th>
-                                <th>Tgl</th>
-                                <th>Member</th>
-                                <th>Total</th>
-                                <th>Oleh</th>
-                                <th>Status</th>
-                                <th class="text-right">Aksi</th>
+                                <th>Barang</th>
+                                <th>Qty</th>
+                                <th>Harga Jual</th>
+                                <th>Harga Beli</th>
+                                <th>Laba Bersih</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -179,8 +177,10 @@
         const dateEndInput = document.querySelector('.sellTableFilter [name="date_end"]');
         const transCountElm = document.querySelector('#transactionCount');
         const incomeNowElm = document.querySelector('#incomeNowSum');
+        const piutangSumElm = document.querySelector('#piutangSum');
+        const incomeSumElm = document.querySelector('#incomeSum');
 
-        const sellTable = $('#sellTable').DataTable({
+        const itemTable = $('#itemTable').DataTable({
             processing: true,
             serverSide: true,
             language: {
@@ -208,12 +208,12 @@
             },
             scrollX: true,
             ajax: {
-                url: "{{ route('sell.datatables') }}",
+                url: "{{ route('sell_report.datatables') }}",
                 data: function (d) {
                     const filterElm = mainContentElm.querySelector('.sellTableFilter');
                     d.filter = {
-                        'date_start': filterElm.querySelector('[name="date_start"]').value,
-                        'date_end': filterElm.querySelector('[name="date_end"]').value,
+                        'date_start': dateStartInput.value,
+                        'date_end': dateEndInput.value,
                     };
                 },
             },
@@ -240,6 +240,8 @@
         domReady(() => {
             drawTransaction()
             drawIncomeNow()
+            drawPiutang()
+            // drawIncome()
 
             addListenToEvent('.mainContent .filterButton', 'click', (event) => {
                 sellTable.ajax.reload();
@@ -300,6 +302,32 @@
                     incomeNowElm.innerHTML = getIsoNumberWithSeparator(result.total_income_now);
                 });
         }
+
+        function drawPiutang() {
+            piutangSumElm.innerHTML = `<i class="fas fa-spin fa-sync-alt"></i>`;
+            const url = `{{ route('sell_report.get_total_piutang') }}?` + new URLSearchParams({
+                date_start: dateStartInput.value,
+                date_end: dateEndInput.value,
+            });
+            fetch(url)
+                .then(response => response.json())
+                .then(result => {
+                    piutangSumElm.innerHTML = getIsoNumberWithSeparator(result.total_piutang);
+                });
+        }
+
+        // function drawIncome() {
+        //     incomeSumElm.innerHTML = `<i class="fas fa-spin fa-sync-alt"></i>`;
+        //     const url = `{{ route('sell_report.get_total_income') }}?` + new URLSearchParams({
+        //         date_start: dateStartInput.value,
+        //         date_end: dateEndInput.value,
+        //     });
+        //     fetch(url)
+        //         .then(response => response.json())
+        //         .then(result => {
+        //             incomeSumElm.innerHTML = getIsoNumberWithSeparator(result.total_income);
+        //         });
+        // }
 
         function drawToDetailModalBody(obj) {
             let subHtml = ``;

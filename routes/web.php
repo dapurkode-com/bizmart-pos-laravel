@@ -77,6 +77,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('sell_report/get_total_income_now', 'SellReportController@getTotalIncomeNow')->name('sell_report.get_total_income_now');
     Route::get('sell_report/get_total_piutang', 'SellReportController@getTotalPiutang')->name('sell_report.get_total_piutang');
     Route::get('sell_report/get_total_income', 'SellReportController@getTotalIncome')->name('sell_report.get_total_income');
+    Route::get('sell_report/item_datatables', 'SellReportController@itemDatatables')->name('sell_report.item_datatables');
     // for sell report
 
     Route::resource('unit', 'UnitController')->only('index', 'store', 'update', 'show', 'destroy');
