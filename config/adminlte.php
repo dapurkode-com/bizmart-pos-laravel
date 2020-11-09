@@ -65,10 +65,10 @@ return [
     */
 
     'usermenu_enabled' => true,
-    'usermenu_header' => false,
+    'usermenu_header' => true,
     'usermenu_header_class' => 'bg-primary',
     'usermenu_image' => true,
-    'usermenu_desc' => false,
+    'usermenu_desc' => true,
     'usermenu_profile_url' => false,
 
     /*
@@ -244,22 +244,26 @@ return [
         [
             'text'      => 'Penjualan',
             'url'       => '/sell/create',
-            'topnav'    => 'true'
+            'topnav'    => 'true',
+            'privilege' => 'EM'
         ],
         [
             'text'      => 'Pembelian',
             'url'       => '/buy/create',
-            'topnav'    => 'true'
+            'topnav'    => 'true',
+            'privilege' => 'EM'
         ],
         [
             'text'      => 'Opname',
             'url'       => '/opname',
-            'topnav'    => 'true'
+            'topnav'    => 'true',
+            'privilege' => 'EM'
         ],
         [
             'text'      => 'Retur',
             'url'       => '/return_item',
-            'topnav'    => 'true'
+            'topnav'    => 'true',
+            'privilege' => 'EM'
         ],
         [
             'text'      => 'Dashboard',
@@ -298,7 +302,7 @@ return [
         [
             'text'      => 'Retur',
             'url'       => '/return_item',
-            'icon'      => 'fas fa-fw fa-cart-arrow-down'
+            'icon'      => 'fas fa-fw fa-undo'
         ],
         [
             'text'      => 'Opname',

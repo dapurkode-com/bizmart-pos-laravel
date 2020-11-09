@@ -50,13 +50,14 @@ class LoginController extends Controller
 
         $login = [
             $loginType => $request->username,
-            'password' => $request->password
+            'password' => $request->password,
+            'is_active' => true
         ];
 
         if (auth()->attempt($login)) {
             return redirect()->route('home');
         }
 
-        return redirect()->route('login')->with(['error' => 'Email/Password salah!']);
+        return redirect()->route('login')->with(['error' => 'Email/Password salah atau Akun nonaktif!']);
     }
 }
