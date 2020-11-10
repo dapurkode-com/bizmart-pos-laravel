@@ -170,66 +170,147 @@ class SellReportController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function itemDatatables(Request $request)
+    public function incomeDatatables(Request $request)
     {
-        $sells = Sell::select([
-                'sells.id',
-                DB::raw("CONCAT('PJ-', LPAD(sells.id, 5, '0')) AS _id"),
-                DB::raw("DATE_FORMAT(sells.updated_at, '%d %b %Y') AS _updated_at"),
-                'members.name AS _member_name',
-                'sells.summary',
-                'users.name AS _user_name',
-                'sells.sell_status',
-                'look_ups.label as _status',
-            ])
-            ->leftJoin('members', 'members.id', '=', 'sells.member_id')
-            ->leftJoin('users', 'users.id', '=', 'sells.user_id')
-            ->leftJoin('look_ups', function ($join) {
-                $join->on('look_ups.key', '=', 'sells.sell_status');
-                $join->where('look_ups.group_code', '=', 'SELL_STATUS');
-            });
-
-        if ($request->filter['date_start'] != null && $request->filter['date_end'] != null) {
-            $sells->where('sells.updated_at', '>=', $request->filter['date_start'])
-                  ->where('sells.updated_at', '<=', $request->filter['date_end'] . " 23:59:59");
-        }
-
+        $reports = DB::select(DB::raw("
+                SELECT
+                    DATE_FORMAT(MIN(payment_date), '%e %b %Y') AS `date`,
+                    CONCAT('PJ-', LPAD(MIN(sell_id), 5, '0')) AS sell_code,
+                    SUM(amount) AS sum_amount
+                FROM `sell_payment_hs`
+                WHERE updated_at >='" . $request->filter['date_start'] . " 00:00:00'
+                AND updated_at <='" . $request->filter['date_end'] . " 23:59:59'
+                GROUP BY `sell_id`
+            "));
         return datatables()
-            ->of($sells)
+            ->of($reports)
             ->addIndexColumn()
-            ->filterColumn('_id', function ($query, $keyword) {
-                $sql = "CONCAT('PJ-', LPAD(sells.id, 5, '0')) like ?";
-                $query->whereRaw($sql, ["%{$keyword}%"]);
-            })
-            ->filterColumn('_updated_at', function ($query, $keyword) {
-                $sql = "DATE_FORMAT(sells.updated_at, '%d %b %Y') like ?";
-                $query->whereRaw($sql, ["%{$keyword}%"]);
-            })
-            ->filterColumn('_member_name', function ($query, $keyword) {
-                $sql = "members.name like ?";
-                $query->whereRaw($sql, ["%{$keyword}%"]);
-            })
-            ->filterColumn('_user_name', function ($query, $keyword) {
-                $sql = "users.name like ?";
-                $query->whereRaw($sql, ["%{$keyword}%"]);
-            })
-            ->filterColumn('_status', function ($query, $keyword) {
-                $sql = "look_ups.label like ?";
-                $query->whereRaw($sql, ["%{$keyword}%"]);
-            })
-            ->addColumn('_status_raw', function ($sell) {
-                if ($sell->sell_status == 'PO') {
-                    return '<p class="text-success">' . $sell->_status . '</p>';
-                } else {
-                    return '<p class="text-warning">' . $sell->_status . '</p>';
-                }
-            })
-            ->addColumn('_action_raw', function ($sell) {
-                $btn = '<button data-remote_get="' . route('sell.show', $sell->id) . '" type="button" class="btn btn-info btn-sm openBtn" title="Lihat"><i class="fas fa-eye fa-fw"></i></button> ';
-                return $btn;
-            })
-            ->rawColumns(['_action_raw', '_status_raw'])
             ->toJson();
     }
+
+    /**
+     * Display a listing of the resource in form of datatable.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function piutangDatatables(Request $request)
+    {
+        $reports = DB::select(DB::raw("
+                SELECT
+                    DATE_FORMAT(MIN(payment_date), '%e %b %Y') AS `date`,
+                    CONCAT('PJ-', LPAD(MIN(sell_id), 5, '0')) AS sell_code,
+                    (MIN(summary) - SUM(amount)) AS sum_piutang
+                FROM `sell_payment_hs` sp
+                LEFT JOIN sells s ON s.`id` = sp.`sell_id`
+                WHERE sp.updated_at <= '" . $request->filter['date_end'] . " 23:59:59'
+                AND s.`sell_status` = 'RE'
+                GROUP BY `sell_id`
+            "));
+        return datatables()
+            ->of($reports)
+            ->addIndexColumn()
+            ->toJson();
+    }
+
+    /**
+     * Display a listing of the resource in form of datatable.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function itemDatatables(Request $request)
+    {
+        $reports = DB::select(DB::raw("
+                SELECT
+                    MIN(i.`name`) AS `name`,
+                    SUM(sl.`qty`) AS sum_qty,
+                    SUM((sl.sell_price * sl.`qty`)) AS sum_sell_price,
+                    SUM(((sl.sell_price * sl.`qty`) - (sl.buy_price * sl.`qty`))) AS net_income
+                FROM stock_logs sl
+                LEFT JOIN items i ON i.`id` = sl.`item_id`
+                WHERE sl.`cause` = 'SELL'
+                AND sl.updated_at >= '" . $request->filter['date_start'] . " 00:00:00'
+                AND sl.updated_at <= '" . $request->filter['date_end'] . " 23:59:59'
+                GROUP BY sl.`item_id`
+            "));
+        return datatables()
+            ->of($reports)
+            ->addIndexColumn()
+            ->toJson();
+    }
+
+    /**
+     * Display a listing of the resource in form of datatable.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function memberDatatables(Request $request)
+    {
+        $reports = DB::select(DB::raw("
+                SELECT
+                    MIN(m.`name`) AS `name`,
+                    COUNT(s.`member_id`) AS count_transaction
+                FROM sells s
+                LEFT JOIN members m ON m.`id` = s.`member_id`
+                WHERE s.updated_at >= '" . $request->filter['date_start'] . " 00:00:00'
+                AND s.updated_at <= '" . $request->filter['date_end'] . " 23:59:59'
+                GROUP BY s.`member_id`
+            "));
+        return datatables()
+            ->of($reports)
+            ->addIndexColumn()
+            ->toJson();
+    }
+
+    /**
+     * note
+     */
+    /*
+    SELECT
+        DATE_FORMAT(MIN(payment_date), "%e %b %Y") AS `date`,
+        CONCAT('PJ-', LPAD(MIN(sell_id), 5, '0')) AS sell_code,
+        SUM(amount) AS sum_amount
+        FROM `sell_payment_hs`
+        WHERE updated_at >= '2020-11-09'
+        AND updated_at <= '2020-11-09 23:59:59'
+        GROUP BY `sell_id`
+    ;
+    SELECT
+        DATE_FORMAT(MIN(payment_date), "%e %b %Y") AS `date`,
+        CONCAT('PJ-', LPAD(MIN(sell_id), 5, '0')) AS sell_code,
+        (MIN(summary) - SUM(amount)) AS sum_piutang
+        FROM `sell_payment_hs` sp
+        LEFT JOIN sells s ON s.`id` = sp.`sell_id`
+        WHERE sp.updated_at <= '2020-11-09 23:59:59'
+        AND s.`sell_status` = 'RE'
+        GROUP BY `sell_id`
+    ;
+    SELECT
+        MIN(i.`name`) AS `name`,
+        SUM(sl.`qty`) AS sum_qty,
+        SUM((sl.sell_price * sl.`qty`)) AS sum_sell_price,
+        SUM(((sl.sell_price * sl.`qty`) - (sl.buy_price * sl.`qty`))) AS net_income
+        FROM stock_logs sl
+        LEFT JOIN items i ON i.`id` = sl.`item_id`
+        WHERE sl.`cause` = 'SELL'
+        AND sl.updated_at >= '2020-11-07'
+        AND sl.updated_at <= '2020-11-09 23:59:59'
+        GROUP BY sl.`item_id`
+        ORDER BY sum_qty DESC
+    ;
+    SELECT
+        MIN(m.`name`) AS `name`,
+        COUNT(s.`member_id`) AS count_member_id
+        FROM sells s
+        LEFT JOIN members m ON m.`id` = s.`member_id`
+        WHERE s.updated_at >= '2020-11-07'
+        AND s.updated_at <= '2020-11-09 23:59:59'
+        GROUP BY s.`member_id`
+        ORDER BY `count_member_id` DESC
+    ;
+    */
+     
 
 }
