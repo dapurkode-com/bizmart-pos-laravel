@@ -176,8 +176,6 @@
         const detailModal = document.querySelector('#detailModal');
         const sellTableFilterElm = mainContentElm.querySelector('.sellTableFilter');
 
-
-
         domReady(() => {
             addListenToEvent('.mainContent .filterButton', 'click', (event) => {
                 sellTable.ajax.reload();
@@ -202,6 +200,7 @@
                     .then(response => response.json())
                     .then(result => {
                         detailModal.querySelector('.modal-body').innerHTML = drawToDetailModalBody(result.sell);
+                        detailModal.querySelector('.modal-footer').innerHTML = drawToModalFooter(result.url_pdf);
 
                         detailModal.querySelector('.modal-title').innerHTML = `Detail Penjualan`;
                         detailModal.querySelector('.modal-body').classList.remove('d-none');
@@ -377,6 +376,12 @@
             `;
             
             return html;
+        }
+
+        function drawToModalFooter(url) {
+            return `
+                <a href="${url}" target="_blank" class="btn btn-warning float-right">Print PDF</a>
+            `;
         }
     </script>
 @stop

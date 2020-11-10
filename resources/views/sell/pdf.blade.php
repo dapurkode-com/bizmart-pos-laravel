@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Retur Barang | SIPDS</title>
+		<title>Penjualan | SIPDS</title>
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
 		<style>
 			body {
@@ -45,8 +45,8 @@
 						<div>{{ $sys_param->mrch_addr }}</div>
 					</td>
 					<td class="has-text-right">
-						<div class="has-text-weight-bold">No Retur</div>
-						<div>{{ $return_item->uniq_id }}</div>
+						<div class="has-text-weight-bold">No Penjualan</div>
+						<div>{{ $sell->uniq_id }}</div>
 					</td>
 				</tr>
 			</table>
@@ -54,17 +54,23 @@
 			<table class="table mt-1 is-borderless is-paddingless">
 				<tr>
 					<td>
-						<div>Kepada:</div>
-						<div class="has-text-weight-bold">{{ $return_item->suplier->name }}</div>
-						<div>{{ $return_item->suplier->address ?? '-' }}</div>
-						<div>Telp/HP: {{ $return_item->suplier->phone ?? '-' }}</div>
+						<div>Dari:</div>
+						<div class="has-text-weight-bold">{{ $sell->member->name }}</div>
+						<div>{{ $sell->member->address ?? '-' }}</div>
+						<div>Telp/HP: {{ $sell->suplier->phone ?? '-' }}</div>
 					</td>
 				</tr>
 			</table>
 
 			<table class="table is-borderless is-paddingless">
 				<tr>
-					<td class="has-text-centered has-text-weight-bold is-title">Retur Barang</td>
+					<td class="has-text-centered">
+						<div class="has-text-weight-bold is-title">Invoice</div>
+						<div class="is-title">{{ "PJ-" . str_pad($sell->id, 5, '0', STR_PAD_LEFT) }}</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="has-text-centered is-title"></td>
 				</tr>
 			</table>
 
@@ -78,27 +84,31 @@
 					<th class="has-text-right">Harga Total</th>
 				</tr>
 
-				@foreach ($return_item->details as $detail)
+				@foreach ($sell->sellDetails as $detail)
 					<tr>
 						<td class="has-text-left">{{ $loop->iteration }}</td>
 						<td class="has-text-left">{{ $detail->item->barcode }}</td>
 						<td class="has-text-left">{{ $detail->item->name }}</td>
 						<td class="has-text-right">{{ $detail->qty }}</td>
-						<td class="has-text-right">{{ number_format($detail->buy_price, 2, ".", ",") }}</td>
-						<td class="has-text-right">{{ number_format(($detail->qty * $detail->buy_price), 2, ".", ",") }}</td>
+						<td class="has-text-right">{{ number_format($detail->sell_price, 2, ".", ",") }}</td>
+						<td class="has-text-right">{{ number_format(($detail->qty * $detail->sell_price), 2, ".", ",") }}</td>
 					</tr>
 				@endforeach
 
 				<tr>
 					<th colspan="5" class="has-text-right">Total</th>
-					<th class="has-text-right">{{ number_format($return_item->summary, 2, ".", ",") }}</th>
+					<th class="has-text-right">{{ number_format($sell->summary, 2, ".", ",") }}</th>
+				</tr>
+				<tr>
+					<th colspan="5" class="has-text-right">Nominal Bayar</th>
+					<th class="has-text-right">{{ number_format($sell->paid_amount, 2, ".", ",") }}</th>
 				</tr>
 			</table>
 
 			<table class="table mt-3 is-borderless is-paddingless">
 				<tr>
-					<td width="50%"></td>
-					<td width="50%" class="has-text-right">Singaraja, {{ $return_item->updated_at->format('j F Y') }}</td>
+					<td width="50%">Note: {{ $sell->sell_status }}</td>
+					<td width="50%" class="has-text-right">Singaraja, {{ $sell->updated_at->format('j F Y') }}</td>
 				</tr>
 				<tr>
 					<td class="has-text-centered">Penerima,</td>

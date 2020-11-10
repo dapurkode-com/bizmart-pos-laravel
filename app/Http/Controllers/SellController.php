@@ -9,7 +9,10 @@ use App\Sell;
 use App\SellDetail;
 use App\SellPaymentHs;
 use App\StockLog;
+use App\SystemParam;
 use DB;
+use Dompdf\Dompdf;
+use Exception;
 use Illuminate\Http\Request;
 
 class SellController extends Controller
@@ -151,6 +154,7 @@ class SellController extends Controller
         $sell->status_text = $sell->statusText();
         return response()->json([
             'sell' => $sell,
+            'url_pdf' => route('sell.generate_pdf', $id)
         ]);
     }
 
@@ -342,4 +346,29 @@ class SellController extends Controller
             ->rawColumns(['_action_raw', '_status_raw'])
             ->toJson();
     }
+
+    /**
+     * Display a spesifict data in form of PDF.
+     *
+     * @param  int  $id
+     * @return Dompdf\Dompdf
+     */
+    public function generatePdf($id)
+    {
+        $sys_param = json_decode(json_encode([
+            'mrch_name' => SystemParam::where('param_code', 'MRCH_NAME')->first()->param_value,
+            'mrch_addr' => SystemParam::where('param_code', 'MRCH_ADDR')->first()->param_value,
+        ]));
+        $sell = Sell::with('user', 'member', 'sellDetails.item')->findOrFail($id);
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml(view('sell.pdf', compact('sys_param', 'sell'))->render());
+        $dompdf->setPaper('A5', 'landscape');
+        $dompdf->render();
+        $dompdf->stream("Invoice Penjualan $sell->uniq_id SIPDS.pdf", array("Attachment" => false));
+
+        exit(0);
+    }
+
+    //nengah
 }
