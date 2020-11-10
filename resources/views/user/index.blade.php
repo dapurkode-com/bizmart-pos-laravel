@@ -38,8 +38,10 @@
                             <tr>
                                 <th>#</th>
                                 <th>Nama</th>
-                                <th>Username</th>
                                 <th>Email</th>
+                                <th>Username</th>
+                                <th>Hak Akses</th>
+                                <th>Status</th>
                                 <th class="text-right">Aksi</th>
                             </tr>
                         </thead>
@@ -145,8 +147,10 @@
             columns: [
                 {data: 'DT_RowIndex', orderable: false, searchable: false },
                 {data: 'name'},
-                {data: 'username'},
                 {data: 'email'},
+                {data: 'username'},
+                {data: 'privilege_code'},
+                {data: 'is_active'},
                 {data: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'},
             ],
             order: [[1, 'asc']],
@@ -242,14 +246,14 @@
     function submitModalForm(parentElm, thisElm) {
         let formData = new FormData(parentElm.querySelector('form'));
         let jsonStr = JSON.stringify(fdToJsonObj(formData));
-        
+
         // loading and disabled button
         const buttonText = thisElm.innerHTML;
         thisElm.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> ${buttonText}...`
         for (const elm of parentElm.querySelectorAll('button')) {
             elm.disabled = true;
         }
-        
+
         fetch(`${formData.get('_remote')}`, {
             method: `${formData.get('_method')}`,
             headers: {

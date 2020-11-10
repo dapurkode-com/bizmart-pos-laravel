@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'AdminLTE')
+@section('title', 'Dashboard')
 
 @section('content_header')
     <div class="row mb-2">
@@ -14,68 +14,147 @@
 
 @section('content')
     <div class="row">
-        <!-- <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <p class="mb-0">You are logged in!</p>
-                </div>
-            </div>
-        </div> -->
+        {{-- <div class="col-lg-12">
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
 
-        <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-info">
-                <div class="inner">
-                    <h3>150</h3>
-
-                    <p>New Orders</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-bag"></i>
-                </div>
-                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                <strong><i class="fa fa-umbrella-beach"></i> Hai, {{ auth()->user()->name }}!</strong> Semoga harimu menyenangkan !
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-        </div>
-            <!-- ./col -->
+        </div> --}}
         <div class="col-lg-3 col-6">
-            <!-- small box -->
             <div class="small-box bg-success">
                 <div class="inner">
-                    <h3>53<sup style="font-size: 20px">%</sup></h3>
-                    <p>Bounce Rate</p>
+                    <h3>{{ $badge_data['count_today_sell'] }}</h3>
+                    <p>Penjualan Hari Ini</p>
                 </div>
                 <div class="icon">
-                    <i class="ion ion-stats-bars"></i>
+                    <i class="fa fa-shopping-cart"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="{{ route('sell.index') }}" class="small-box-footer">Lihat selengkapnya<i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
-        <!-- ./col -->
         <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-warning">
-                <div class="inner">
-                    <h3>44</h3>
-                    <p>User Registrations</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-person-add"></i>
-                </div>
-                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-6">
-            <!-- small box -->
             <div class="small-box bg-danger">
                 <div class="inner">
-                    <h3>65</h3>
-                    <p>Unique Visitors</p>
+                    <h3>{{ $badge_data['count_today_buy'] }}</h3>
+                    <p>Pembelian Hari Ini</p>
                 </div>
                 <div class="icon">
-                    <i class="ion ion-pie-graph"></i>
+                    <i class="fa fa-truck"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="{{ route('buy.index') }}" class="small-box-footer">Lihat selengkapnya<i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-primary">
+                <div class="inner">
+                    <h3>{{ $badge_data['count_today_receiveable'] }}</h3>
+                    <p>Piutang dari Konsumen</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-sticky-note"></i>
+                </div>
+                <a href="{{ route('sell_payment_hs.index') }}" class="small-box-footer">Lihat selengkapnya<i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-warning">
+                <div class="inner">
+                    <h3>{{ $badge_data['count_today_debt'] }}</h3>
+                    <p>Hutang pada Suplier</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-donate"></i>
+                </div>
+                <a href="#" class="small-box-footer">Lihat selengkapnya<i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="card-deck">
+                <div class="card">
+                    <h5 class="card-header">Barang dengan stok minim
+                    </h5>
+                    <div class="card-body table-responsive p-2">
+                        <table class="table table-striped table-valign-middle">
+                            <thead>
+                                <tr>
+                                    <th>Barang</th>
+                                    <th>Stok</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($minItemStock as $item)
+                                    <tr>
+                                        <td>{{ $item->name }}</td>
+                                        <td>< {{ $item->min_stock }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="2" class="text-center">Tidak ada data</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <h5 class="card-header">Pembelian Terakhir
+                    </h5>
+                    <div class="card-body table-responsive p-2">
+                        <table class="table table-striped table-valign-middle">
+                            <thead>
+                                <tr>
+                                    <th>Suplier</th>
+                                    <th>Status</th>
+                                    <th class="text-right">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               @forelse ($lastBuy as $buy)
+                                    <tr>
+                                        <td>{{ $buy->suplier->name }}</td>
+                                        <td>{{ $buy->statusText() }}</td>
+                                        <td class="text-right">{{ number_format($buy->summary) }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center">Tidak ada data</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <h5 class="card-header">Penjualan Terakhir
+                    </h5>
+                    <div class="card-body table-responsive p-2">
+                        <table class="table table-striped table-valign-middle">
+                            <thead>
+                                <tr>
+                                    <th>Member</th>
+                                    <th>Status</th>
+                                    <th class="text-right">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($lastSell as $sell)
+                                    <tr>
+                                        <td>{{ $sell->member->name }}</td>
+                                        <td>{{ $sell->statusText() }}</td>
+                                        <td class="text-right">{{ number_format($sell->summary) }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center">Tidak ada data</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -117,7 +117,8 @@ class SuplierController extends Controller
             ->of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($suplier) {
-                $btn = "<button data-remote='" . route('suplier.show', $suplier->slug) . "' type='button' class='btn btn-sm btn-danger' title='Hapus Data'><i class='fa fa-trash'></i></button> ";
+                $btn = '';
+                // $btn = "<button data-remote='" . route('suplier.show', $suplier->slug) . "' type='button' class='btn btn-sm btn-danger' title='Hapus Data'><i class='fa fa-trash'></i></button> ";
                 $btn .= " <a href='" . route('suplier.edit', $suplier->slug) . "' class='edit btn btn-warning btn-sm' title='Ubah Data'><i class='fa fa-edit'></i></a>";
 
                 return $btn;

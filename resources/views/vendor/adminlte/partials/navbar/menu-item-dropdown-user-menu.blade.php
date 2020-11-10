@@ -42,7 +42,7 @@
                 <p class="@if(!config('adminlte.usermenu_image')) mt-0 @endif">
                     {{ Auth::user()->name }}
                     @if(config('adminlte.usermenu_desc'))
-                        <small>{{ Auth::user()->adminlte_desc() }}</small>
+                        <small>{!! Auth::user()->adminlte_desc() !!}</small>
                     @endif
                 </p>
             </li>

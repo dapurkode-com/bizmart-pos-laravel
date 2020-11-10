@@ -160,7 +160,8 @@
                                 </div>
                             @endif
                         </div>
-                        <div class="form-group">
+                        <input type="hidden" name="sell_price_determinant" value="0">
+                        {{-- <div class="form-group">
                             <label for="sell_price_determinant">Penentu harga</label>
                             <select name="sell_price_determinant" id="sell_price_determinant" class="form-control {{ $errors->has('sell_price_determinant') ? 'is-invalid' : '' }}" required>
                                 <option value="" selected hidden disabled>--Pilih--</option>
@@ -177,10 +178,10 @@
                                     </ul>
                                 </div>
                             @endif
-                        </div>
+                        </div> --}}
                         <div class="form-group">
                             <label for="sell_price">Harga Jual</label>
-                            <input {{ $item->sell_price_determinant != 0 ? 'disabled' : '' }} type="number" name="sell_price" id="sell_price" class="currency form-control {{ $errors->has('sell_price') ? 'is-invalid' : '' }}" placeholder="Tulis harga jual disini." value="{{ old('sell_price', $item->sell_price) }}" min="0">
+                            <input {{-- $item->sell_price_determinant!=0?'disabled':'' --}} type="number" name="sell_price" id="sell_price" class="currency form-control {{ $errors->has('sell_price') ? 'is-invalid' : '' }}" placeholder="Tulis harga jual disini." value="{{ old('sell_price', $item->sell_price) }}" min="0">
                             @if ($errors->has('sell_price'))
                                 <div class="invalid-feedback">
                                     <ul>
@@ -191,7 +192,7 @@
                                 </div>
                             @endif
                         </div>
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="profit">Profit</label>
@@ -237,7 +238,7 @@
                                     @endif
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <button type="submit" class="btn btn-primary float-right"><i class="fa fa-save"></i> Simpan</button>
                     </form>
                 </div>

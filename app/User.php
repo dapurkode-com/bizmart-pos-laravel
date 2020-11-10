@@ -48,4 +48,28 @@ class User extends Authenticatable
     {
         return '/images/user.png';
     }
+
+    public function adminlte_desc()
+    {
+        return $this->isActiveBadge();
+    }
+
+    public function privilegeText()
+    {
+        $lookUp = LookUp::where('group_code', 'PRIV_CODE')
+            ->where('key', $this->privilege_code)
+            ->first();
+
+        return $lookUp != null ? $lookUp->label : '-';
+    }
+
+    public function isActiveText()
+    {
+        return $this->is_active == true ? 'Aktif' : 'Non Aktif';
+    }
+
+    public function isActiveBadge()
+    {
+        return ($this->is_active == true) ? "<span class='badge badge-success'>" . $this->isActiveText() . "</span>" : "<span class='badge badge-danger'>" . $this->isActiveText() . "</span>";
+    }
 }
