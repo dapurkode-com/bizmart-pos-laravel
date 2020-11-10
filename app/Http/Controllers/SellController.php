@@ -10,6 +10,7 @@ use App\SellDetail;
 use App\SellPaymentHs;
 use App\StockLog;
 use DB;
+use Exception;
 use Illuminate\Http\Request;
 
 class SellController extends Controller
