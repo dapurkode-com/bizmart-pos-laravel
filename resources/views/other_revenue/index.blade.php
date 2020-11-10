@@ -50,11 +50,12 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <table id="sellTable" class="table table-striped" style="width: 100%">
+                    <table id="tbIndex" class="table table-striped" style="width: 100%">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>ID</th>
+                                <th>Tanggal</th>
                                 <th>Oleh</th>
                                 <th>Total</th>
                                 <th>Note</th>
@@ -69,9 +70,89 @@
     </div>
 @stop
 
+@section('css')
+    <style>
+        .sellTableFilter {
+            display: grid;
+            grid-template-columns: 0fr 0fr 0fr 1fr;
+            gap: 1rem;
+            align-items: center;
+        }
+        .sellTableFilter .filterButton {
+            width: 80px;
+            justify-self: end;
+        }
+
+        @media only screen and (max-width: 617px) {
+            .sellTableFilter {
+                grid-template-columns: 1fr;
+                justify-items: center;
+                gap: 0;
+            }
+            .sellTableFilter .filterButton {
+                margin-top: 1rem;
+                width: 185.19px;
+                justify-self: center;
+            }
+        }
+    </style>
+@stop
 
 @section('js')
     <script>
+        $(document).ready( function () {
 
+        const tbIndex=  $('#tbIndex').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('other_revenue.datatables') }}",
+                data: function (d) {
+                    const filterElm = $('.sellTableFilter');
+                    d.filter = {
+                        'date_start': filterElm.find('[name="date_start"]').val(),
+                        'date_end': filterElm.find('[name="date_end"]').val(),
+                    };
+                },
+            },
+            language: {
+                decimal:        "",
+                emptyTable:     "Tidak ada data di dalam tabel",
+                info:           "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
+                infoEmpty:      "Data kosong",
+                infoFiltered:   "(Difilter dari _MAX_ total data)",
+                infoPostFix:    "",
+                thousands:      ".",
+                lengthMenu:     "Tampilkan _MENU_ data",
+                loadingRecords: "Memuat...",
+                processing:     "Memproses...",
+                search:         "",
+                zeroRecords:    "Tidak ada data yang cocok",
+                paginate: {
+                    previous: '<i class="fas fa-chevron-left"></i>',
+					next: '<i class="fas fa-chevron-right"></i>'
+                },
+                aria: {
+                    sortAscending:  ": mengurutkan kolom yang naik",
+                    sortDescending: ": mengurutkan kolom yang turun"
+                },
+                searchPlaceholder: 'Cari data',
+            },
+            columns: [
+                {data: 'DT_RowIndex', orderable: false, searchable: false },
+                {data: 'id'},
+                {data: 'updated_at'},
+                {data: 'name', name: 'users.name'},
+                {data: 'summary', render: $.fn.dataTable.render.number( ',', '.', 2, 'Rp' )},
+                {data: 'note'},
+                {data: 'action', orderable: false, searchable: false, className: 'text-right'},
+            ],
+            order: [[1, 'asc']]
+        });
+
+        $('.filterButton').click(function () {
+            tbIndex.ajax.reload()
+        })
+    });
     </script>
 @stop

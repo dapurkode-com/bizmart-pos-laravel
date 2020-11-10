@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\OtherRevenue;
+use Carbon\Carbon;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
@@ -121,5 +122,41 @@ class OtherRevenueController extends Controller
     public function destroy(OtherRevenue $otherRevenue)
     {
         abort(404);
+    }
+
+    public function datatables(Request $request)
+    {
+
+        $where = "";
+
+        if (null != $request->filter['date_start'] && null != $request->filter['date_end']) {
+            $where = "WHERE other_revenues.updated_at >='" . $request->filter['date_start'] . " 00:00:00'
+                AND other_revenues.updated_at <='" . $request->filter['date_end'] . " 23:59:59'";
+        }
+
+        $or = DB::select(DB::raw("SELECT
+                    CONCAT('OR-', LPAD(other_revenues.id, 5, 0)) AS id,
+                    other_revenues.id as _id,
+                    users.name,
+                    summary,
+                    note,
+                    other_revenues.updated_at
+                FROM other_revenues
+                JOIN users ON users.id = other_revenues.user_id
+                $where
+            "));
+
+        return datatables()
+            ->of($or)
+            ->addIndexColumn()
+            ->editColumn('updated_at', function ($or) {
+                return Carbon::parse($or->updated_at)->isoFormat('dddd, D MMMM Y');
+            })
+            ->addColumn('action', function ($or) {
+                $btn = '<a href="' . route('other_revenue.show', $or->_id) . '" class="btn btn-sm btn-info"><i class="fas fa-fw fa-eye"></i> Lihat</a>';
+                return $btn;
+            })
+            ->escapeColumns([])
+            ->make(true);
     }
 }

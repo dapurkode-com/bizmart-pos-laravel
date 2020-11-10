@@ -87,6 +87,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');
     Route::resource('buy', 'BuyController')->only('index', 'store', 'create', 'show', 'destroy');
 
+    Route::get('other_revenue/datatables', 'OtherRevenueController@datatables')->name('other_revenue.datatables');
+
     Route::resources([
         'suplier' => 'SuplierController',
         'member' => 'MemberController',
