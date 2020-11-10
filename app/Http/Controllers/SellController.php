@@ -114,6 +114,7 @@ class SellController extends Controller
                 // update stock on item
                 Item::findOrFail($itemId)->update([
                     'stock' => $itemObj['stock'] - $sellDetailItemArr['qty'],
+                    'last_sell_at' => date('Y-m-d H:i:s'),
                 ]);
             }
 
@@ -360,6 +361,7 @@ class SellController extends Controller
             'mrch_addr' => SystemParam::where('param_code', 'MRCH_ADDR')->first()->param_value,
         ]));
         $sell = Sell::with('user', 'member', 'sellDetails.item')->findOrFail($id);
+        $sell->status_text = $sell->statusText();
 
         $dompdf = new Dompdf();
         $dompdf->loadHtml(view('sell.pdf', compact('sys_param', 'sell'))->render());

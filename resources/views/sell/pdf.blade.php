@@ -54,7 +54,7 @@
 			<table class="table mt-1 is-borderless is-paddingless">
 				<tr>
 					<td>
-						<div>Dari:</div>
+						<div>Singaraja, {{ $sell->updated_at->format('j F Y') }}</div>
 						<div class="has-text-weight-bold">{{ $sell->member->name }}</div>
 						<div>{{ $sell->member->address ?? '-' }}</div>
 						<div>Telp/HP: {{ $sell->suplier->phone ?? '-' }}</div>
@@ -107,20 +107,8 @@
 
 			<table class="table mt-3 is-borderless is-paddingless">
 				<tr>
-					<td width="50%">Note: {{ $sell->sell_status }}</td>
-					<td width="50%" class="has-text-right">Singaraja, {{ $sell->updated_at->format('j F Y') }}</td>
-				</tr>
-				<tr>
-					<td class="has-text-centered">Penerima,</td>
-					<td class="has-text-centered">Pemohon,</td>
-				</tr>
-				<tr>
-					<td height="10mm"></td>
-					<td height="10mm"></td>
-				</tr>
-				<tr>
-					<td class="has-text-centered">(____________________________)</td>
-					<td class="has-text-centered">(____________________________)</td>
+					<td width="50%">Note: {{ $sell->status_text }}</td>
+					<td width="50%" class="has-text-right"></td>
 				</tr>
 			</table>
 		</section>
