@@ -96,7 +96,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('buy_report/get_current_expend', 'BuyReportController@getCurrentExpend')->name('buy_report.get_current_expend');
     Route::get('buy_report/get_overall_dept', 'BuyReportController@getOverallDept')->name('buy_report.get_overall_dept');
     Route::get('buy_report/get_estimated_total_expend', 'BuyReportController@getEstimatedTotalExpend')->name('buy_report.get_estimated_total_expend');
-    Route::get('buy_report/datatables_item', 'BuyPaymentHsController@datatablesItem')->name('buy_report.datatables_item');
+    Route::get('buy_report/item_datatables', 'BuyReportController@itemDatatables')->name('buy_report.item_datatables');
+    Route::get('buy_report/expend_datatables', 'BuyReportController@expendDatatables')->name('buy_report.expend_datatables');
+    Route::get('buy_report/dept_datatables', 'BuyReportController@deptDatatables')->name('buy_report.dept_datatables');
+    Route::get('buy_report/suplier_datatables', 'BuyReportController@suplierDatatables')->name('buy_report.suplier_datatables');
 
     
     Route::resources([

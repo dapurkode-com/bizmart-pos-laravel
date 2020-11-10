@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Buy;
 use App\BuyPaymentHs;
 use App\Item;
+use DB;
 use Illuminate\Http\Request;
 
 class BuyReportController extends Controller
@@ -90,7 +91,7 @@ class BuyReportController extends Controller
     {
         $start_date = $request->start_date;
         $end_date = $request->end_date;
-        $buy_count = Buy::whereBetween('created_at', [$start_date." 00:00:00",$end_date." 23:59:59"])
+        $buy_count = Buy::whereBetween('updated_at', [$start_date." 00:00:00",$end_date." 23:59:59"])
                         ->count();
 
         return response()->json([
@@ -103,16 +104,8 @@ class BuyReportController extends Controller
     {
         $start_date = $request->start_date;
         $end_date = $request->end_date;
-        $total_expend = 0;
-
-        $buys = BuyPaymentHs::whereBetween('buy_payment_hs.created_at', [$start_date." 00:00:00",$end_date." 23:59:59"])
-                    ->where('buys.buy_status', 'DE')
-                    ->join('buys','buys.id', '=', 'buy_payment_hs.buy_id')
-                    ->get();
-        foreach ($buys as $buy) {
-            // dd($buy->summary);
-            $total_expend += $buy->amount; 
-        }
+        $total_expend = BuyPaymentHs::whereBetween('payment_date', [$start_date." 00:00:00",$end_date." 23:59:59"])
+                    ->sum('amount');
 
         return response()->json([
             'total_expend' => $total_expend,
@@ -122,23 +115,27 @@ class BuyReportController extends Controller
 
     public function getOverallDept(Request $request)
     {
-        $start_date = $request->start_date;
+        // $start_date = $request->start_date;
         $end_date = $request->end_date;
-        $dept = 0;
-        $buys = Buy::whereBetween('created_at', [$start_date." 00:00:00",$end_date." 23:59:59"])
-                    ->where('buy_status', 'DE')
-                    ->get();
-        foreach ($buys as $buy) {
-            $buy_expend = BuyPaymentHs::whereBetween('created_at', [$start_date." 00:00:00",$end_date." 23:59:59"])
-                    ->where('buy_id', $buy->id)
-                    ->sum('amount');
-            $dept += $buy->summary - $buy_expend; 
-        }
+        $dept = DB::select(DB::raw("
+                SELECT
+                    COALESCE(SUM(summary - sum_amount), 0) as sum_dept
+                FROM(
+                    SELECT
+                        MIN(buys.`summary`) AS summary,
+                        SUM(amount) AS sum_amount
+                    FROM `buy_payment_hs`
+                    LEFT JOIN buys ON buys.`id` = buy_payment_hs.`buy_id`
+                    WHERE buy_payment_hs.updated_at <= '$end_date 23:59:59'
+                    AND buys.`buy_status` = 'DE'
+                    GROUP BY buy_payment_hs.`buy_id`
+                ) result
+            "))[0];
+
+        
         return response()->json([
-            'buy_dept' => $dept,
-        ]);       
-        // dd($dept);
-        // dd($buys->pluck('summary'));
+            'buy_dept' => $dept->sum_dept,
+        ]); 
     }
 
     public function getEstimatedTotalExpend(Request $request)
@@ -153,8 +150,78 @@ class BuyReportController extends Controller
         ]);
     }
 
-    // public function datatablesItem(Request $request)
-    // {
-    //     $items = DB::table('items')
-    // }
+    public function itemDatatables(Request $request)
+    {
+        $reports = DB::select(DB::raw("
+                SELECT
+                    MIN(i.`name`) AS `name`,
+                    SUM(sl.`qty`) AS sum_qty,
+                    SUM((sl.buy_price * sl.`qty`)) AS sum_buy_price
+                FROM stock_logs sl
+                LEFT JOIN items i ON i.`id` = sl.`item_id`
+                WHERE sl.`cause` = 'BUY'
+                AND sl.updated_at >= '" . $request->filter['start_date'] . " 00:00:00'
+                AND sl.updated_at <= '" . $request->filter['end_date'] . " 23:59:59'
+                GROUP BY sl.`item_id`
+            "));
+        return datatables()
+            ->of($reports)
+            ->addIndexColumn()
+            ->toJson();
+    }
+
+    public function expendDatatables(Request $request)
+    {
+        $reports = DB::select(DB::raw("
+                SELECT
+                    DATE_FORMAT(MIN(payment_date), '%e %b %Y') AS `date`,
+                    CONCAT('PB-', LPAD(MIN(buy_id), 5, '0')) AS buy_code,
+                    SUM(amount) AS sum_amount
+                FROM `buy_payment_hs`
+                WHERE updated_at >='" . $request->filter['start_date'] . " 00:00:00'
+                AND updated_at <='" . $request->filter['end_date'] . " 23:59:59'
+                GROUP BY `buy_id`
+            "));
+        return datatables()
+            ->of($reports)
+            ->addIndexColumn()
+            ->toJson();
+    }
+
+    public function deptDatatables(Request $request)
+    {
+        $reports = DB::select(DB::raw("
+                SELECT
+                    DATE_FORMAT(MIN(payment_date), '%e %b %Y') AS `date`,
+                    CONCAT('PB-', LPAD(MIN(buy_id), 5, '0')) AS buy_code,
+                    (MIN(summary) - SUM(amount)) AS sum_dept
+                FROM `buy_payment_hs` bp
+                LEFT JOIN buys b ON b.`id` = bp.`buy_id`
+                WHERE bp.updated_at <= '" . $request->filter['end_date'] . " 23:59:59'
+                AND b.`buy_status` = 'DE'
+                GROUP BY `buy_id`
+            "));
+        return datatables()
+            ->of($reports)
+            ->addIndexColumn()
+            ->toJson();
+    }
+
+    public function suplierDatatables(Request $request)
+    {
+        $reports = DB::select(DB::raw("
+                SELECT
+                    MIN(s.`name`) AS `name`,
+                    COUNT(b.`suplier_id`) AS count_transaction
+                FROM buys b
+                LEFT JOIN supliers s ON s.`id` = b.`suplier_id`
+                WHERE b.updated_at >='" . $request->filter['start_date'] . " 00:00:00'
+                AND b.updated_at <='" . $request->filter['end_date'] . " 23:59:59'
+                GROUP BY b.`suplier_id`
+            "));
+        return datatables()
+            ->of($reports)
+            ->addIndexColumn()
+            ->toJson();
+    }
 }
