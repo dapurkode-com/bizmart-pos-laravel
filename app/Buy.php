@@ -45,6 +45,8 @@ class Buy extends Model
         'summary',
         'tax',
         'note',
+        'buy_status',
+        'paid_amount',
         'created_by',
         'updated_by',
     ];
@@ -60,6 +62,7 @@ class Buy extends Model
         'suplier_id' => 'integer',
         'summary' => 'double',
         'tax' => 'double',
+        'paid_amount' => 'integer',
     ];
 
     /**

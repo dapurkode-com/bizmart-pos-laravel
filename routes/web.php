@@ -80,6 +80,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');
     Route::resource('buy', 'BuyController')->only('index', 'store', 'create', 'show', 'destroy');
 
+    // for buy report
+    Route::get('buy_report/get_total_transactions', 'BuyReportController@getTotalTransactions')->name('buy_report.get_total_transactions');
+    Route::get('buy_report/get_current_expend', 'BuyReportController@getCurrentExpend')->name('buy_report.get_current_expend');
+    Route::get('buy_report/get_overall_dept', 'BuyReportController@getOverallDept')->name('buy_report.get_overall_dept');
+    Route::get('buy_report/get_estimated_total_expend', 'BuyReportController@getEstimatedTotalExpend')->name('buy_report.get_estimated_total_expend');
+    Route::get('buy_report/datatables_item', 'BuyPaymentHsController@datatablesItem')->name('buy_report.datatables_item');
+
+    
     Route::resources([
         'suplier' => 'SuplierController',
         'member' => 'MemberController',

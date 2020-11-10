@@ -106,11 +106,12 @@ class BuyPaymentHsController extends Controller
                 if ($isPaidOut) {
                     $buy = Buy::findOrFail($buyId);
                     $buy->buy_status = 'PO';
+                    $buy->paid_amount +=  $request->amount;
                     $buy->save();
-                    // Buy::findOrFail($buyId)->update([
-                    //     'buy_status' => 'PO',
-                    //     ]);
-                    // dd($buy->buy_status);
+                } else {
+                    $buy = Buy::findOrFail($buyId);
+                    $buy->paid_amount +=  $request->amount;
+                    $buy->save();
                 }
     
                 DB::commit();
@@ -161,7 +162,7 @@ class BuyPaymentHsController extends Controller
             ->where('buys.buy_status', 'DE');
 
         if ($request->filter['date_start'] != null && $request->filter['date_end'] != null) {
-            $buys->where('buys.updated_at', '>=', $request->filter['date_start'])
+            $buys->where('buys.updated_at', '>=', $request->filter['date_start'] . " 00:00:00")
                 ->where('buys.updated_at', '<=', $request->filter['date_end'] . " 23:59:59");
         }
 
