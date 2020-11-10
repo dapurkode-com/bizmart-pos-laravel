@@ -129,7 +129,7 @@ class SellReportController extends Controller
     {
         $total = DB::select(DB::raw("
                 SELECT
-                    SUM(summary - sum_amount) as sum_piutang
+                    COALESCE(SUM(summary - sum_amount), 0) as sum_piutang
                 FROM(
                     SELECT
                         MIN(sells.`summary`) AS summary,
