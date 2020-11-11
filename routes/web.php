@@ -99,5 +99,6 @@ Route::group(['middleware' => ['auth']], function () {
         'return_item' => 'ReturnItemController',
         'sell_payment_hs' => 'SellPaymentHsController',
         'sell_report' => 'SellReportController',
+        'cash_count' => 'CashCountController'
     ]);
 });
