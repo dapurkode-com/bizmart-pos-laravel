@@ -1,19 +1,19 @@
 @extends('adminlte::page')
 
-@section('title', 'Detail Pendapatan Lainnya')
+@section('title', 'Detail Biaya')
 
 @section('content_header')
 <div class="row mb-2">
 	<div class="col-sm-6">
 		<blockquote style="margin: 0; background: unset;">
-            <h1 class="m-0 text-dark">Detail Pendapatan Lainnya</h1>
+            <h1 class="m-0 text-dark">Detail Biaya</h1>
         </blockquote>
 	</div>
 	<!-- /.col -->
 	<div class="col-sm-6">
 		<ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item">
-                <a href="{{ route('other_revenue.index') }}">Daftar Pendapatan Lainnya</a>
+                <a href="{{ route('other_revenue.index') }}">Daftar Biaya</a>
             </li>
 			<li class="breadcrumb-item active"> Detail</li>
 		</ol>
@@ -49,7 +49,7 @@
                     </div>
                     <div class="col-sm-4 invoice-col"></div>
                     <div class="col-sm-4 invoice-col">
-                        <b>Invoice</b><br>
+                        <b>No Notas</b><br>
                         {{ $otherRevenue->uniq_id }}<br><br>
                         <b>Oleh </b> {{ $otherRevenue->user->name }}
                     </div>

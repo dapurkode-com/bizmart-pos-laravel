@@ -231,49 +231,76 @@ return [
     */
 
     'menu' => [
-        //        [
-        //            'text' => 'search',
-        //            'search' => true,
-        //            'topnav' => true,
-        //        ],
-        //        [
-        //            'text' => 'blog',
-        //            'url'  => 'admin/blog',
-        //            'can'  => 'manage-blog',
-        //        ],
-        [
-            'text'      => 'Penjualan',
-            'url'       => '/sell/create',
-            'topnav'    => 'true',
-            'privilege' => 'EM'
-        ],
-        [
-            'text'      => 'Pembelian',
-            'url'       => '/buy/create',
-            'topnav'    => 'true',
-            'privilege' => 'EM'
-        ],
-        [
-            'text'      => 'Opname',
-            'url'       => '/opname',
-            'topnav'    => 'true',
-            'privilege' => 'EM'
-        ],
-        [
-            'text'      => 'Retur',
-            'url'       => '/return_item',
-            'topnav'    => 'true',
-            'privilege' => 'EM'
-        ],
+        // [
+        //     'text'      => 'Penjualan',
+        //     'url'       => '/sell/create',
+        //     'topnav'    => 'true',
+        //     'privilege' => 'EM'
+        // ],
+        // [
+        //     'text'      => 'Pembelian',
+        //     'url'       => '/buy/create',
+        //     'topnav'    => 'true',
+        //     'privilege' => 'EM'
+        // ],
+        // [
+        //     'text'      => 'Opname',
+        //     'url'       => '/opname',
+        //     'topnav'    => 'true',
+        //     'privilege' => 'EM'
+        // ],
+        // [
+        //     'text'      => 'Retur',
+        //     'url'       => '/return_item',
+        //     'topnav'    => 'true',
+        //     'privilege' => 'EM'
+        // ],
         [
             'text'      => 'Dashboard',
             'url'       => '/home',
             'icon'      => 'fas fa-fw fa-tachometer-alt'
         ],
-        ['header' => 'TRANSAKSI'],
+        ['header' => 'DATA DATA'],
+        [
+            'text'    => 'User',
+            'icon'    => 'fas fa-fw  fa-user-cog',
+            'url'     => '/user',
+            'privilege' => 'OW'
+        ],
+        [
+            'text'    => 'Barang',
+            'icon'    => 'fas fa-fw fa-box',
+            'url'     => '/item',
+        ],
+        [
+            'text'    => 'Suplier',
+            'icon'    => 'fas fa-fw fa-truck',
+            'url'     => '/suplier',
+            'privilege' => 'EM'
+        ],
+        [
+            'text'    => 'Member',
+            'icon'    => 'fas fa-fw fa-user',
+            'url'     => '/member',
+            'privilege' => 'EM'
+        ],
+        [
+            'text'      => 'Kategori Barang',
+            'url'       => 'category',
+            'icon'      => 'fas fa-fw fa-list',
+            'privilege' => 'OW'
+        ],
+        [
+            'text'    => 'Satuan Barang',
+            'url'     => '/unit',
+            'icon'    => 'fas fa-fw fa-list',
+            'privilege' => 'OW'
+        ],
+        ['header' => 'TRANSAKSI', 'privilege' => 'EM'],
         [
             'text'      => 'Pembelian',
             'icon'      => 'fas fa-fw fa-truck',
+            'privilege' => 'EM',
             'submenu' => [
                 [
                     'text'      => 'Pembelian Baru',
@@ -288,6 +315,7 @@ return [
         [
             'text'      => 'Penjualan',
             'icon'      => 'fas fa-fw fa-shopping-cart',
+            'privilege' => 'EM',
             'submenu' => [
                 [
                     'text'      => 'Penjualan Baru',
@@ -300,26 +328,24 @@ return [
             ]
         ],
         [
+            'text'    => 'Biaya',
+            'icon'    => 'fas fa-fw fa-arrow-circle-left',
+            'url'     => '/other_expense/create',
+            'privilege' => 'EM',
+        ],
+        [
             'text'      => 'Retur',
             'url'       => '/return_item',
-            'icon'      => 'fas fa-fw fa-undo'
+            'icon'      => 'fas fa-fw fa-undo',
+            'privilege' => 'EM',
         ],
         [
             'text'      => 'Opname',
             'url'       => '/opname',
-            'icon'      => 'fas fa-fw fa-balance-scale'
+            'icon'      => 'fas fa-fw fa-balance-scale',
+            'privilege' => 'EM',
         ],
-        [
-            'text'    => 'Pendapatan Lainnya',
-            'icon'    => 'fas fa-fw fa-arrow-circle-right',
-            'url'     => '/other_revenue/create',
-        ],
-        [
-            'text'    => 'Pengeluaran Lainnya',
-            'icon'    => 'fas fa-fw fa-arrow-circle-left',
-            'url'     => '/other_expense/create',
-        ],
-        ['header' => 'LAPORAN', 'privilege'],
+        ['header' => 'DATA TRANSAKSI', 'privilege' => 'OW'],
         [
             'text'    => 'Daftar Pembelian',
             'icon'    => 'fas fa-fw fa-clipboard-list',
@@ -333,17 +359,30 @@ return [
             'privilege' => 'OW'
         ],
         [
-            'text'    => 'Daftar Pendapatan Lainnya',
-            'icon'    => 'fas fa-fw fa-clipboard-list',
-            'url'     => '/other_revenue',
-            'privilege' => 'OW'
-        ],
-        [
-            'text'    => 'Daftar Pengeluaran Lainnya',
+            'text'    => 'Daftar Biaya',
             'icon'    => 'fas fa-fw fa-clipboard-list',
             'url'     => '/other_expense',
             'privilege' => 'OW'
         ],
+        [
+            'text'    => 'Daftar Piutang',
+            'icon'    => 'fas fa-fw fa-clipboard-list',
+            'url'     => '/sell_payment_hs',
+            'privilege' => 'OW'
+        ],
+        [
+            'text'    => 'Daftar Hutang',
+            'icon'    => 'fas fa-fw fa-clipboard-list',
+            'url'     => '/buy_payment_hs',
+            'privilege' => 'OW'
+        ],
+        [
+            'text'      => 'Opname',
+            'url'       => '/opname',
+            'icon'      => 'fas fa-fw fa-clipboard-list',
+            'privilege' => 'OW',
+        ],
+        ['header' => 'LAPORAN', 'privilege' => 'OW'],
         [
             'text'    => 'Laporan Pembelian',
             'icon'    => 'fas fa-fw  fa-chart-line',
@@ -359,40 +398,8 @@ return [
         [
             'text'    => 'Laporan Arus Kas',
             'icon'    => 'fas fa-fw fa-money-bill-wave',
-            'url'     => '/cashflow'
-        ],
-
-        ['header' => 'MASTER DATA'],
-        [
-            'text'    => 'User',
-            'icon'    => 'fas fa-fw  fa-user-cog',
-            'url'     => '/user',
+            'url'     => '/cashflow',
             'privilege' => 'OW'
-        ],
-        [
-            'text'    => 'Suplier',
-            'icon'    => 'fas fa-fw fa-truck',
-            'url'     => '/suplier',
-        ],
-        [
-            'text'    => 'Member',
-            'icon'    => 'fas fa-fw fa-user',
-            'url'     => '/member',
-        ],
-        [
-            'text'    => 'Barang',
-            'icon'    => 'fas fa-fw fa-box',
-            'url'     => '/item',
-        ],
-        [
-            'text'      => 'Kategori Barang',
-            'url'       => 'category',
-            'icon'      => 'fas fa-fw fa-list',
-        ],
-        [
-            'text'    => 'Satuan Barang',
-            'url'     => '/unit',
-            'icon'    => 'fas fa-fw fa-list',
         ],
     ],
 

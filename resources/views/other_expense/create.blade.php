@@ -1,19 +1,19 @@
 @extends('adminlte::page')
 
-@section('title', 'Tambah Pengeluaran Baru')
+@section('title', 'Tambah  Biaya Baru')
 
 @section('content_header')
 <div class="row mb-2">
 	<div class="col-sm-6">
 		<blockquote style="margin: 0; background: unset;">
-            <h1 class="m-0 text-dark">Tambah Pengeluaran Baru</h1>
+            <h1 class="m-0 text-dark">Tambah  Biaya Baru</h1>
         </blockquote>
 	</div>
 	<!-- /.col -->
 	<div class="col-sm-6">
 		<ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item">
-                <a href="{{ route('other_expense.index') }}">Pengeluaran Lainnya</a>
+                <a href="{{ route('other_expense.index') }}"> Biaya</a>
             </li>
 			<li class="breadcrumb-item active">Buat Baru</li>
 		</ol>
@@ -29,7 +29,7 @@
         <div class="col-lg-8">
             <div class="card" id="items">
                 <div class="card-header ui-sortable-handle" style="cursor: move;">
-                    <h3 class="card-title">Detail Pengeluaran Lainnya</h3>
+                    <h3 class="card-title">Detail  Biaya</h3>
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
                             <i class="fas fa-minus"></i>
@@ -51,7 +51,7 @@
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-header ui-sortable-handle" style="cursor: move;">
-                    <h3 class="card-title">Info Pengeluaran</h3>
+                    <h3 class="card-title">Info  Biaya</h3>
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
                             <i class="fas fa-minus"></i>

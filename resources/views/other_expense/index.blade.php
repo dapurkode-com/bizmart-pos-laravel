@@ -1,17 +1,17 @@
 @extends('adminlte::page')
 
-@section('title', 'Daftar Pengeluaran Lainnya')
+@section('title', 'Daftar  Biaya')
 
 @section('content_header')
     <div class="row mb-2">
         <div class="col-sm-6">
             <blockquote style="margin: 0; background: unset;">
-                <h1 class="m-0 text-dark">Daftar Pengeluaran Lainnya</h1>
+                <h1 class="m-0 text-dark">Daftar  Biaya</h1>
             </blockquote>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Pengeluaran Lainnya</li>
+                <li class="breadcrumb-item active"> Biaya</li>
                 <li class="breadcrumb-item active">List</li>
             </ol>
         </div>
@@ -42,7 +42,7 @@
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-6">
-                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Daftar Pengeluaran Lainnya</h5>
+                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Daftar  Biaya</h5>
                         </div>
                         <div class="col-6 text-right">
                             <button type="button" class="btn btn-default" data-card-widget="collapse"><i class="fas fa-minus"></i></button>

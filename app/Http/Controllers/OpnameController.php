@@ -73,7 +73,7 @@ class OpnameController extends Controller
             ]);
         }
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -116,7 +116,7 @@ class OpnameController extends Controller
                 $isNewStockAndOldStockSame = ($newStock == $oldStock) ? true : false;
 
                 // update status opname
-                if($isNewStockAndOldStockSame === true) {
+                if ($isNewStockAndOldStockSame === true) {
                     $this->updateStatusOnOpname($request->opname_id);
                 }
 
@@ -160,12 +160,12 @@ class OpnameController extends Controller
     {
         try {
             DB::beginTransaction();
-            
+
             // update opname detail
             OpnameDetail::where([
-                    'opname_id' => $request->opname_id,
-                    'item_id' => $request->item_id,
-                ])
+                'opname_id' => $request->opname_id,
+                'item_id' => $request->item_id,
+            ])
                 ->update([
                     'description' => $request->description
                 ]);
@@ -209,14 +209,13 @@ class OpnameController extends Controller
             // end update summary opname
 
             DB::commit();
-            
+
             return response()->json([
                 'status' => 'valid',
                 'pesan' => 'Alasan berhasil disimpan',
                 'opname' => $opname,
                 'statusText' => $opname->statusText(),
             ]);
-
         } catch (Exception $exc) {
             DB::rollBack();
             return response()->json([
@@ -338,16 +337,16 @@ class OpnameController extends Controller
     public function datatables(Request $request)
     {
         $opnames = Opname::select([
-                'opnames.id',
-                DB::raw("DATE_FORMAT(opnames.created_at, '%d %b %Y') AS created_at_idn"),
-                'opnames.uniq_id',
-                'opnames.created_by',
-                DB::raw("FORMAT(opnames.summary, 2) AS summary_iso"),
-                'opnames.status',
-                'look_ups.label as status_text',
-            ])
+            'opnames.id',
+            DB::raw("DATE_FORMAT(opnames.created_at, '%d %b %Y') AS created_at_idn"),
+            'opnames.uniq_id',
+            'opnames.created_by',
+            DB::raw("FORMAT(opnames.summary, 2) AS summary_iso"),
+            'opnames.status',
+            'look_ups.label as status_text',
+        ])
             ->leftJoin('look_ups', 'look_ups.key', '=', 'opnames.status');
-            
+
         return datatables()
             ->of($opnames)
             ->addIndexColumn()
@@ -372,10 +371,11 @@ class OpnameController extends Controller
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->addColumn('action', function ($opname) {
-                $btn = '<button data-remote_destroy="' . route('opname.destroy', $opname->id) . '" type="button" class="btn btn-danger btn-sm btnDelete" title="Hapus"><i class="fas fa-trash fa-fw"></i></button> ';
-
+                // $btn = '<button data-remote_destroy="' . route('opname.destroy', $opname->id) . '" type="button" class="btn btn-danger btn-sm btnDelete" title="Hapus"><i class="fas fa-trash fa-fw"></i></button> ';
+                $btn = '';
                 if ($opname->status == 'ONGO') {
-                    $btn .= '<button data-remote_show="' . route('opname.show', $opname->id) . '" data-remote_store_opaname_detail="' . route('opname.store_opname_detail') . '" type="button" class="btn btn-warning btn-sm btnEdit" title="Kerjakan Opname Ini"><i class="fas fa-plus fa-fw"></i></button> ';
+                    if (auth()->user()->privilege_code == 'EM')
+                        $btn .= '<button data-remote_show="' . route('opname.show', $opname->id) . '" data-remote_store_opaname_detail="' . route('opname.store_opname_detail') . '" type="button" class="btn btn-warning btn-sm btnEdit" title="Kerjakan Opname Ini"><i class="fas fa-plus fa-fw"></i></button> ';
                 } else {
                     $btn .= '<button data-remote_show="' . route('opname.show', $opname->id) . '" type="button" class="btn btn-info btn-sm btnOpen" title="Lihat Opname Ini"><i class="fas fa-eye fa-fw"></i></button> ';
                 }
@@ -393,18 +393,18 @@ class OpnameController extends Controller
     public function datatablesOpnameDetail(Request $request)
     {
         $opnameDetails = OpnameDetail::select([
-                'opname_details.id',
-                DB::raw("DATE_FORMAT(opname_details.updated_at, '%d %b %Y %H:%i:%s') AS updated_at_idn"),
-                'opname_details.opname_id',
-                'opname_details.item_id',
-                'items.barcode',
-                'items.name',
-                'opname_details.old_stock',
-                'opname_details.new_stock',
-                'opname_details.buy_price',
-                'opname_details.sell_price',
-                DB::raw("COALESCE(opname_details.description, '-') AS description"),
-            ])
+            'opname_details.id',
+            DB::raw("DATE_FORMAT(opname_details.updated_at, '%d %b %Y %H:%i:%s') AS updated_at_idn"),
+            'opname_details.opname_id',
+            'opname_details.item_id',
+            'items.barcode',
+            'items.name',
+            'opname_details.old_stock',
+            'opname_details.new_stock',
+            'opname_details.buy_price',
+            'opname_details.sell_price',
+            DB::raw("COALESCE(opname_details.description, '-') AS description"),
+        ])
             ->leftJoin('items', 'items.id', '=', 'opname_details.item_id')
             ->where('opname_id', $request->opname_id);
 
@@ -428,16 +428,14 @@ class OpnameController extends Controller
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->addColumn('action', function ($opnameDetail) {
-                if($opnameDetail->description == '-'){
+                if ($opnameDetail->description == '-') {
                     $isNewStockAndOldStockSame = ($opnameDetail->new_stock == $opnameDetail->old_stock) ? true : false;
-                    if($isNewStockAndOldStockSame){
+                    if ($isNewStockAndOldStockSame) {
                         $btn = '-';
+                    } else {
+                        $btn = '<button type="button" data-remote_show_opname_detail="' . route('opname.show_opname_detail', $opnameDetail->id) . '" class="btn btn-warning btn-sm btnEdit" title="Tambahkan alasan perbedaan stock opname"><i class="fas fa-plus"></i></button> ';
                     }
-                    else{
-                        $btn = '<button type="button" data-remote_show_opname_detail="'.route('opname.show_opname_detail', $opnameDetail->id).'" class="btn btn-warning btn-sm btnEdit" title="Tambahkan alasan perbedaan stock opname"><i class="fas fa-plus"></i></button> ';
-                    }
-                }
-                else{
+                } else {
                     $btn = '-';
                 }
                 return $btn;
@@ -461,12 +459,12 @@ class OpnameController extends Controller
 
         $items = Item::select('*')
             ->where('is_stock_active', 1)
-            ->whereNotIn('id', function($query) use ($opname_id) {
+            ->whereNotIn('id', function ($query) use ($opname_id) {
                 $query->select('item_id')->from('opname_details')->where('opname_id', $opname_id);
             })
-            ->where(function($query) use ($search){
+            ->where(function ($query) use ($search) {
                 $query->where('barcode', 'like', '%' . $search . '%')
-                      ->orWhere('name', 'like', '%' . $search . '%');
+                    ->orWhere('name', 'like', '%' . $search . '%');
             })
             ->orderBy('name', 'asc')
             ->skip($offset)->take($limit)
@@ -505,7 +503,7 @@ class OpnameController extends Controller
         $count_item = Item::where('is_stock_active', 1)->count();
         $count_item_in_opname_detail = OpnameDetail::where('opname_id', $opname_id)->count();
 
-        if($count_item == $count_item_in_opname_detail) {
+        if ($count_item == $count_item_in_opname_detail) {
             Opname::where('id', $opname_id)
                 ->update([
                     'status' => 'DONE'

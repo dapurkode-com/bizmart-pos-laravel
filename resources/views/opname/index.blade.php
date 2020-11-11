@@ -28,7 +28,9 @@
                             <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Daftar Opname</h5>
                         </div>
                         <div class="col-6 text-right">
-                            <button class="btn btn-info btnAdd" title="Tambah Data"><i class="fas fa-plus mr-2"></i>Tambah</button>
+                            @if (auth()->user()->privilege_code == 'EM')
+                                <button class="btn btn-info btnAdd" title="Tambah Data"><i class="fas fa-plus mr-2"></i>Tambah</button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -198,7 +200,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-sm-12">
-                                
+
                                 <input type="hidden" name="_remote" class="noReset">
                                 <input type="hidden" name="_method" class="noReset">
                                 <input type="hidden" name="opname_id" class="noReset">
@@ -239,7 +241,7 @@
                                     <textarea type="text" name="description" rows="5" class="form-control" placeholder="Deskripsikan alasannya disini"></textarea>
                                     <div class="invalid-feedback"></div>
                                 </div>
-                                
+
                             </div>
                         </div>
 
@@ -471,7 +473,7 @@
                     }
                 });
             });
-            
+
             addListenToEvent('.mainContent .btnEdit', 'click', (e) => {
                 const parentElm = document.querySelector('#modalForm');
                 const thisElm = e.target.closest('button');
@@ -485,7 +487,7 @@
 
                 showModalForm(parentElm, thisElm, 'show');
             });
-            
+
             addListenToEvent('.mainContent .btnDelete', 'click', (e) => {
                 const thisElm = e.target.closest('button');
                 let url = `${thisElm.dataset.remote_destroy}`;
@@ -612,19 +614,19 @@
                 tbOpnameDetail.ajax.reload();
             });
         }
-        
+
         function submitItemToOpnameDetail(parentElm, thisElm) {
             let formData = new FormData(parentElm.querySelector('form#insertItemForm'));
             let jsonStr = JSON.stringify(fdToJsonObj(formData));
             const resetBtn = parentElm.querySelector('form#insertItemForm button[type="reset"]')
-            
+
             // loading and disabled button
             const buttonText = thisElm.innerHTML;
             thisElm.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i>`
             for (const elm of parentElm.querySelectorAll('button')) {
                 elm.disabled = true;
             }
-            
+
             fetch(`${formData.get('_remote')}`, {
                 method: `${formData.get('_method')}`,
                 headers: {
@@ -730,21 +732,21 @@
             parentElm.querySelector('input[name="new_stock"]').value = data.item.new_stock;
             parentElm.querySelector('input[name="buy_price"]').value = data.item.buy_price;
             parentElm.querySelector('input[name="sell_price"]').value = data.item.sell_price;
-            
+
             $(parentElm).modal('show');
         }
 
         function submitReasonStockLog(parentElm, thisElm) {
             let formData = new FormData(parentElm.closest('form'));
             let jsonStr = JSON.stringify(fdToJsonObj(formData));
-            
+
             // loading and disabled button
             const buttonText = thisElm.innerHTML;
             thisElm.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i>`
             for (const elm of parentElm.querySelectorAll('button')) {
                 elm.disabled = true;
             }
-            
+
             fetch(`${formData.get('_remote')}`, {
                 method: `${formData.get('_method')}`,
                 headers: {

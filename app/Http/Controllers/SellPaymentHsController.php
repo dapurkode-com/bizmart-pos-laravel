@@ -98,7 +98,7 @@ class SellPaymentHsController extends Controller
         } else {
             try {
                 DB::beginTransaction();
-    
+
                 SellPaymentHs::create([
                     'sell_id' => $sellId,
                     'user_id' => auth()->user()->id,
@@ -115,13 +115,12 @@ class SellPaymentHsController extends Controller
                         'sell_status' => 'PO',
                     ]);
                 }
-    
+
                 DB::commit();
                 return response()->json([
                     'status' => 'valid',
                     'pesan' => 'Penagihan piutang berhasil disimpan',
                 ]);
-    
             } catch (Exception $exc) {
                 DB::rollBack();
                 return response()->json([
@@ -130,7 +129,6 @@ class SellPaymentHsController extends Controller
                 ]);
             }
         }
-
     }
 
     /**
@@ -153,15 +151,15 @@ class SellPaymentHsController extends Controller
     public function datatables(Request $request)
     {
         $sells = Sell::select([
-                'sells.id',
-                DB::raw("CONCAT('PJ-', LPAD(sells.id, 5, '0')) AS _id"),
-                DB::raw("DATE_FORMAT(sells.updated_at, '%d %b %Y') AS _updated_at"),
-                'members.name AS _member_name',
-                'sells.summary',
-                'users.name AS _user_name',
-                'sells.sell_status',
-                'look_ups.label as _status',
-            ])
+            'sells.id',
+            DB::raw("CONCAT('PJ-', LPAD(sells.id, 5, '0')) AS _id"),
+            DB::raw("DATE_FORMAT(sells.updated_at, '%d %b %Y') AS _updated_at"),
+            'members.name AS _member_name',
+            'sells.summary',
+            'users.name AS _user_name',
+            'sells.sell_status',
+            'look_ups.label as _status',
+        ])
             ->leftJoin('members', 'members.id', '=', 'sells.member_id')
             ->leftJoin('users', 'users.id', '=', 'sells.user_id')
             ->leftJoin('look_ups', function ($join) {
@@ -206,7 +204,7 @@ class SellPaymentHsController extends Controller
                 }
             })
             ->addColumn('_action_raw', function ($sell) {
-                $btn = '<button data-remote_get="' . route('sell_payment_hs.show', $sell->id) . '" data-remote_set="' . route('sell_payment_hs.update', $sell->id) . '" type="button" class="btn btn-primary btn-sm addBtn" title="Tambah"><i class="fas fa-plus fa-fw"></i></button> ';
+                $btn = auth()->user()->privilege_code == 'EM' ? '<button data-remote_get="' . route('sell_payment_hs.show', $sell->id) . '" data-remote_set="' . route('sell_payment_hs.update', $sell->id) . '" type="button" class="btn btn-primary btn-sm addBtn" title="Tambah"><i class="fas fa-plus fa-fw"></i></button> ' : '';
                 $btn .= '<button data-remote_get="' . route('sell_payment_hs.show', $sell->id) . '" type="button" class="btn btn-info btn-sm openBtn" title="Lihat"><i class="fas fa-eye fa-fw"></i></button> ';
                 return $btn;
             })

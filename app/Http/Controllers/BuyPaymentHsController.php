@@ -91,7 +91,7 @@ class BuyPaymentHsController extends Controller
         } else {
             try {
                 DB::beginTransaction();
-    
+
                 BuyPaymentHs::create([
                     'buy_id' => $buyId,
                     'user_id' => auth()->user()->id,
@@ -113,13 +113,12 @@ class BuyPaymentHsController extends Controller
                     $buy->paid_amount +=  $request->amount;
                     $buy->save();
                 }
-    
+
                 DB::commit();
                 return response()->json([
                     'status' => 'valid',
                     'pesan' => 'Pembayaran hutang berhasil disimpan',
                 ]);
-    
             } catch (Exception $exc) {
                 DB::rollBack();
                 return response()->json([
@@ -144,15 +143,15 @@ class BuyPaymentHsController extends Controller
     public function datatables(Request $request)
     {
         $buys = Buy::select([
-                'buys.id',
-                DB::raw("CONCAT('PJ-', LPAD(buys.id, 5, '0')) AS _id"),
-                DB::raw("DATE_FORMAT(buys.updated_at, '%d %b %Y') AS _updated_at"),
-                'supliers.name AS _suplier_name',
-                'buys.summary',
-                'users.name AS _user_name',
-                'buys.buy_status',
-                'look_ups.label as _status',
-            ])
+            'buys.id',
+            DB::raw("CONCAT('PJ-', LPAD(buys.id, 5, '0')) AS _id"),
+            DB::raw("DATE_FORMAT(buys.updated_at, '%d %b %Y') AS _updated_at"),
+            'supliers.name AS _suplier_name',
+            'buys.summary',
+            'users.name AS _user_name',
+            'buys.buy_status',
+            'look_ups.label as _status',
+        ])
             ->leftJoin('supliers', 'supliers.id', '=', 'buys.suplier_id')
             ->leftJoin('users', 'users.id', '=', 'buys.user_id')
             ->leftJoin('look_ups', function ($join) {
@@ -197,11 +196,11 @@ class BuyPaymentHsController extends Controller
                 }
             })
             ->addColumn('_action_raw', function ($buy) {
-                $btn = '<button data-remote_get="' . route('buy_payment_hs.show', $buy->id) . '" data-remote_set="' . route('buy_payment_hs.update', $buy->id) . '" type="button" class="btn btn-primary btn-sm addBtn" title="Tambah"><i class="fas fa-plus fa-fw"></i></button> ';
+                $btn = auth()->user()->privilege_code == 'EM' ? '<button data-remote_get="' . route('buy_payment_hs.show', $buy->id) . '" data-remote_set="' . route('buy_payment_hs.update', $buy->id) . '" type="button" class="btn btn-primary btn-sm addBtn" title="Tambah"><i class="fas fa-plus fa-fw"></i></button> ' : '';
                 $btn .= '<button data-remote_get="' . route('buy_payment_hs.show', $buy->id) . '" type="button" class="btn btn-info btn-sm openBtn" title="Lihat"><i class="fas fa-eye fa-fw"></i></button> ';
                 return $btn;
             })
             ->rawColumns(['_action_raw', '_status_raw'])
             ->toJson();
-    }    
+    }
 }
