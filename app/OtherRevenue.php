@@ -38,6 +38,16 @@ class OtherRevenue extends Model
         'summary' => 'double'
     ];
 
+    /**
+     * [Relationship] Ref. pengguna
+     *
+     * @return belongsTo [User]
+     */
+    public function user()
+    {
+        return $this->belongsTo(\App\User::class);
+    }
+
     public function details()
     {
         return $this->hasMany(\App\OtherRevenueDetail::class);

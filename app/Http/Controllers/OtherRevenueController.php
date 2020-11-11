@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\OtherRevenue;
-use Carbon\Carbon;
 use DB;
 use Exception;
+use Carbon\Carbon;
+use App\SystemParam;
+use App\OtherRevenue;
 use Illuminate\Http\Request;
 
 class OtherRevenueController extends Controller
@@ -86,7 +87,11 @@ class OtherRevenueController extends Controller
      */
     public function show(OtherRevenue $otherRevenue)
     {
-        //
+        $mrch_name = SystemParam::where('param_code', 'MRCH_NAME')->first();
+        $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
+        $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
+
+        return response()->view('other_revenue.show', compact('otherRevenue', 'mrch_name', 'mrch_addr', 'mrch_phone'));
     }
 
     /**

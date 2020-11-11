@@ -57,7 +57,7 @@
                                 <th>ID</th>
                                 <th>Tanggal</th>
                                 <th>Oleh</th>
-                                <th>Total</th>
+                                <th class="text-right">Total</th>
                                 <th>Note</th>
                                 <th class="text-right">Aksi</th>
                             </tr>
@@ -143,7 +143,7 @@
                 {data: 'id'},
                 {data: 'updated_at'},
                 {data: 'name', name: 'users.name'},
-                {data: 'summary', render: $.fn.dataTable.render.number( ',', '.', 2, 'Rp' )},
+                {data: 'summary', render: $.fn.dataTable.render.number( ',', '.', 2, 'Rp' ), class: 'text-right'},
                 {data: 'note'},
                 {data: 'action', orderable: false, searchable: false, className: 'text-right'},
             ],
