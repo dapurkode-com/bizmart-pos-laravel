@@ -45,6 +45,7 @@
                             <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> History Hitung Kas</h5>
                         </div>
                         <div class="col-6 text-right">
+                            <button type="button" class="btn btn-info addBtn"><i class="fas fa-plus mr-2" title="Tambah Hitung Kas"></i>Tambah</button>
                             <button type="button" class="btn btn-default indexTableRefreshBtn"><i class="fas fa-sync-alt" title="Refresh Table"></i></button>
                             <button type="button" class="btn btn-default" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                         </div>
@@ -127,30 +128,27 @@
 
 @section('css')
     <style>
-        .sellTableFilter {
+        .indexTableFilter {
             display: grid;
             grid-template-columns: 0fr 0fr 0fr 1fr;
             gap: 1rem;
             align-items: center;
         }
-        .sellTableFilter .filterButton {
+        .indexTableFilter .filterButton {
             width: 80px;
             justify-self: end;
         }
         @media only screen and (max-width: 617px) {
-            .sellTableFilter {
+            .indexTableFilter {
                 grid-template-columns: 1fr;
                 justify-items: center;
                 gap: 0;
             }
-            .sellTableFilter .filterButton {
+            .indexTableFilter .filterButton {
                 margin-top: 1rem;
                 width: 185.19px;
                 justify-self: center;
             }
-        }
-        .sisaPiutangBtn {
-            border-radius: 0 4px 4px 0 !important;
         }
     </style>
 @stop
@@ -188,7 +186,7 @@
             },
             scrollX: true,
             ajax: {
-                url: "{{ route('sach_count.datatables') }}",
+                url: "{{ route('cash_count.datatables') }}",
                 data: function (d) {
                     const filterElm = mainContentElm.querySelector('.sellTableFilter');
                     d.filter = {
@@ -213,8 +211,6 @@
         });
         const detailModal = document.querySelector('#detailModal');
         const sellTableFilterElm = mainContentElm.querySelector('.sellTableFilter');
-        let REMOTE_SET = null;
-        let SISA_PIUTANG = '';
 
         domReady(() => {
             eraseErrorInit();
@@ -449,53 +445,6 @@
             `;
             
             return html;
-        }
-
-        function drawFormNodeToDetailModalBody() {
-            const html = document.createElement('div');
-            html.classList.add('row');
-            html.innerHTML = `
-                <div class="col-sm-12">
-                    <div class="card bg-default" style="margin-top: 1rem">
-                        <div class="card-header">
-                            <h3 class="card-title">Form Penagihan Piutang</h3>
-                            <div class="card-tools">
-                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input type="number" name="amount" min="0" oninput="this.value = Math.abs(this.value)" class="form-control" placeholder="Tulis nominal tagihan"/>
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary sisaPiutangBtn" type="button">Sisa Piutang</button>
-                                            </div>
-                                            <div class="invalid-feedback"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label>Keterangan</label>
-                                        <textarea name="note" rows="5" class="form-control" placeholder="Tulis keterangan tambahan"></textarea>
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            return html;
-        }
-
-        function drawToDetailModalFooter() {            
-            return `
-                
-            `;
         }
     </script>
 @stop
