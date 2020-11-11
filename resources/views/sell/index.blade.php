@@ -119,7 +119,7 @@
 @section('js')
     <script type="module">
         import { select2DatatableInit, domReady, addListenToEvent, getIndoDate, getIsoNumberWithSeparator } from '{{ asset("plugins/custom/global.app.js") }}'
-        
+
         const mainContentElm = document.querySelector('.mainContent');
         const sellTable = $('#sellTable').DataTable({
             processing: true,
@@ -290,7 +290,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="card bg-default">
@@ -374,7 +374,7 @@
                     </div>
                 </div>
             `;
-            
+
             return html;
         }
 

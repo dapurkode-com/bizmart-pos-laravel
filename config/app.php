@@ -175,6 +175,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // Custom Prover from Bizmart App
         App\Providers\ItemServiceProvider::class,
     ],
 

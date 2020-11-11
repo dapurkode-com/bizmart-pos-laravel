@@ -309,6 +309,16 @@ return [
             'url'       => '/opname',
             'icon'      => 'fas fa-fw fa-balance-scale'
         ],
+        [
+            'text'    => 'Pendapatan Lainnya',
+            'icon'    => 'fas fa-fw fa-arrow-circle-right',
+            'url'     => '/other_revenue/create',
+        ],
+        [
+            'text'    => 'Pengeluaran Lainnya',
+            'icon'    => 'fas fa-fw fa-arrow-circle-left',
+            'url'     => '/other_expense/create',
+        ],
         ['header' => 'LAPORAN'],
         [
             'text'    => 'Daftar Pembelian',
@@ -319,6 +329,16 @@ return [
             'text'    => 'Daftar Penjualan',
             'icon'    => 'fas fa-fw fa-clipboard-list',
             'url'     => '/sell',
+        ],
+        [
+            'text'    => 'Daftar Pendapatan Lainnya',
+            'icon'    => 'fas fa-fw fa-clipboard-list',
+            'url'     => '/other_revenue',
+        ],
+        [
+            'text'    => 'Daftar Pengeluaran Lainnya',
+            'icon'    => 'fas fa-fw fa-clipboard-list',
+            'url'     => '/other_expense'
         ],
         [
             'text'    => 'Laporan Pembelian',

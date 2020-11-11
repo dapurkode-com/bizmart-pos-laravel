@@ -93,6 +93,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');
     Route::resource('buy', 'BuyController')->only('index', 'store', 'create', 'show', 'destroy');
 
+    Route::get('other_revenue/datatables', 'OtherRevenueController@datatables')->name('other_revenue.datatables');
+    Route::get('other_expense/datatables', 'OtherExpenseController@datatables')->name('other_expense.datatables');
+
     // for buy report
     Route::get('buy_report/get_total_transactions', 'BuyReportController@getTotalTransactions')->name('buy_report.get_total_transactions');
     Route::get('buy_report/get_current_expend', 'BuyReportController@getCurrentExpend')->name('buy_report.get_current_expend');
@@ -103,7 +106,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('buy_report/dept_datatables', 'BuyReportController@deptDatatables')->name('buy_report.dept_datatables');
     Route::get('buy_report/suplier_datatables', 'BuyReportController@suplierDatatables')->name('buy_report.suplier_datatables');
 
-    
+    Route::get('cashflow', 'CashflowController@index')->name('cashflow');
+
     Route::resources([
         'suplier' => 'SuplierController',
         'member' => 'MemberController',
@@ -114,6 +118,9 @@ Route::group(['middleware' => ['auth']], function () {
         'return_item' => 'ReturnItemController',
         'buy_payment_hs' => 'BuyPaymentHsController',
         'sell_payment_hs' => 'SellPaymentHsController',
+        'other_revenue' => 'OtherRevenueController',
+        'other_expense' => 'OtherExpenseController',
+        'sell_report' => 'SellReportController',
         'buy_report' => 'BuyReportController',
         'sell_report' => 'SellReportController',
     ]);
