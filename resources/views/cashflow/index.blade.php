@@ -21,18 +21,18 @@
 
 @section('content')
    <div class="row">
-       <div class="col-sm-12">
+       <div class="col-sm-12 no-print">
            <form method="get">
                <div class="card bg-default">
                     <div class="card-body">
                         <div class="sellTableFilter">
                             <div class="form-group mb-0">
-                                <input type="date" name="date_start" class="form-control">
+                                {!! Form::date('date_start', $date_start, ['class' => 'form-control', 'placeholder' => 'mm/dd/yyyy']) !!}
                                 <div class="invalid-feedback"></div>
                             </div>
                             <p class="mb-0">sampai</p>
                             <div class="form-group mb-0">
-                                <input type="date" name="date_end" class="form-control">
+                                {!! Form::date('date_end', $date_end, ['class' => 'form-control', 'placeholder' => 'mm/dd/yyyy']) !!}
                                 <div class="invalid-feedback"></div>
                             </div>
                             <button type="submit" class="btn btn-info filterButton"><i class="fas fa-search mr-2"></i>Cari</button>
@@ -117,7 +117,7 @@
                 </div>
                 <div class="row no-print text-right">
                     <div class="col-12">
-                        <button type="button" onclick="window.print()" class="btn btn-info sm"><i class="fas fa-print"></i> Print</button>
+                        <button type="button" class="btn btn-info sm" id="btnPrint"><i class="fas fa-print"></i> Print</button>
                     </div>
                 </div>
            </div>
@@ -155,6 +155,10 @@
 
 @section('js')
 <script>
-
+    $(document).ready( function () {
+        $('#btnPrint').click(function () {
+            window.print()
+        })
+    })
 </script>
 @stop

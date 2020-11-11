@@ -319,89 +319,70 @@ return [
             'icon'    => 'fas fa-fw fa-arrow-circle-left',
             'url'     => '/other_expense/create',
         ],
-        ['header' => 'LAPORAN'],
+        ['header' => 'LAPORAN', 'privilege'],
         [
             'text'    => 'Daftar Pembelian',
             'icon'    => 'fas fa-fw fa-clipboard-list',
             'url'     => '/buy',
+            'privilege' => 'OW'
         ],
         [
             'text'    => 'Daftar Penjualan',
             'icon'    => 'fas fa-fw fa-clipboard-list',
             'url'     => '/sell',
+            'privilege' => 'OW'
         ],
         [
             'text'    => 'Daftar Pendapatan Lainnya',
             'icon'    => 'fas fa-fw fa-clipboard-list',
             'url'     => '/other_revenue',
+            'privilege' => 'OW'
         ],
         [
             'text'    => 'Daftar Pengeluaran Lainnya',
             'icon'    => 'fas fa-fw fa-clipboard-list',
-            'url'     => '/other_expense'
+            'url'     => '/other_expense',
+            'privilege' => 'OW'
         ],
         [
             'text'    => 'Laporan Pembelian',
             'icon'    => 'fas fa-fw  fa-chart-line',
             'url'     => '/buy_report',
+            'privilege' => 'OW'
         ],
         [
             'text'    => 'Laporan Penjualan',
             'icon'    => 'fas fa-fw  fa-chart-line',
             'url'     => '/sell_report',
+            'privilege' => 'OW'
         ],
-
+        [
+            'text'    => 'Laporan Arus Kas',
+            'icon'    => 'fas fa-fw fa-money-bill-wave',
+            'url'     => '/cashflow'
+        ],
 
         ['header' => 'MASTER DATA'],
         [
             'text'    => 'User',
             'icon'    => 'fas fa-fw  fa-user-cog',
             'url'     => '/user',
+            'privilege' => 'OW'
         ],
         [
             'text'    => 'Suplier',
             'icon'    => 'fas fa-fw fa-truck',
-            'url'     => '/suplier'
-            // 'submenu' => [
-            //     [
-            //         'text' => 'Daftar Suplier',
-            //         'url'  => '/suplier',
-            //     ],
-            //     [
-            //         'text' => 'Tambah Suplier Baru',
-            //         'url'  => '/suplier/create',
-            //     ],
-            // ],
+            'url'     => '/suplier',
         ],
         [
             'text'    => 'Member',
             'icon'    => 'fas fa-fw fa-user',
-            'url'     => '/member'
-            // 'submenu' => [
-            //     [
-            //         'text' => 'Daftar Member',
-            //         'url'  => '/member',
-            //     ],
-            //     [
-            //         'text' => 'Tambah Member Baru',
-            //         'url'  => '/member/create',
-            //     ],
-            // ],
+            'url'     => '/member',
         ],
         [
             'text'    => 'Barang',
             'icon'    => 'fas fa-fw fa-box',
-            'url'     => '/item'
-            // 'submenu' => [
-            //     [
-            //         'text' => 'Daftar Barang',
-            //         'url'  => '/item',
-            //     ],
-            //     [
-            //         'text' => 'Tambah Barang Baru',
-            //         'url'  => '/item/create',
-            //     ],
-            // ],
+            'url'     => '/item',
         ],
         [
             'text'      => 'Kategori Barang',
@@ -413,22 +394,6 @@ return [
             'url'     => '/unit',
             'icon'    => 'fas fa-fw fa-list',
         ],
-        // ['header' => 'labels'],
-        // [
-        //     'text'       => 'important',
-        //     'icon_color' => 'red',
-        //     'url'        => '#',
-        // ],
-        // [
-        //     'text'       => 'warning',
-        //     'icon_color' => 'yellow',
-        //     'url'        => '#',
-        // ],
-        // [
-        //     'text'       => 'information',
-        //     'icon_color' => 'cyan',
-        //     'url'        => '#',
-        // ],
     ],
 
     /*

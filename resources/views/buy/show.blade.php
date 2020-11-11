@@ -31,7 +31,7 @@
                         <h4><img src="{{ asset(config('adminlte.logo_img', 'vendor/adminlte/dist/img/AdminLTELogo.png')) }}"
                             alt="{{ config('adminlte.logo_img_alt', 'AdminLTE') }}"
                             class=""
-                            style="opacity:.8; width:2rem; display: inline"> Bizmart
+                            style="opacity:.8; width:2rem; display: inline">
                         <small class="float-right">
                             {{ $buys->updated_at->isoFormat('DD/MM/Y') }}
                         </small>
@@ -76,10 +76,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-    
+
                             </tbody>
                             <tfoot>
-                                <tr>   
+                                <tr>
                                     <td> </td>
                                     <td> </td>
                                     <td> </td>
@@ -104,7 +104,7 @@
                             <i class="fas fa-download"></i> Generate PDF
                         </a>
                     </div>
-                    
+
                 </div>
            </div>
        </div>
@@ -166,7 +166,7 @@
             order: [[1, 'asc']]
         });
 
-        
+
     });
 </script>
 @stop

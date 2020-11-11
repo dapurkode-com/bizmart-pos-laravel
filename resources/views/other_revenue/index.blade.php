@@ -26,13 +26,12 @@
                 <div class="card-body">
                     <div class="sellTableFilter">
                         <div class="form-group mb-0">
-                            {{-- <input type="date" name="date_start" class="form-control" value="{{ $date_start->format('d/m/Y') }}"> --}}
-                            {!! Form::date('date_start', $date_start, ['class' => 'form-control', 'placeholder' => 'mm/dd/yyyy']) !!}
+                            <input type="date" name="date_start" class="form-control">
                             <div class="invalid-feedback"></div>
                         </div>
                         <p class="mb-0">sampai</p>
                         <div class="form-group mb-0">
-                            {!! Form::date('date_end', $date_end, ['class' => 'form-control', 'placeholder' => 'mm/dd/yyyy']) !!}
+                            <input type="date" name="date_end" class="form-control">
                             <div class="invalid-feedback"></div>
                         </div>
                         <button type="button" class="btn btn-info filterButton"><i class="fas fa-search mr-2"></i>Cari</button>

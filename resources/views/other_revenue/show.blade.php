@@ -31,7 +31,7 @@
                         <h4><img src="{{ asset(config('adminlte.logo_img', 'vendor/adminlte/dist/img/AdminLTELogo.png')) }}"
                             alt="{{ config('adminlte.logo_img_alt', 'AdminLTE') }}"
                             class=""
-                            style="opacity:.8; width:2rem; display: inline"> Bizmart
+                            style="opacity:.8; width:2rem; display: inline">
                         <small class="float-right">
                             {{ $otherRevenue->updated_at->isoFormat('DD/MM/Y') }}
                         </small>
