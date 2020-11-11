@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\BuyPaymentHs;
 use App\Opname;
 use Carbon\Carbon;
 use App\ReturnItem;
@@ -31,10 +32,12 @@ class AppServiceProvider extends ServiceProvider
     {
         config(['app.locale' => 'id']);
         Carbon::setLocale('id');
+        // Cashflow Observer
         SellPaymentHs::observe(\App\Observers\SellCashObserver::class);
         OtherRevenue::observe(\App\Observers\ORCashObserver::class);
         OtherExpense::observe(\App\Observers\OECashObserver::class);
         ReturnItem::observe(\App\Observers\ReturnItemCashObserver::class);
         Opname::observe(\App\Observers\OpnameCashObserver::class);
+        BuyPaymentHs::observe(\App\Observers\BuyCashObserver::class);
     }
 }

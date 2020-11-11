@@ -36,17 +36,6 @@ class SellCashObserver
      */
     public function updated(SellPaymentHs $sellPaymentHs)
     {
-        // $matchCase = [];
-        // $matchCase['ref_uniq_id']  = $sellPaymentHs->sell->uniq_id;
-        // $matchCase['cash_cause']   = self::CASH_CAUSE;
-        // $matchCase['io_cash']      = self::IO_CASH;
-
-        // $data = [];
-        // $data['user_id']    = $sellPaymentHs->user_id;
-        // $data['trx_date']   = $sellPaymentHs->payment_date;
-        // $data['amount']     = $sellPaymentHs->amount;
-
-        // Cashflow::updateOrCreate($matchCase, $data);
     }
 
     /**

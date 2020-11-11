@@ -338,7 +338,9 @@ return [
         [
             'text'    => 'Daftar Pengeluaran Lainnya',
             'icon'    => 'fas fa-fw fa-clipboard-list',
-            'url'     => '/other_expense',
+            'url'     => '/other_expense'
+        ],
+        [
             'text'    => 'Laporan Pembelian',
             'icon'    => 'fas fa-fw  fa-chart-line',
             'url'     => '/buy_report',
