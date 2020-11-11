@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\LookUp;
 use App\User;
 use DB;
 use Exception;
@@ -45,7 +46,8 @@ class UserController extends Controller
                 'name' => $request->input('name'),
                 'email' => $request->input('email'),
                 'username' => $request->input('username'),
-                'password'  => bcrypt($request->input('password'))
+                'password'  => bcrypt($request->input('password')),
+                'privilege_code'  => $request->input('privilege_code'),
             ]);
             DB::commit();
 
@@ -70,8 +72,11 @@ class UserController extends Controller
      */
     public function show($id)
     {
+        $users = User::findOrFail($id);
+        $users->privilege_text = $users->privilegeText();
+
         return response()->json([
-            'users' => User::findOrFail($id)
+            'users' => $users
         ]);
     }
 
@@ -102,13 +107,17 @@ class UserController extends Controller
                     'name' => $request->input('name'),
                     'email' => $request->input('email'),
                     'username' => $request->input('username'),
+                    'privilege_code'  => $request->input('privilege_code'),
+                    'is_active'  => $request->input('is_active'),
                 ]);
             } else {
                 User::findOrFail($id)->update([
                     'name' => $request->input('name'),
                     'email' => $request->input('email'),
                     'username' => $request->input('username'),
-                    'password'  => bcrypt($request->input('password'))
+                    'password'  => bcrypt($request->input('password')),
+                    'privilege_code'  => $request->input('privilege_code'),
+                    'is_active'  => $request->input('is_active'),
                 ]);
             }
             DB::commit();
@@ -178,5 +187,49 @@ class UserController extends Controller
             })
             ->escapeColumns([])
             ->make(true);
+    }
+
+    /**
+     * Display a listing of previlege code in form of select2.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getPrivilegeCode(Request $request)
+    {
+        $page = $request->page;
+        $search = $request->term;
+        $limit = 25;
+        $offset = ($page - 1) * $limit;
+
+        $lookUps = LookUp::select('*')
+            ->where('group_code', 'PRIV_CODE')
+            ->where(function($query) use ($search){
+                $query->where('label', 'like', "%$search%");
+            })
+            ->orderby('key', 'asc')
+            ->skip($offset)->take($limit)
+            ->get();
+
+        $results = [];
+        foreach ($lookUps as $i => $lookUp) {
+            $results[] = array(
+                'id' => $lookUp->key,
+                'text' => "$lookUp->label",
+            );
+        }
+
+        if (count($results) < $limit) {
+            $more_pages = false;
+        } else {
+            $more_pages = true;
+        }
+
+        return response()->json([
+            "results" => $results,
+            "pagination" => [
+                "more" => $more_pages,
+            ],
+        ]);
     }
 }

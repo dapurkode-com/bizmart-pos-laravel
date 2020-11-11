@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'User')
+@section('title', 'Return Item')
 
 @section('content_header')
     <div class="row mb-2">
@@ -440,13 +440,13 @@
                 <td>${itemObj.name}</td>
                 <td class="p-1">
                     <div class="form-group mb-0">
-                        <input type="number" name="qty[]" class="form-control" placeholder="Tulis qty retur">
+                        <input type="number" name="qty[]" min="0" oninput="this.value = Math.abs(this.value)" class="form-control" placeholder="Tulis qty retur">
                         <div class="invalid-feedback"></div>
                     </div>
                 </td>
                 <td class="p-1">
                     <div class="form-group mb-0">
-                        <input type="number" name="buy_price[]" class="form-control" value="${itemObj.buy_price}" placeholder="Tulis harga beli">
+                        <input type="number" name="buy_price[]" min="0" oninput="this.value = Math.abs(this.value)" class="form-control" value="${itemObj.buy_price}" placeholder="Tulis harga beli">
                         <div class="invalid-feedback"></div>
                     </div>
                 </td>

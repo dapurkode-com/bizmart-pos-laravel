@@ -44,6 +44,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('unit/datatables', 'UnitController@datatables')->name('unit.datatables');
     Route::get('category/datatables', 'CategoryController@datatables')->name('category.datatables');
     Route::get('user/datatables', 'UserController@datatables')->name('user.datatables');
+    Route::get('user/get_privilege_code', 'UserController@getPrivilegeCode')->name('user.get_privilege_code');
 
     // for opname
     Route::get('opname/datatables', 'OpnameController@datatables')->name('opname.datatables');
@@ -73,6 +74,17 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('return_item/generate_pdf/{id}', 'ReturnItemController@generatePdf')->name('return_item.generate_pdf');
     // for return item
 
+    // for sell report
+    Route::get('sell_report/get_total_transaction', 'SellReportController@getTotalTransaction')->name('sell_report.get_total_transaction');
+    Route::get('sell_report/get_total_income_now', 'SellReportController@getTotalIncomeNow')->name('sell_report.get_total_income_now');
+    Route::get('sell_report/get_total_piutang', 'SellReportController@getTotalPiutang')->name('sell_report.get_total_piutang');
+    Route::get('sell_report/get_total_income', 'SellReportController@getTotalIncome')->name('sell_report.get_total_income');
+    Route::get('sell_report/income_datatables', 'SellReportController@incomeDatatables')->name('sell_report.income_datatables');
+    Route::get('sell_report/piutang_datatables', 'SellReportController@piutangDatatables')->name('sell_report.piutang_datatables');
+    Route::get('sell_report/item_datatables', 'SellReportController@itemDatatables')->name('sell_report.item_datatables');
+    Route::get('sell_report/member_datatables', 'SellReportController@memberDatatables')->name('sell_report.member_datatables');
+    // for sell report
+
     Route::resource('unit', 'UnitController')->only('index', 'store', 'update', 'show', 'destroy');
     Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');
     Route::resource('buy', 'BuyController')->only('index', 'store', 'create', 'show', 'destroy');
@@ -86,5 +98,6 @@ Route::group(['middleware' => ['auth']], function () {
         'sell' => 'SellController',
         'return_item' => 'ReturnItemController',
         'sell_payment_hs' => 'SellPaymentHsController',
+        'sell_report' => 'SellReportController',
     ]);
 });

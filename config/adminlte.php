@@ -323,7 +323,7 @@ return [
         [
             'text'    => 'Laporan Penjualan',
             'icon'    => 'fas fa-fw  fa-chart-line',
-            'url'     => '/sell/report',
+            'url'     => '/sell_report',
         ],
 
 
