@@ -44,6 +44,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('unit/datatables', 'UnitController@datatables')->name('unit.datatables');
     Route::get('category/datatables', 'CategoryController@datatables')->name('category.datatables');
     Route::get('user/datatables', 'UserController@datatables')->name('user.datatables');
+    Route::get('user/get_privilege_code', 'UserController@getPrivilegeCode')->name('user.get_privilege_code');
 
     // for opname
     Route::get('opname/datatables', 'OpnameController@datatables')->name('opname.datatables');

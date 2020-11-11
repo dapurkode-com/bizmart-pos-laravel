@@ -85,6 +85,19 @@
                             <input type="password" name="password" class="form-control" placeholder="Tulis password">
                             <div class="invalid-feedback"></div>
                         </div>
+                        <div class="form-group">
+                            <label>Hak Akses</label>
+                            <select name="privilege_code" class="form-control"></select>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Status User</label>
+                            <select name="is_active" class="form-control">
+                                <option value="1">Aktif</option>
+                                <option value="0">Tidak Aktif</option>
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="reset" class="btn btn-default">Reset</button>
@@ -113,6 +126,40 @@
 <script>
     // global variable
     let tbIndex = null;
+    const isActiveSelect = $('#modalForm [name="is_active"]').select2({
+            width: '100%',
+            placeholder: 'Pilih status user',
+            language: {
+                errorLoading: function(){
+                    return "Searching..."
+                }
+            },
+            allowClear: true,
+        });
+    const prevCodeSelect = $('#modalForm [name="privilege_code"]').select2({
+            width: '100%',
+            placeholder: 'Pilih hak akses',
+            language: {
+                errorLoading: function(){
+                    return "Searching..."
+                }
+            },
+            allowClear: true,
+            ajax: {
+                url: function () {
+                    return "{{ route('user.get_privilege_code') }}";
+                },
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        _token: `{{ csrf_token() }}`,
+                        term: params.term || '',
+                        page: params.page || 1
+                    }
+                },
+                cache: true
+            }
+        });
 
     // dom event
     domReady(() => {
@@ -173,6 +220,10 @@
             submitModalForm(parentElm, thisElm);
         });
 
+        addListenToEvent('#modalForm button[type="reset"]', 'click', (e) => {
+            prevCodeSelect.val('').trigger('change');
+        });
+
         addListenToEvent('.mainContent .btnEdit', 'click', (e) => {
             const parentElm = document.querySelector('#modalForm');
             const thisElm = e.target.closest('button');
@@ -221,6 +272,8 @@
             parentElm.querySelector(`[name="_remote"]`).value = `{{ route('user.store') }}`;
             parentElm.querySelector(`[name="_method"]`).value = `POST`;
 
+            $(isActiveSelect).parents('.form-group').addClass('d-none');
+
             modalTitle.innerHTML = `Tambah User`;
             modalBody.classList.remove('d-none');
             modalFooter.classList.remove('d-none');
@@ -229,12 +282,16 @@
             fetch(`${thisElm.dataset.remote_show}`)
             .then(response => response.json())
             .then(result => {
+                $(isActiveSelect).parents('.form-group').removeClass('d-none');
+
                 parentElm.querySelector(`[name="_remote"]`).value = thisElm.dataset.remote_update;
                 parentElm.querySelector(`[name="_method"]`).value = `PUT`;
                 parentElm.querySelector(`[name="name"]`).value = result.users.name;
                 parentElm.querySelector(`[name="email"]`).value = result.users.email;
                 parentElm.querySelector(`[name="username"]`).value = result.users.username;
                 parentElm.querySelector(`[name="password"]`).value = "";
+                prevCodeSelect.html(`<option value="${result.users.privilege_code}">${result.users.privilege_text}</option>`).trigger('change');
+                isActiveSelect.val(result.users.is_active).trigger('change');
 
                 modalTitle.innerHTML = `Edit User`;
                 modalBody.classList.remove('d-none');
@@ -420,6 +477,11 @@
             e.target.classList.remove('is-invalid');
             e.target.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;;
         });
+
+        $(document).on('change', 'select', (e) => {
+            e.target.classList.remove('is-invalid');
+            e.target.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;
+        })
 
         addListenToEvent('button[type="reset"]', 'click', (e) => {
             const parentFormElm = e.target.closest('form');

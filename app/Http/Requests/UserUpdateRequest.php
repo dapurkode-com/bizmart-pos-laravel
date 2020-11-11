@@ -39,6 +39,7 @@ class UserUpdateRequest extends FormRequest
                 'unique:users,username,' . $id . ',id'
             ],
             'password' => 'nullable|string|min:6',
+            'privilege_code' => 'required|string',
         ];
     }
 
@@ -51,6 +52,7 @@ class UserUpdateRequest extends FormRequest
     {
         return [
             'name' => 'nama',
+            'privilege_code' => 'Hak Akses',
         ];
     }
 
