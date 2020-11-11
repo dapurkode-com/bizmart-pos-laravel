@@ -281,7 +281,7 @@ return [
                 ],
                 [
                     'text'      => 'Pembayaran Hutang',
-                    'url'       => '',
+                    'url'       => '/buy_payment_hs',
                 ],
             ]
         ],
@@ -319,6 +319,11 @@ return [
             'text'    => 'Daftar Penjualan',
             'icon'    => 'fas fa-fw fa-clipboard-list',
             'url'     => '/sell',
+        ],
+        [
+            'text'    => 'Laporan Pembelian',
+            'icon'    => 'fas fa-fw  fa-chart-line',
+            'url'     => '/buy_report',
         ],
         [
             'text'    => 'Laporan Penjualan',
