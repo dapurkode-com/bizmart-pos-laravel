@@ -34,7 +34,7 @@
 </head>
 <body>
     <section>
-    <img src="images/logo.png" style="height: 9.5mm; width: 9.5mm; position: absolute">
+    <img src="images/logo1.png" style="height: 9.5mm; width: 9.5mm; position: absolute">
 
     <table class="table is-paddingless">
         <tr>

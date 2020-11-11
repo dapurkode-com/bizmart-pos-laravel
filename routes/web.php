@@ -59,10 +59,15 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('sell/datatables', 'SellController@datatables')->name('sell.datatables');
     Route::get('sell/get_items', 'SellController@getItems')->name('sell.get_items');
     Route::get('sell/get_members', 'SellController@getMembers')->name('sell.get_members');
+    Route::get('sell/generate_pdf/{id}', 'SellController@generatePdf')->name('sell.generate_pdf');
     // for sell
 
     // for sell_payment_hs
     Route::get('sell_payment_hs/datatables', 'SellPaymentHsController@datatables')->name('sell_payment_hs.datatables');
+    // for sell_payment_hs
+
+    // for sell_payment_hs
+    Route::get('buy_payment_hs/datatables', 'BuyPaymentHsController@datatables')->name('buy_payment_hs.datatables');
     // for sell_payment_hs
 
     // for return item
@@ -91,6 +96,17 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('other_revenue/datatables', 'OtherRevenueController@datatables')->name('other_revenue.datatables');
     Route::get('other_expense/datatables', 'OtherExpenseController@datatables')->name('other_expense.datatables');
 
+    // for buy report
+    Route::get('buy_report/get_total_transactions', 'BuyReportController@getTotalTransactions')->name('buy_report.get_total_transactions');
+    Route::get('buy_report/get_current_expend', 'BuyReportController@getCurrentExpend')->name('buy_report.get_current_expend');
+    Route::get('buy_report/get_overall_dept', 'BuyReportController@getOverallDept')->name('buy_report.get_overall_dept');
+    Route::get('buy_report/get_estimated_total_expend', 'BuyReportController@getEstimatedTotalExpend')->name('buy_report.get_estimated_total_expend');
+    Route::get('buy_report/item_datatables', 'BuyReportController@itemDatatables')->name('buy_report.item_datatables');
+    Route::get('buy_report/expend_datatables', 'BuyReportController@expendDatatables')->name('buy_report.expend_datatables');
+    Route::get('buy_report/dept_datatables', 'BuyReportController@deptDatatables')->name('buy_report.dept_datatables');
+    Route::get('buy_report/suplier_datatables', 'BuyReportController@suplierDatatables')->name('buy_report.suplier_datatables');
+
+
     Route::resources([
         'suplier' => 'SuplierController',
         'member' => 'MemberController',
@@ -99,9 +115,12 @@ Route::group(['middleware' => ['auth']], function () {
         'opname' => 'OpnameController',
         'sell' => 'SellController',
         'return_item' => 'ReturnItemController',
+        'buy_payment_hs' => 'BuyPaymentHsController',
         'sell_payment_hs' => 'SellPaymentHsController',
         'other_revenue' => 'OtherRevenueController',
         'other_expense' => 'OtherExpenseController',
         'sell_report' => 'SellReportController'
+        'buy_report' => 'BuyReportController',
+        'sell_report' => 'SellReportController',
     ]);
 });

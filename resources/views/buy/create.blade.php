@@ -20,6 +20,9 @@
 	</div>
 	<!-- /.col -->
 </div>
+<div class="row mb-2">
+    
+</div>
 @stop
 
 @section('content')
@@ -54,15 +57,15 @@
     <div class="alert alert-danger">
         <ul>
             @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
+            <li>{{ $error }}</li>
             @endforeach
         </ul>
     </div>
-@endif
+    @endif
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-            <form action="{{ route('buy.store') }}" method="post">
+                <form action="{{ route('buy.store') }}" method="post">
                 @csrf
                 <div class="card-header">
                     <h3 class="card-title">Pembelian</h3>
@@ -70,33 +73,42 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-6 border p-3">
-                            <b>Barang yang dibeli</b>
-                            <table id="my_table" class="table table-bordered table-sm mt-2" >
-                                <thead>
-                                    <tr>
-                                        <th style="width: 40%">Nama</th>
-                                        <th style="width: 20%">Qty</th>
-                                        <th style="width: 30%">Harga Beli</th>
-                                        <th style="width: 10%">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if(count(old('items_id',[]))>0)
-                                        @for($i =0; $i < count(old('items_id')); $i++)                            
-                                            <tr class="my_tr">
-                                                <td><input type="hidden" name="items_id[]" value="{{ old('items_id.'.$i)}}">
-                                                    <input type="hidden" name="name[]" value="{{ old('name.'.$i)}}">{{ old('name.'.$i)}}</td>
-                                                <td><input name="qty[]" data-val="{{ old('qty.'.$i)}}" id="qty" type="number" class="form-control" value="{{ old('qty.'.$i)}}"></td>
-                                                <td><input name="buy_price[]" data-val="{{ old('buy_price.'.$i)}}" id="buy_price" type="number" class="form-control" value="{{ old('buy_price.'.$i)}}"></td>
-                                                <td><button id= "btn_delete" data-id="{{ old('items_id.'.$i)}}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></td> 
-                                            </tr>                            
-                                        @endfor
-                                    @endif
-                                </tbody>
-                                <tfoot>
+                            <div class="row">
 
-                                </tfoot>
-                            </table>
+                                <b>Barang yang dibeli</b>
+                                <table id="my_table" class="table table-bordered table-sm mt-2" >
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 40%">Nama</th>
+                                            <th style="width: 20%">Qty</th>
+                                            <th style="width: 30%">Harga Beli</th>
+                                            <th style="width: 10%">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(count(old('items_id',[]))>0)
+                                            @for($i =0; $i < count(old('items_id')); $i++)                            
+                                                <tr class="my_tr">
+                                                    <td><input type="hidden" name="items_id[]" value="{{ old('items_id.'.$i)}}">
+                                                        <input type="hidden" name="name[]" value="{{ old('name.'.$i)}}">{{ old('name.'.$i)}}</td>
+                                                    <td><input name="qty[]" data-val="{{ old('qty.'.$i)}}" id="qty" type="number" class="form-control" value="{{ old('qty.'.$i)}}"></td>
+                                                    <td><input name="buy_price[]" data-val="{{ old('buy_price.'.$i)}}" id="buy_price" type="number" class="form-control" value="{{ old('buy_price.'.$i)}}"></td>
+                                                    <td><button id= "btn_delete" data-id="{{ old('items_id.'.$i)}}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></td> 
+                                                </tr>                            
+                                            @endfor
+                                        @endif
+                                    </tbody>
+                                    <tfoot>
+                                        
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <b>Nominal Bayar</b>
+                                <div class="input-group">
+                                    <input type="number" name="paid_amount" class="form-control" value="0" aria-label="Tulis barcode" aria-describedby="basic-addon2">
+                                </div>
+                            </div>
                         </div>
                         <div class="col-sm-6 border p-3">
                             <div class="form-group">
@@ -125,7 +137,7 @@
                             <hr>
                             <div class="form-group">
                                 <label for="note">Keterangan</label>
-                                <textarea  class="form-control" name="note" id="note" cols="10" rows="5"></textarea>
+                                <textarea  class="form-control" name="note" id="note" cols="10" rows="2"></textarea>
                             </div>
                         </div>
                     </div>
@@ -136,7 +148,7 @@
                             <button id="reset" type="reset" class="btn btn-lg btn-block btn-danger"><i class="fa fa-times"></i> Batalkan</button>
                         </div>
                         <div class="col-6">
-                            <button type="submit" class="btn btn-lg btn-block btn-success"><i class="fa fa-check"></i> Bayar</button>
+                            <button type="submit" class="btn btn-lg btn-block btn-success"><i class="fa fa-check"></i> Simpan</button>
                         </div>
                     </div>
                 </div>
@@ -185,6 +197,17 @@
 <script>
     $(document).ready(function () {
        
+        var elem = document.getElementById ( "total_value" );
+        var text = elem.innerHTML;
+        var sum = parseInt(text, 10);
+        const itemsTable = document.querySelector('#my_table');
+        itemsTable.querySelectorAll('input[name="items_id[]"]').forEach((element, index) => {
+            console.log($('[name="qty[]"]')[index]);
+            var qty = $('[name="qty[]"]')[index].value;
+            var buy_price = $('[name="buy_price[]"]')[index].value;
+            sum += Number(qty)*Number(buy_price)
+        });
+        elem.innerHTML = sum;
 
         var msg = '{{ Session::get('message') }}';
         var exist = '{{Session::has('message')}}';
@@ -229,16 +252,36 @@
                 dataType: "json",
                 success: function (res) {
                     console.log(res.row);
+                    const itemsTable = document.querySelector('#my_table');
+                    let isItemExistInTable = false;
                     var item = res.row;
                     var total = sum + item.buy_price;
                     var content = '<tr class="my_tr">'+
                         '<td><input type="hidden" name="items_id[]" value="'+item.id+'"><input type="hidden" name="name[]" value="'+item.name+'">'+item.name+'</td>'+
-                        '<td><input name="qty[]" data-val="1" id="qty" type="number" class="form-control" value="1"></td>'+
-                        '<td><input name="buy_price[]" data-val="'+item.buy_price+'" id="buy_price" type="number" class="form-control" value="'+item.buy_price+'"></td>'+
-                        '<td><button id= "btn_delete" data-id="'+item.id+'" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></td>'+    
+                        '<td><input name="qty[]" data-val="1" type="number" class="form-control" value="1"></td>'+
+                        '<td><input name="buy_price[]" data-val="'+item.buy_price+'" type="number" class="form-control" value="'+item.buy_price+'"></td>'+
+                        '<td><button data-id="'+item.id+'" class="btn btn-sm btn-danger btn_delete"><i class="fa fa-trash"></i></td>'+    
                     '</tr>';
-                    $('#my_table').find('tbody').append(content);
-                    $('#total_value').html(total);
+
+                    itemsTable.querySelectorAll('input[name="items_id[]"]').forEach((element, index) => {
+                        console.log(id);
+                        if (id == element.value) {
+                            var qty_old = $('[name="qty[]"]')[index].value;
+                            var qty_new = Number(qty_old) + Number(1);
+                            $('[name="qty[]"]')[index].value = qty_new;
+                            isItemExistInTable = true;
+                            $('[name="qty[]"]').trigger('change');
+                            return false;
+                        }
+                        
+                    });
+
+                    if (!isItemExistInTable) {
+                        console.log(isItemExistInTable)
+                        $('#my_table').find('tbody').append(content);
+                        $('#total_value').html(total);
+                    }
+                    
                 }
             });
         });
@@ -272,13 +315,28 @@
                             var total = sum + item.buy_price;
                             var content = '<tr class="my_tr">'+
                                 '<td><input type="hidden" name="items_id[]" value="'+item.id+'"><input type="hidden" name="name[]" value="'+item.name+'">'+item.name+'</td>'+
-                                '<td><input name="qty[]" data-val="1" id="qty" type="number" class="form-control" value="1"></td>'+
-                                '<td><input name="buy_price[]" data-val="'+item.buy_price+'" id="buy_price" type="number" class="form-control" value="'+item.buy_price+'"></td>'+
-                                '<td><button id= "btn_delete" data-id="'+item.id+'" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></td>'+    
+                                '<td><input name="qty[]" data-val="1" type="number" class="form-control" value="1"></td>'+
+                                '<td><input name="buy_price[]" data-val="'+item.buy_price+'" type="number" class="form-control" value="'+item.buy_price+'"></td>'+
+                                '<td><button data-id="'+item.id+'" class="btn btn-sm btn-danger btn_delete"><i class="fa fa-trash"></i></td>'+    
                             '</tr>';
-                            $('#my_table').find('tbody').append(content);
-                            $('#total_value').html(total);
-                            $('#barcode').val('');
+                            itemsTable.querySelectorAll('input[name="items_id[]"]').forEach((element, index) => {
+                                console.log(id);
+                                if (id == element.value) {
+                                    var qty_old = $('[name="qty[]"]')[index].value;
+                                    var qty_new = Number(qty_old) + Number(1);
+                                    $('[name="qty[]"]')[index].value = qty_new;
+                                    isItemExistInTable = true;
+                                    $('[name="qty[]"]').trigger('change');
+                                    return false;
+                                }
+                                
+                            });
+                            if (!isItemExistInTable) {
+                                console.log(isItemExistInTable)
+                                $('#my_table').find('tbody').append(content);
+                                $('#total_value').html(total);
+                                $('#barcode').val('');
+                            }
 
                         } else {
                             alert('Data tidak ditemukan');
@@ -288,30 +346,30 @@
             }  
         });
 
-        $('#my_table').on('click', '#btn_delete', function (e) {
+        $('#my_table').on('click', '.btn_delete', function (e) {
             e.preventDefault();
             var elem = document.getElementById ( "total_value" );
             var text = elem.innerHTML;
             var sum = parseInt(text, 10);
-            var qty = $(this).parents('.my_tr').find('#qty').val();
-            var buy_price = $(this).parents('.my_tr').find('#buy_price').val();
+            var qty = $(this).parents('.my_tr').find('[name="qty[]"]').val();
+            var buy_price = $(this).parents('.my_tr').find('[name="buy_price[]"]').val();
             var total = sum - (qty*buy_price);
 
             $('#total_value').html(total);
             $(this).parents('.my_tr').remove();
         });
 
-        $('#my_table').on('change', '#qty', function (e) {
+        $('#my_table').on('change', '[name="qty[]"]', function (e) {
             e.preventDefault();
             var elem = document.getElementById ( "total_value" );
             var text = elem.innerHTML;
             var sum = parseInt(text, 10);
             var prev_qty = $(this).data("val");
-            var qty = $(this).parents('.my_tr').find('#qty').val();
-            var buy_price = $(this).parents('.my_tr').find('#buy_price').val();
+            var qty = $(this).parents('.my_tr').find('[name="qty[]"]').val();
+            var buy_price = $(this).parents('.my_tr').find('[name="buy_price[]"]').val();
             var diff = qty-prev_qty;
             var total = sum+(buy_price*diff);
-
+            console.log(qty,prev_qty, $(this).parents('.my_tr').find('[name="qty[]"]'));
             if (qty <= 0) {
                 alert('Jumlah barang yang dimasukkan harus lebih dari 0!');
             } else {
@@ -323,14 +381,14 @@
 
         });
 
-        $('#my_table').on('change', '#buy_price', function (e) {
+        $('#my_table').on('change', '[name="buy_price[]"]', function (e) {
             e.preventDefault();
             var elem = document.getElementById ( "total_value" );
             var text = elem.innerHTML;
             var sum = parseInt(text, 10);
             var prev_buy_price = $(this).data("val");
-            var qty = $(this).parents('.my_tr').find('#qty').val();
-            var buy_price = $(this).parents('.my_tr').find('#buy_price').val();
+            var qty = $(this).parents('.my_tr').find('[name="qty[]"]').val();
+            var buy_price = $(this).parents('.my_tr').find('[name="buy_price[]"]').val();
             var diff = buy_price-prev_buy_price;
             var total = sum+(qty*diff);
             if (buy_price == 0) {

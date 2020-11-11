@@ -188,7 +188,8 @@ class OpnameController extends Controller
 
             // adjust stock on item
             Item::findOrFail($request->item_id)->update([
-                'stock' => $request->new_stock
+                'stock' => $request->new_stock,
+                'last_opname_at' => date('Y-m-d H:i:s'),
             ]);
 
             // update status opname
