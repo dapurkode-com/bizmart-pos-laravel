@@ -30,6 +30,7 @@ class UserStoreRequest extends FormRequest
             'email' => 'required|unique:users|email',
             'username' => 'required|unique:users|string',
             'password' => 'required|string|min:6',
+            'privilege_code' => 'required|string',
         ];
     }
 
@@ -42,6 +43,7 @@ class UserStoreRequest extends FormRequest
     {
         return [
             'name' => 'nama',
+            'privilege_code' => 'Hak Akses',
         ];
     }
 
