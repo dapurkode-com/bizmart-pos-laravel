@@ -320,7 +320,7 @@ class ReturnItemController extends Controller
         $dompdf->loadHtml(view('return_item.pdf', compact('sys_param', 'return_item'))->render());
         $dompdf->setPaper('A5', 'landscape');
         $dompdf->render();
-        $dompdf->stream("Retur Barang $return_item->uniq_id bizmart.pdf", array("Attachment" => false));
+        $dompdf->stream("Retur Barang $return_item->uniq_id SIPDS.pdf", array("Attachment" => false));
 
         exit(0);
     }

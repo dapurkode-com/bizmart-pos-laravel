@@ -59,6 +59,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('sell/datatables', 'SellController@datatables')->name('sell.datatables');
     Route::get('sell/get_items', 'SellController@getItems')->name('sell.get_items');
     Route::get('sell/get_members', 'SellController@getMembers')->name('sell.get_members');
+    Route::get('sell/generate_pdf/{id}', 'SellController@generatePdf')->name('sell.generate_pdf');
     // for sell
 
     // for sell_payment_hs
