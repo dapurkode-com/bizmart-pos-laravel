@@ -96,6 +96,16 @@ class Buy extends Model
     }
 
     /**
+     * [Relationship] Detail Histori Pembelian
+     *
+     * @return hasMany [BuyPaymentHS]
+     */
+    public function buyPaymentHs()
+    {
+        return $this->hasMany(\App\BuyPaymentHs::class);
+    }
+
+    /**
      * Label status
      *
      * @return string

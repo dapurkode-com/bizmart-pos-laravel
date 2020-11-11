@@ -127,7 +127,7 @@
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-6">
-                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> dept</h5>
+                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Hutang</h5>
                         </div>
                         <div class="col-6 text-right">
                             <button type="button" class="btn btn-default deptTableRefreshBtn"><i class="fas fa-sync-alt" title="Refresh Table"></i></button>

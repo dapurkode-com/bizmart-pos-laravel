@@ -241,6 +241,8 @@
                 dataType: "json",
                 success: function (res) {
                     console.log(res.row);
+                    const itemsTable = document.querySelector('#my_table');
+                    let isItemExistInTable = false;
                     var item = res.row;
                     var total = sum + item.buy_price;
                     var content = '<tr class="my_tr">'+
@@ -249,8 +251,26 @@
                         '<td><input name="buy_price[]" data-val="'+item.buy_price+'" id="buy_price" type="number" class="form-control" value="'+item.buy_price+'"></td>'+
                         '<td><button id= "btn_delete" data-id="'+item.id+'" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></td>'+    
                     '</tr>';
-                    $('#my_table').find('tbody').append(content);
-                    $('#total_value').html(total);
+
+                    itemsTable.querySelectorAll('input[name="items_id[]"]').forEach((element, index) => {
+                        console.log(id);
+                        if (id == element.value) {
+                            var qty_old = $('[name="qty[]"]')[index].value;
+                            var qty_new = Number(qty_old) + Number(1);
+                            $('[name="qty[]"]')[index].value = qty_new;
+                            isItemExistInTable = true;
+                            $('[name="qty[]"]').trigger('change');
+                            return false;
+                        }
+                        
+                    });
+
+                    if (!isItemExistInTable) {
+                        console.log(isItemExistInTable)
+                        $('#my_table').find('tbody').append(content);
+                        $('#total_value').html(total);
+                    }
+                    
                 }
             });
         });
@@ -288,9 +308,24 @@
                                 '<td><input name="buy_price[]" data-val="'+item.buy_price+'" id="buy_price" type="number" class="form-control" value="'+item.buy_price+'"></td>'+
                                 '<td><button id= "btn_delete" data-id="'+item.id+'" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></td>'+    
                             '</tr>';
-                            $('#my_table').find('tbody').append(content);
-                            $('#total_value').html(total);
-                            $('#barcode').val('');
+                            itemsTable.querySelectorAll('input[name="items_id[]"]').forEach((element, index) => {
+                                console.log(id);
+                                if (id == element.value) {
+                                    var qty_old = $('[name="qty[]"]')[index].value;
+                                    var qty_new = Number(qty_old) + Number(1);
+                                    $('[name="qty[]"]')[index].value = qty_new;
+                                    isItemExistInTable = true;
+                                    $('[name="qty[]"]').trigger('change');
+                                    return false;
+                                }
+                                
+                            });
+                            if (!isItemExistInTable) {
+                                console.log(isItemExistInTable)
+                                $('#my_table').find('tbody').append(content);
+                                $('#total_value').html(total);
+                                $('#barcode').val('');
+                            }
 
                         } else {
                             alert('Data tidak ditemukan');
@@ -323,7 +358,7 @@
             var buy_price = $(this).parents('.my_tr').find('#buy_price').val();
             var diff = qty-prev_qty;
             var total = sum+(buy_price*diff);
-
+            console.log(qty,prev_qty, $(this).parents('.my_tr').find('#qty'));
             if (qty <= 0) {
                 alert('Jumlah barang yang dimasukkan harus lebih dari 0!');
             } else {
