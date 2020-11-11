@@ -46,6 +46,6 @@ class AddingPrivilegeCodeOnLookUpsTable extends Migration
      */
     public function down()
     {
-        //
+        LookUp::whereIn('group_code', ['PRIV_CODE'])->delete();
     }
 }
