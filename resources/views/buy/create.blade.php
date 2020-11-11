@@ -197,6 +197,17 @@
 <script>
     $(document).ready(function () {
        
+        var elem = document.getElementById ( "total_value" );
+        var text = elem.innerHTML;
+        var sum = parseInt(text, 10);
+        const itemsTable = document.querySelector('#my_table');
+        itemsTable.querySelectorAll('input[name="items_id[]"]').forEach((element, index) => {
+            console.log($('[name="qty[]"]')[index]);
+            var qty = $('[name="qty[]"]')[index].value;
+            var buy_price = $('[name="buy_price[]"]')[index].value;
+            sum += Number(qty)*Number(buy_price)
+        });
+        elem.innerHTML = sum;
 
         var msg = '{{ Session::get('message') }}';
         var exist = '{{Session::has('message')}}';
@@ -247,9 +258,9 @@
                     var total = sum + item.buy_price;
                     var content = '<tr class="my_tr">'+
                         '<td><input type="hidden" name="items_id[]" value="'+item.id+'"><input type="hidden" name="name[]" value="'+item.name+'">'+item.name+'</td>'+
-                        '<td><input name="qty[]" data-val="1" id="qty" type="number" class="form-control" value="1"></td>'+
-                        '<td><input name="buy_price[]" data-val="'+item.buy_price+'" id="buy_price" type="number" class="form-control" value="'+item.buy_price+'"></td>'+
-                        '<td><button id= "btn_delete" data-id="'+item.id+'" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></td>'+    
+                        '<td><input name="qty[]" data-val="1" type="number" class="form-control" value="1"></td>'+
+                        '<td><input name="buy_price[]" data-val="'+item.buy_price+'" type="number" class="form-control" value="'+item.buy_price+'"></td>'+
+                        '<td><button data-id="'+item.id+'" class="btn btn-sm btn-danger btn_delete"><i class="fa fa-trash"></i></td>'+    
                     '</tr>';
 
                     itemsTable.querySelectorAll('input[name="items_id[]"]').forEach((element, index) => {
@@ -304,9 +315,9 @@
                             var total = sum + item.buy_price;
                             var content = '<tr class="my_tr">'+
                                 '<td><input type="hidden" name="items_id[]" value="'+item.id+'"><input type="hidden" name="name[]" value="'+item.name+'">'+item.name+'</td>'+
-                                '<td><input name="qty[]" data-val="1" id="qty" type="number" class="form-control" value="1"></td>'+
-                                '<td><input name="buy_price[]" data-val="'+item.buy_price+'" id="buy_price" type="number" class="form-control" value="'+item.buy_price+'"></td>'+
-                                '<td><button id= "btn_delete" data-id="'+item.id+'" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></td>'+    
+                                '<td><input name="qty[]" data-val="1" type="number" class="form-control" value="1"></td>'+
+                                '<td><input name="buy_price[]" data-val="'+item.buy_price+'" type="number" class="form-control" value="'+item.buy_price+'"></td>'+
+                                '<td><button data-id="'+item.id+'" class="btn btn-sm btn-danger btn_delete"><i class="fa fa-trash"></i></td>'+    
                             '</tr>';
                             itemsTable.querySelectorAll('input[name="items_id[]"]').forEach((element, index) => {
                                 console.log(id);
@@ -335,30 +346,30 @@
             }  
         });
 
-        $('#my_table').on('click', '#btn_delete', function (e) {
+        $('#my_table').on('click', '.btn_delete', function (e) {
             e.preventDefault();
             var elem = document.getElementById ( "total_value" );
             var text = elem.innerHTML;
             var sum = parseInt(text, 10);
-            var qty = $(this).parents('.my_tr').find('#qty').val();
-            var buy_price = $(this).parents('.my_tr').find('#buy_price').val();
+            var qty = $(this).parents('.my_tr').find('[name="qty[]"]').val();
+            var buy_price = $(this).parents('.my_tr').find('[name="buy_price[]"]').val();
             var total = sum - (qty*buy_price);
 
             $('#total_value').html(total);
             $(this).parents('.my_tr').remove();
         });
 
-        $('#my_table').on('change', '#qty', function (e) {
+        $('#my_table').on('change', '[name="qty[]"]', function (e) {
             e.preventDefault();
             var elem = document.getElementById ( "total_value" );
             var text = elem.innerHTML;
             var sum = parseInt(text, 10);
             var prev_qty = $(this).data("val");
-            var qty = $(this).parents('.my_tr').find('#qty').val();
-            var buy_price = $(this).parents('.my_tr').find('#buy_price').val();
+            var qty = $(this).parents('.my_tr').find('[name="qty[]"]').val();
+            var buy_price = $(this).parents('.my_tr').find('[name="buy_price[]"]').val();
             var diff = qty-prev_qty;
             var total = sum+(buy_price*diff);
-            console.log(qty,prev_qty, $(this).parents('.my_tr').find('#qty'));
+            console.log(qty,prev_qty, $(this).parents('.my_tr').find('[name="qty[]"]'));
             if (qty <= 0) {
                 alert('Jumlah barang yang dimasukkan harus lebih dari 0!');
             } else {
@@ -370,14 +381,14 @@
 
         });
 
-        $('#my_table').on('change', '#buy_price', function (e) {
+        $('#my_table').on('change', '[name="buy_price[]"]', function (e) {
             e.preventDefault();
             var elem = document.getElementById ( "total_value" );
             var text = elem.innerHTML;
             var sum = parseInt(text, 10);
             var prev_buy_price = $(this).data("val");
-            var qty = $(this).parents('.my_tr').find('#qty').val();
-            var buy_price = $(this).parents('.my_tr').find('#buy_price').val();
+            var qty = $(this).parents('.my_tr').find('[name="qty[]"]').val();
+            var buy_price = $(this).parents('.my_tr').find('[name="buy_price[]"]').val();
             var diff = buy_price-prev_buy_price;
             var total = sum+(qty*diff);
             if (buy_price == 0) {
