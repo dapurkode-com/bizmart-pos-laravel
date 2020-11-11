@@ -62,6 +62,6 @@ class AddBuyAndSellStatusLookUp extends Migration
      */
     public function down()
     {
-        //
+        LookUp::whereIn('group_code', ['BUY_STATUS', 'SELL_STATUS'])->delete();
     }
 }

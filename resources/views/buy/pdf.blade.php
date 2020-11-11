@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice Barang | Bizmart</title>
+    <title>Invoice Barang |  </title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
 		<style>
 			body {
@@ -34,7 +34,7 @@
 </head>
 <body>
     <section>
-    <img src="images/logo.png" style="height: 9.5mm; width: 9.5mm; position: absolute">
+    <img src="images/logo1.png" style="height: 9.5mm; width: 9.5mm; position: absolute">
 
     <table class="table is-paddingless">
         <tr>

@@ -2,12 +2,16 @@
 
 namespace App;
 
+use App\Traits\UniqID;
 use App\Traits\Blameable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class BuyPaymentHs extends Model
+class OtherExpense extends Model
 {
     use Blameable;
+    use SoftDeletes;
+    use UniqID;
 
     /**
      * The attributes that are mass assignable.
@@ -15,11 +19,12 @@ class BuyPaymentHs extends Model
      * @var array
      */
     protected $fillable = [
-        'buy_id',
+        'uniq_id',
         'user_id',
-        'payment_date',
-        'amount',
+        'summary',
         'note',
+        'created_by',
+        'updated_by',
     ];
 
     /**
@@ -29,30 +34,22 @@ class BuyPaymentHs extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'buy_id' => 'integer',
         'user_id' => 'integer',
-        'payment_date' => 'datetime',
-        'amount' => 'double',
+        'summary' => 'double'
     ];
 
-
     /**
-     * [Relationship] Ref. Pembelian
-     *
-     * @return belongsTo [Buy]
-     */
-    public function buy()
-    {
-        return $this->belongsTo(\App\Buy::class);
-    }
-
-    /**
-     * [Relationship] to user table
+     * [Relationship] Ref. pengguna
      *
      * @return belongsTo [User]
      */
     public function user()
     {
         return $this->belongsTo(\App\User::class);
+    }
+
+    public function details()
+    {
+        return $this->hasMany(\App\OtherExpenseDetail::class);
     }
 }
