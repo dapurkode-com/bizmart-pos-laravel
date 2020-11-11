@@ -89,6 +89,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('buy', 'BuyController')->only('index', 'store', 'create', 'show', 'destroy');
 
     Route::get('other_revenue/datatables', 'OtherRevenueController@datatables')->name('other_revenue.datatables');
+    Route::get('other_expense/datatables', 'OtherExpenseController@datatables')->name('other_expense.datatables');
 
     Route::resources([
         'suplier' => 'SuplierController',
@@ -100,6 +101,7 @@ Route::group(['middleware' => ['auth']], function () {
         'return_item' => 'ReturnItemController',
         'sell_payment_hs' => 'SellPaymentHsController',
         'other_revenue' => 'OtherRevenueController',
+        'other_expense' => 'OtherExpenseController',
         'sell_report' => 'SellReportController'
     ]);
 });
