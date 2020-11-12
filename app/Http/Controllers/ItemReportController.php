@@ -19,7 +19,9 @@ class ItemReportController extends Controller
         $mrch_name = SystemParam::where('param_code', 'MRCH_NAME')->first();
         $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
         $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
-        return response()->view('item_report.index', compact('mrch_name', 'mrch_addr', 'mrch_phone'));
+
+        $items = Item::with('categories', 'unit')->selectRaw('distinct items.*')->get();
+        return response()->view('item_report.index', compact('mrch_name', 'mrch_addr', 'mrch_phone', 'items'));
     }
 
     /**

@@ -45,19 +45,8 @@
                          <strong>Laporan Stok Barang</strong><br>
                      </div>
                 </div>
-                <div class="card bg-default">
-                    <div class="card-header">
-                        <div class="row align-items-center">
-                            <div class="col-6">
-                                <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Stok Barang</h5>
-                            </div>
-                            <div class="col-6 text-right">
-                                <button type="button" class="btn btn-default itemTableRefreshBtn"><i class="fas fa-sync-alt" title="Refresh Table"></i></button>
-                                <button type="button" class="btn btn-default" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
+                <div class="row">
+                    <div class="col-12 table-responsive">
                         <table id="itemTable" class="table table-striped" style="width: 100%">
                             <thead>
                                 <tr>
@@ -69,11 +58,34 @@
                                     <th>Satuan</th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody>
+                                @forelse ($items as $key => $item)
+                                    @php
+                                        $key ++;
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $key }}</td>
+                                        <td>{{ $item->barcode }}</td>
+                                        <td>{{ $item->name }}</td>
+                                        <td>{{ $item->categories
+                                            ->map(function ($item) {
+                                                return join('', [ucfirst($item->name)]);
+                                            })
+                                            ->implode(', ') }}
+                                        </td>
+                                        <td>{{ $item->stock }}</td>
+                                        <td>{{ $item->unit ? $item->unit->name : '-' }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center">Tidak ada data.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
                         </table>
                     </div>
                 </div>
-                <div class="row no-print text-right">
+                <div class="row no-print text-right mt-3">
                     <div class="col-12">
                         <button type="button" class="btn btn-info sm" id="btnPrint"><i class="fas fa-print"></i> Print</button>
                     </div>
@@ -116,63 +128,63 @@
 
         const mainContentElm = document.querySelector('.mainContent');
 
-        const itemTable = $('#itemTable').DataTable({
-            processing: true,
-            serverSide: true,
-            searching: false,
-            paging: false,
-            ordering: false,
-            language: {
-                decimal:        "",
-                emptyTable:     "Tidak ada data di dalam tabel",
-                info:           "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
-                infoEmpty:      "Data kosong",
-                infoFiltered:   "(Difilter dari _MAX_ total data)",
-                infoPostFix:    "",
-                thousands:      ".",
-                lengthMenu:     "Tampilkan _MENU_ data",
-                loadingRecords: "Memuat...",
-                processing:     "Memproses...",
-                search:         "",
-                zeroRecords:    "Tidak ada data yang cocok",
-                paginate: {
-                    previous: '<i class="fas fa-chevron-left"></i>',
-                    next: '<i class="fas fa-chevron-right"></i>'
-                },
-                aria: {
-                    sortAscending:  ": mengurutkan kolom yang naik",
-                    sortDescending: ": mengurutkan kolom yang turun"
-                },
-                searchPlaceholder: 'Cari data',
-            },
-            scrollX: true,
-            ajax: {
-                url: "{{ route('item_report.item_datatables') }}",
-            },
-            columns: [
-                {data: 'DT_RowIndex', orderable: false, searchable: false },
-                {data: 'barcode', name: 'items.barcode'},
-                {data: 'name', name: 'items.name'},
-                {data: 'categories', name: 'categories.name'},
-                {data: 'stock', name: 'items.stock'},
-                {data: 'unit.name', name: 'units.name'},
-
-            ],
-            order: [[1, 'asc']],
-            initComplete: () => {
-                select2DatatableInit();
-            },
-        });
+        // const itemTable = $('#itemTable').DataTable({
+        //     processing: true,
+        //     serverSide: true,
+        //     searching: false,
+        //     paging: true,
+        //     ordering: false,
+        //     pageLength: 25,
+        //     language: {
+        //         decimal:        "",
+        //         emptyTable:     "Tidak ada data di dalam tabel",
+        //         info:           "Data _START_ - _END_ dari _TOTAL_ data.",
+        //         infoEmpty:      "Data kosong",
+        //         infoFiltered:   "(Difilter dari _MAX_ total data)",
+        //         infoPostFix:    "",
+        //         thousands:      ".",
+        //         lengthMenu:     "Tampilkan _MENU_ data",
+        //         loadingRecords: "Memuat...",
+        //         processing:     "Memproses...",
+        //         search:         "",
+        //         zeroRecords:    "Tidak ada data yang cocok",
+        //         paginate: {
+        //             previous: '<i class="fas fa-chevron-left"></i>',
+        //             next: '<i class="fas fa-chevron-right"></i>'
+        //         },
+        //         aria: {
+        //             sortAscending:  ": mengurutkan kolom yang naik",
+        //             sortDescending: ": mengurutkan kolom yang turun"
+        //         },
+        //         searchPlaceholder: 'Cari data',
+        //     },
+        //     scrollX: true,
+        //     ajax: {
+        //         url: "{{ route('item_report.item_datatables') }}",
+        //     },
+        //     columns: [
+        //         {data: 'DT_RowIndex', orderable: false, searchable: false },
+        //         {data: 'barcode', name: 'items.barcode'},
+        //         {data: 'name', name: 'items.name'},
+        //         {data: 'categories', name: 'categories.name'},
+        //         {data: 'stock', name: 'items.stock'},
+        //         {data: 'unit.name', name: 'units.name'},
+        //     ],
+        //     order: [[1, 'asc']],
+        //     initComplete: () => {
+        //         select2DatatableInit();
+        //     },
+        // });
 
         domReady(() => {
 
-            addListenToEvent('.mainContent .filterButton', 'click', (event) => {
-                itemTable.ajax.reload()
-            });
+            // addListenToEvent('.mainContent .filterButton', 'click', (event) => {
+            //     itemTable.ajax.reload()
+            // });
 
-            addListenToEvent('.mainContent .itemTableRefreshBtn', 'click', (event) => {
-                itemTable.ajax.reload();
-            });
+            // addListenToEvent('.mainContent .itemTableRefreshBtn', 'click', (event) => {
+            //     itemTable.ajax.reload();
+            // });
 
             addListenToEvent('#btnPrint', 'click', (event) => {
                 window.print()
@@ -180,6 +192,6 @@
 
         })
 
-     
+
     </script>
 @stop
