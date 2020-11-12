@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\CashCount;
+use App\Http\Requests\CashCountStoreRequest;
+use DB;
+use Exception;
 use Illuminate\Http\Request;
 
 class CashCountController extends Controller
@@ -33,9 +36,62 @@ class CashCountController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CashCountStoreRequest $request)
     {
-        //
+        /*
+        request {
+            counted_amount,
+        }
+        */
+
+        $sumAmounts = DB::select(DB::raw("
+                SELECT
+                    MIN(io_cash) AS io_cash,
+                    IF(io_cash = 'I', SUM(amount), (SUM(amount) * -1)) AS sum_amount
+                FROM cashflows
+                WHERE trx_date >= CONCAT(DATE(NOW()),' 00:00:00')
+                AND trx_date <= CONCAT(DATE(NOW()),' 23:59:59')
+                GROUP BY io_cash
+            "));
+        $countedSystem = $sumAmounts[0]->sum_amount + $sumAmounts[1]->sum_amount;
+        $deviation = $countedSystem - $request->counted_amount;
+
+        try {
+            DB::beginTransaction();
+
+            // store to sell payment history
+            CashCount::create([
+                'user_id' => auth()->user()->id,
+                'count_date' => date('Y-m-d H:i:s'),
+                'counted_amount' => $request->counted_amount,
+                'counted_system' => $countedSystem,
+                'deviation' => $deviation,
+            ]);
+
+            DB::commit();
+
+            $isDeviationZero = $deviation == 0;
+            if ($isDeviationZero) {
+                return response()->json([
+                    'status' => 'valid',
+                    'pesan' => 'Hitung kas berhasil disimpan',
+                    'is_selisih' => false,
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'valid',
+                    'pesan' => "Terdapat selisih saldo senilai $deviation",
+                    'is_selisih' => true,
+                ]);
+            }
+
+        } catch (Exception $exc) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'pesan' => $exc->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -91,63 +147,22 @@ class CashCountController extends Controller
      */
     public function datatables(Request $request)
     {
-        $sells = Sell::select([
-                'sells.id',
-                DB::raw("CONCAT('PJ-', LPAD(sells.id, 5, '0')) AS _id"),
-                DB::raw("DATE_FORMAT(sells.updated_at, '%d %b %Y') AS _updated_at"),
-                'members.name AS _member_name',
-                'sells.summary',
-                'users.name AS _user_name',
-                'sells.sell_status',
-                'look_ups.label as _status',
-            ])
-            ->leftJoin('members', 'members.id', '=', 'sells.member_id')
-            ->leftJoin('users', 'users.id', '=', 'sells.user_id')
-            ->leftJoin('look_ups', function ($join) {
-                $join->on('look_ups.key', '=', 'sells.sell_status');
-                $join->where('look_ups.group_code', '=', 'SELL_STATUS');
-            });
-
-        if ($request->filter['date_start'] != null && $request->filter['date_end'] != null) {
-            $sells->where('sells.updated_at', '>=', $request->filter['date_start'])
-                  ->where('sells.updated_at', '<=', $request->filter['date_end'] . " 23:59:59");
-        }
-
+        $cashCounts = DB::select(DB::raw("
+                SELECT
+                    CONCAT('HK-', LPAD(cc.`id`, 5, '0')) AS kode,
+                    DATE_FORMAT(cc.`count_date`, '%e %b %Y %H:%i') AS `date`,
+                    cc.`counted_amount`,
+                    cc.`counted_system`,
+                    cc.`deviation`,
+                    u.`name` AS `user`
+                FROM cash_counts cc
+                LEFT JOIN users u ON u.`id` = cc.`user_id`
+                WHERE cc.`count_date` >= '" . $request->filter['date_start'] . " 00:00:00'
+                AND cc.`count_date` <= '" . $request->filter['date_end'] . " 23:59:59'
+            "));
         return datatables()
-            ->of($sells)
+            ->of($cashCounts)
             ->addIndexColumn()
-            ->filterColumn('_id', function ($query, $keyword) {
-                $sql = "CONCAT('PJ-', LPAD(sells.id, 5, '0')) like ?";
-                $query->whereRaw($sql, ["%{$keyword}%"]);
-            })
-            ->filterColumn('_updated_at', function ($query, $keyword) {
-                $sql = "DATE_FORMAT(sells.updated_at, '%d %b %Y') like ?";
-                $query->whereRaw($sql, ["%{$keyword}%"]);
-            })
-            ->filterColumn('_member_name', function ($query, $keyword) {
-                $sql = "members.name like ?";
-                $query->whereRaw($sql, ["%{$keyword}%"]);
-            })
-            ->filterColumn('_user_name', function ($query, $keyword) {
-                $sql = "users.name like ?";
-                $query->whereRaw($sql, ["%{$keyword}%"]);
-            })
-            ->filterColumn('_status', function ($query, $keyword) {
-                $sql = "look_ups.label like ?";
-                $query->whereRaw($sql, ["%{$keyword}%"]);
-            })
-            ->addColumn('_status_raw', function ($sell) {
-                if ($sell->sell_status == 'PO') {
-                    return '<p class="text-success">' . $sell->_status . '</p>';
-                } else {
-                    return '<p class="text-warning">' . $sell->_status . '</p>';
-                }
-            })
-            ->addColumn('_action_raw', function ($sell) {
-                $btn = '<button data-remote_get="' . route('sell.show', $sell->id) . '" type="button" class="btn btn-info btn-sm openBtn" title="Lihat"><i class="fas fa-eye fa-fw"></i></button> ';
-                return $btn;
-            })
-            ->rawColumns(['_action_raw', '_status_raw'])
             ->toJson();
     }
 }
