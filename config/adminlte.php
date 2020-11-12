@@ -260,7 +260,7 @@ return [
             'url'       => '/home',
             'icon'      => 'fas fa-fw fa-tachometer-alt'
         ],
-        ['header' => 'DATA DATA'],
+        ['header' => 'DATA MASTER'],
         [
             'text'    => 'User',
             'icon'    => 'fas fa-fw  fa-user-cog',
