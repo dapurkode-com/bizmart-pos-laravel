@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\SystemParam;
 use Illuminate\Http\Request;
 
@@ -20,7 +21,7 @@ class ProfitReportController extends Controller
         $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
         $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
 
-        return response()->view('profit_report.index', compact('mrch_name', 'mrch_addr', 'mrch_phone','date_start', 'date_end'));
+        return response()->view('profit_report.index', compact('mrch_name', 'mrch_addr', 'mrch_phone', 'date_start', 'date_end'));
     }
 
     /**
