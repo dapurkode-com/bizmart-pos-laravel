@@ -124,6 +124,7 @@ class BuyController extends Controller
 
                 $dataPayment = array(
                     'buy_id' => $buy->id,
+                    'user_id' => auth()->user()->id,
                     'payment_date'  => $buy->created_at,
                     'amount'        => $paid_amount,
                 );
