@@ -51,7 +51,7 @@ class User extends Authenticatable
 
     public function adminlte_desc()
     {
-        return $this->privilegeText() + ' <br> ' + $this->isActiveBadge();
+        return $this->privilegeText() . ' <br> ' . $this->isActiveBadge();
     }
 
     public function privilegeText()
