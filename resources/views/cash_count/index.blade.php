@@ -12,7 +12,7 @@
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item active">Hitung Kas</li>
-                <li class="breadcrumb-item active">List</li>
+                <li class="breadcrumb-item active">Riwayat</li>
             </ol>
         </div>
     </div>
@@ -42,10 +42,10 @@
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-6">
-                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> History Hitung Kas</h5>
+                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Riwayat Hitung Kas</h5>
                         </div>
                         <div class="col-6 text-right">
-                            <button type="button" class="btn btn-info addBtn" title="Tambah Hitung Kas"><i class="fas fa-plus mr-2"></i>Tambah</button>
+                            <!-- <button type="button" class="btn btn-info addBtn" title="Tambah Hitung Kas"><i class="fas fa-plus mr-2"></i>Tambah</button> -->
                             <button type="button" class="btn btn-default indexTableRefreshBtn"><i class="fas fa-sync-alt" title="Refresh Table"></i></button>
                             <button type="button" class="btn btn-default" data-card-widget="collapse" title="Toggle Table"><i class="fas fa-minus"></i></button>
                         </div>
@@ -130,7 +130,7 @@
 
 @section('js')
     <script type="module">
-        import { select2DatatableInit, domReady, addListenToEvent, getIndoDate, getIsoNumberWithSeparator, swalConfirm, drawError, eraseErrorInit, swalAlert, simulateEvent } from '{{ asset("plugins/custom/global.app.js") }}'
+        import { select2DatatableInit, domReady, addListenToEvent, drawError, eraseErrorInit, swalAlert, simulateEvent } from '{{ asset("plugins/custom/global.app.js") }}'
         
         const mainContentElm = document.querySelector('.mainContent');
         const dateStartFilterInput = document.querySelector('.indexTableFilter [name="date_start"]')
@@ -180,7 +180,7 @@
                 {data: 'deviation'},
                 {data: 'user'},
             ],
-            order: [[2, 'desc']],
+            order: [[1, 'desc']],
             initComplete: () => {
                 select2DatatableInit();
             },
@@ -196,8 +196,6 @@
             });
 
             addListenToEvent('.mainContent .indexTableRefreshBtn', 'click', (event) => {
-                dateStartFilterInput.value = ''
-                dateEndFilterInput.value = ''
                 indexTable.ajax.reload();
             });
 

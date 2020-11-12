@@ -347,7 +347,7 @@ return [
         ],
         [
             'text'      => 'Hitung Kas',
-            'url'       => '/cash_count',
+            'url'       => '/cash_count/create',
             'icon'      => 'fas fa-fw fa-donate',
             'privilege' => 'EM',
         ],
@@ -386,6 +386,12 @@ return [
             'text'      => 'Opname',
             'url'       => '/opname',
             'icon'      => 'fas fa-fw fa-clipboard-list',
+            'privilege' => 'OW',
+        ],
+        [
+            'text'      => 'Riwayat Hitung Kas',
+            'url'       => '/cash_count',
+            'icon'      => 'fas fa-fw fa-donate',
             'privilege' => 'OW',
         ],
         ['header' => 'LAPORAN', 'privilege' => 'OW'],

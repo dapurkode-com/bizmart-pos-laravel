@@ -27,7 +27,7 @@ class CashCountController extends Controller
      */
     public function create()
     {
-        //
+        return response()->view('cash_count.create');
     }
 
     /**
