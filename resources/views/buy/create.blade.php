@@ -6,7 +6,7 @@
 <div class="row mb-2">
 	<div class="col-sm-6">
         <blockquote style="margin: 0; background: unset;">
-            
+            <h1 class="m-0 text-dark">Pembelian</h1>
         </blockquote>
 	</div>
 	<!-- /.col -->
@@ -21,7 +21,7 @@
 	<!-- /.col -->
 </div>
 <div class="row mb-2">
-    
+
 </div>
 @stop
 
@@ -30,7 +30,7 @@
         <div class="col-md-6">
              <div class="card">
                  <div class="card-body">
-                    
+
                     <h3 class="card-title mb-3"><i class="fa fa-search"></i> Pencari Barang</h3>
                     <div class="input-group">
                     <input type="text" id="barcode" class="form-control" placeholder="Tulis barcode disini." aria-label="Tulis barcode" aria-describedby="basic-addon2">
@@ -87,19 +87,19 @@
                                     </thead>
                                     <tbody>
                                         @if(count(old('items_id',[]))>0)
-                                            @for($i =0; $i < count(old('items_id')); $i++)                            
+                                            @for($i =0; $i < count(old('items_id')); $i++)
                                                 <tr class="my_tr">
                                                     <td><input type="hidden" name="items_id[]" value="{{ old('items_id.'.$i)}}">
                                                         <input type="hidden" name="name[]" value="{{ old('name.'.$i)}}">{{ old('name.'.$i)}}</td>
                                                     <td><input name="qty[]" data-val="{{ old('qty.'.$i)}}" id="qty" type="number" class="form-control" value="{{ old('qty.'.$i)}}"></td>
                                                     <td><input name="buy_price[]" data-val="{{ old('buy_price.'.$i)}}" id="buy_price" type="number" class="form-control" value="{{ old('buy_price.'.$i)}}"></td>
-                                                    <td><button id= "btn_delete" data-id="{{ old('items_id.'.$i)}}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></td> 
-                                                </tr>                            
+                                                    <td><button id= "btn_delete" data-id="{{ old('items_id.'.$i)}}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></td>
+                                                </tr>
                                             @endfor
                                         @endif
                                     </tbody>
                                     <tfoot>
-                                        
+
                                     </tfoot>
                                 </table>
                             </div>
@@ -179,7 +179,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            
+
                         </tbody>
                     </table>
                 </div>
@@ -196,7 +196,7 @@
 @section('js')
 <script>
     $(document).ready(function () {
-       
+
         var elem = document.getElementById ( "total_value" );
         var text = elem.innerHTML;
         var sum = parseInt(text, 10);
@@ -236,7 +236,7 @@
             var elem = document.getElementById ( "total_value" );
             var text = elem.innerHTML;
             var sum = parseInt(text, 10);
-            // console.log(sum); 
+            // console.log(sum);
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -260,7 +260,7 @@
                         '<td><input type="hidden" name="items_id[]" value="'+item.id+'"><input type="hidden" name="name[]" value="'+item.name+'">'+item.name+'</td>'+
                         '<td><input name="qty[]" data-val="1" type="number" class="form-control" value="1"></td>'+
                         '<td><input name="buy_price[]" data-val="'+item.buy_price+'" type="number" class="form-control" value="'+item.buy_price+'"></td>'+
-                        '<td><button data-id="'+item.id+'" class="btn btn-sm btn-danger btn_delete"><i class="fa fa-trash"></i></td>'+    
+                        '<td><button data-id="'+item.id+'" class="btn btn-sm btn-danger btn_delete"><i class="fa fa-trash"></i></td>'+
                     '</tr>';
 
                     itemsTable.querySelectorAll('input[name="items_id[]"]').forEach((element, index) => {
@@ -273,7 +273,7 @@
                             $('[name="qty[]"]').trigger('change');
                             return false;
                         }
-                        
+
                     });
 
                     if (!isItemExistInTable) {
@@ -281,20 +281,20 @@
                         $('#my_table').find('tbody').append(content);
                         $('#total_value').html(total);
                     }
-                    
+
                 }
             });
         });
 
         $('#barcode').keypress(function (e) {
-            
+
             var keycode = (e.keyCode ? e.keyCode : e.which);
             if(keycode == '13'){
                 var barcode = $(this).val();
                 var elem = document.getElementById ( "total_value" );
                 var text = elem.innerHTML;
                 var sum = parseInt(text, 10);
-                // console.log(barcode); 
+                // console.log(barcode);
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -317,7 +317,7 @@
                                 '<td><input type="hidden" name="items_id[]" value="'+item.id+'"><input type="hidden" name="name[]" value="'+item.name+'">'+item.name+'</td>'+
                                 '<td><input name="qty[]" data-val="1" type="number" class="form-control" value="1"></td>'+
                                 '<td><input name="buy_price[]" data-val="'+item.buy_price+'" type="number" class="form-control" value="'+item.buy_price+'"></td>'+
-                                '<td><button data-id="'+item.id+'" class="btn btn-sm btn-danger btn_delete"><i class="fa fa-trash"></i></td>'+    
+                                '<td><button data-id="'+item.id+'" class="btn btn-sm btn-danger btn_delete"><i class="fa fa-trash"></i></td>'+
                             '</tr>';
                             itemsTable.querySelectorAll('input[name="items_id[]"]').forEach((element, index) => {
                                 console.log(id);
@@ -329,7 +329,7 @@
                                     $('[name="qty[]"]').trigger('change');
                                     return false;
                                 }
-                                
+
                             });
                             if (!isItemExistInTable) {
                                 console.log(isItemExistInTable)
@@ -342,8 +342,8 @@
                             alert('Data tidak ditemukan');
                         }
                     }
-                });    
-            }  
+                });
+            }
         });
 
         $('#my_table').on('click', '.btn_delete', function (e) {
@@ -403,8 +403,8 @@
             // console.log(prev_buy_price);
 
         });
-        
-        
+
+
     });
 
     $('#reset').click(function (e){
@@ -414,7 +414,7 @@
             $('.detail').html('--');
         });
 
-    $('#suplier_id').change(function (e) { 
+    $('#suplier_id').change(function (e) {
         e.preventDefault();
         var suplier_id = $(this).val();
         $.ajaxSetup({
@@ -443,11 +443,11 @@
         });
     });
 
-   
 
-    
-    
-    
+
+
+
+
 
 
 </script>
