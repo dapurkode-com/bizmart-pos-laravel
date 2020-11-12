@@ -401,6 +401,12 @@ return [
             'url'     => '/cashflow',
             'privilege' => 'OW'
         ],
+        [
+            'text'    => 'Laporan Stok Barang',
+            'icon'    => 'fas fa-fw fa-boxes',
+            'url'     => '/item_report',
+            'privilege' => 'OW'
+        ],
     ],
 
     /*

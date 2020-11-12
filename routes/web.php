@@ -108,6 +108,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('cashflow', 'CashflowController@index')->name('cashflow');
 
+    Route::get('item_report/item_datatables','ItemReportController@itemDatatables')->name('item_report.item_datatables');
+
     Route::resources([
         'suplier' => 'SuplierController',
         'member' => 'MemberController',
@@ -123,5 +125,6 @@ Route::group(['middleware' => ['auth']], function () {
         'sell_report' => 'SellReportController',
         'buy_report' => 'BuyReportController',
         'sell_report' => 'SellReportController',
+        'item_report' => 'ItemReportController',
     ]);
 });
