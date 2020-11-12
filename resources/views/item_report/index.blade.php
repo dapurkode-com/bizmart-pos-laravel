@@ -73,11 +73,11 @@
                         </table>
                     </div>
                 </div>
-                {{-- <div class="row no-print text-right">
+                <div class="row no-print text-right">
                     <div class="col-12">
                         <button type="button" class="btn btn-info sm" id="btnPrint"><i class="fas fa-print"></i> Print</button>
                     </div>
-                </div> --}}
+                </div>
             </div>
         </div>
     </div>
@@ -119,6 +119,9 @@
         const itemTable = $('#itemTable').DataTable({
             processing: true,
             serverSide: true,
+            searching: false,
+            paging: false,
+            ordering: false,
             language: {
                 decimal:        "",
                 emptyTable:     "Tidak ada data di dalam tabel",
@@ -171,9 +174,9 @@
                 itemTable.ajax.reload();
             });
 
-            // addListenToEvent('#btnPrint', 'click', (event) => {
-            //     window.print()
-            // });
+            addListenToEvent('#btnPrint', 'click', (event) => {
+                window.print()
+            });
 
         })
 
