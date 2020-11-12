@@ -20,7 +20,7 @@ class ItemReportController extends Controller
         $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
         $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
 
-        $items = Item::with('categories', 'unit')->selectRaw('distinct items.*')->get();
+        $items = Item::with('categories', 'unit')->selectRaw('distinct items.*')->where('is_stock_active', 1)->get();
         return response()->view('item_report.index', compact('mrch_name', 'mrch_addr', 'mrch_phone', 'items'));
     }
 

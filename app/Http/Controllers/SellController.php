@@ -67,7 +67,7 @@ class SellController extends Controller
             DB::beginTransaction();
 
             $isSummaryGreaterThanPaidAmount = $request->summary > $request->paid_amount;
-            
+
             $sellStatus = ($isSummaryGreaterThanPaidAmount) ? 'RE' : 'PO';
 
             $sellItemArr = [
@@ -112,11 +112,13 @@ class SellController extends Controller
                     'item_id' => $itemId,
                 ]);
 
-                // update stock on item
-                Item::findOrFail($itemId)->update([
-                    'stock' => $itemObj['stock'] - $sellDetailItemArr['qty'],
-                    'last_sell_at' => date('Y-m-d H:i:s'),
-                ]);
+                if ($itemObj['is_stock_active'] == 1) {
+                    // update stock on item
+                    Item::findOrFail($itemId)->update([
+                        'stock' => $itemObj['stock'] - $sellDetailItemArr['qty'],
+                        'last_sell_at' => date('Y-m-d H:i:s'),
+                    ]);
+                }
             }
 
             // store to sell payment history
@@ -133,7 +135,6 @@ class SellController extends Controller
                 'status' => 'valid',
                 'pesan' => 'Penjualan berhasil disimpan',
             ]);
-
         } catch (Exception $exc) {
             DB::rollBack();
             return response()->json([
@@ -210,9 +211,9 @@ class SellController extends Controller
         $items = Item::select('*')
             ->where('stock', '>', '0')
             ->orWhere('is_stock_active', '0')
-            ->where(function($query) use ($search){
+            ->where(function ($query) use ($search) {
                 $query->where('barcode', 'like', "%$search%")
-                      ->orWhere('name', 'like', "%$search%");
+                    ->orWhere('name', 'like', "%$search%");
             })
             ->orderby('name', 'asc')
             ->skip($offset)->take($limit)
@@ -290,15 +291,15 @@ class SellController extends Controller
     public function datatables(Request $request)
     {
         $sells = Sell::select([
-                'sells.id',
-                DB::raw("CONCAT('PJ-', LPAD(sells.id, 5, '0')) AS _id"),
-                DB::raw("DATE_FORMAT(sells.updated_at, '%d %b %Y') AS _updated_at"),
-                'members.name AS _member_name',
-                'sells.summary',
-                'users.name AS _user_name',
-                'sells.sell_status',
-                'look_ups.label as _status',
-            ])
+            'sells.id',
+            DB::raw("CONCAT('PJ-', LPAD(sells.id, 5, '0')) AS _id"),
+            DB::raw("DATE_FORMAT(sells.updated_at, '%d %b %Y') AS _updated_at"),
+            'members.name AS _member_name',
+            'sells.summary',
+            'users.name AS _user_name',
+            'sells.sell_status',
+            'look_ups.label as _status',
+        ])
             ->leftJoin('members', 'members.id', '=', 'sells.member_id')
             ->leftJoin('users', 'users.id', '=', 'sells.user_id')
             ->leftJoin('look_ups', function ($join) {
@@ -308,7 +309,7 @@ class SellController extends Controller
 
         if ($request->filter['date_start'] != null && $request->filter['date_end'] != null) {
             $sells->where('sells.updated_at', '>=', $request->filter['date_start'])
-                  ->where('sells.updated_at', '<=', $request->filter['date_end'] . " 23:59:59");
+                ->where('sells.updated_at', '<=', $request->filter['date_end'] . " 23:59:59");
         }
 
         return datatables()
