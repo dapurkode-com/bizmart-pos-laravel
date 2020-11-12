@@ -410,7 +410,7 @@ return [
         [
             'text'    => 'Laporan Laba-Rugi',
             'icon'    => 'fas fa-fw fa-money-bill-wave',
-            'url'     => '/profit_report',
+            'url'     => '/profit_loss',
             'privilege' => 'OW'
         ],
     ],
