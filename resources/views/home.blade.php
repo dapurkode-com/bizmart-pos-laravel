@@ -71,6 +71,24 @@
                 <a href="#" class="small-box-footer">Lihat selengkapnya<i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <h5 class="card-header"> Penjualan Mingguan
+                </h5>
+                <div class="card-body">
+                    {!! $chartWeekly->container() !!}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <h5 class="card-header"> Penjualan Bulanan
+                </h5>
+                <div class="card-body">
+                    {!! $chartMonthly->container() !!}
+                </div>
+            </div>
+        </div>
         <div class="col-lg-12">
             <div class="card-deck">
                 <div class="card">
@@ -158,4 +176,8 @@
             </div>
         </div>
     </div>
+@stop
+@section('js')
+{!! $chartWeekly->script() !!}
+{!! $chartMonthly->script() !!}
 @stop

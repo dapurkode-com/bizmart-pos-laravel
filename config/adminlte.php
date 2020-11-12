@@ -260,7 +260,7 @@ return [
             'url'       => '/home',
             'icon'      => 'fas fa-fw fa-tachometer-alt'
         ],
-        ['header' => 'DATA DATA'],
+        ['header' => 'DATA MASTER'],
         [
             'text'    => 'User',
             'icon'    => 'fas fa-fw  fa-user-cog',
@@ -413,6 +413,18 @@ return [
             'url'     => '/cashflow',
             'privilege' => 'OW'
         ],
+        [
+            'text'    => 'Laporan Stok Barang',
+            'icon'    => 'fas fa-fw fa-boxes',
+            'url'     => '/item_report',
+            'privilege' => 'OW'
+        ],
+        [
+            'text'    => 'Laporan Laba-Rugi',
+            'icon'    => 'fas fa-fw fa-money-bill-wave',
+            'url'     => '/profit_loss',
+            'privilege' => 'OW'
+        ],
     ],
 
     /*
@@ -491,11 +503,11 @@ return [
         ],
         [
             'name' => 'Chartjs',
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
-                    'asset' => false,
+                    'asset' => true,
                     'location' => '//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js',
                 ],
             ],

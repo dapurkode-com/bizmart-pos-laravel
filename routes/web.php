@@ -107,10 +107,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('buy_report/suplier_datatables', 'BuyReportController@suplierDatatables')->name('buy_report.suplier_datatables');
 
     Route::get('cashflow', 'CashflowController@index')->name('cashflow');
+
     
     // for cash count
     Route::get('cash_count/datatables', 'CashCountController@datatables')->name('cash_count.datatables');
     // for cash count
+    Route::get('profit_loss', 'ProfitLossController@index')->name('profit_loss');
+    Route::get('item_report/item_datatables', 'ItemReportController@itemDatatables')->name('item_report.item_datatables');
 
     Route::resources([
         'suplier' => 'SuplierController',
@@ -128,5 +131,6 @@ Route::group(['middleware' => ['auth']], function () {
         'buy_report' => 'BuyReportController',
         'sell_report' => 'SellReportController',
         'cash_count' => 'CashCountController',
+        'item_report' => 'ItemReportController',
     ]);
 });
