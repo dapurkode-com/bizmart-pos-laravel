@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\BadgeHelper;
 use App\Item;
+use App\SystemParam;
 use Illuminate\Http\Request;
 
 class ItemReportController extends Controller
@@ -15,7 +16,10 @@ class ItemReportController extends Controller
      */
     public function index()
     {
-        return response()->view('item_report.index');
+        $mrch_name = SystemParam::where('param_code', 'MRCH_NAME')->first();
+        $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
+        $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
+        return response()->view('item_report.index', compact('mrch_name', 'mrch_addr', 'mrch_phone'));
     }
 
     /**
