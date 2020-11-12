@@ -53,7 +53,13 @@ class CashCountController extends Controller
                 AND trx_date <= CONCAT(DATE(NOW()),' 23:59:59')
                 GROUP BY io_cash
             "));
-        $countedSystem = $sumAmounts[0]->sum_amount + $sumAmounts[1]->sum_amount;
+
+        $countedSystem = 0;    
+        if ($sumAmounts) {
+            foreach ($sumAmounts as $i => $sumAmount) {
+                $countedSystem += $sumAmount->sum_amount;
+            }
+        }
         $deviation = $countedSystem - $request->counted_amount;
 
         try {
