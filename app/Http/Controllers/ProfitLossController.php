@@ -34,30 +34,30 @@ class ProfitLossController extends Controller
             SELECT sl.new_stock FROM stock_logs sl WHERE sl.item_id = items.`id` AND sl.created_at < '" . $date_start->format('Y-m-d') . " 00:00:00' ORDER BY sl.created_at LIMIT 1
         ) old_stock,
         (
-            SELECT sl.sell_price FROM stock_logs sl WHERE sl.item_id = items.`id` AND sl.created_at < '" . $date_start->format('Y-m-d') . " 00:00:00' ORDER BY sl.created_at LIMIT 1
-        ) old_sell_price, items.* "))
+            SELECT sl.buy_price FROM stock_logs sl WHERE sl.item_id = items.`id` AND sl.created_at < '" . $date_start->format('Y-m-d') . " 00:00:00' ORDER BY sl.created_at LIMIT 1
+        ) old_buy_price, items.* "))
             ->get();
 
         $stockValueOld = 0;
 
         foreach ($stockOld as $data) {
-            if ($data->old_stock != null) $stockValueOld += $data->old_stock * $data->old_sell_price;
-            else $stockValueOld += $data->stock * $data->sell_price;
+            if ($data->old_stock != null) $stockValueOld += $data->old_stock * $data->old_buy_price;
+            else $stockValueOld += $data->stock * $data->buy_price;
         }
 
         $stockNew = Item::select(DB::raw("(
             SELECT sl.new_stock FROM stock_logs sl WHERE sl.item_id = items.`id` AND sl.created_at <= '" . $date_end->format('Y-m-d') . " 23:59:59' ORDER BY sl.created_at LIMIT 1
         ) old_stock,
         (
-            SELECT sl.sell_price FROM stock_logs sl WHERE sl.item_id = items.`id` AND sl.created_at <= '" . $date_end->format('Y-m-d') . " 23:59:59' ORDER BY sl.created_at LIMIT 1
-        ) old_sell_price, items.* "))
+            SELECT sl.buy_price FROM stock_logs sl WHERE sl.item_id = items.`id` AND sl.created_at <= '" . $date_end->format('Y-m-d') . " 23:59:59' ORDER BY sl.created_at LIMIT 1
+        ) old_buy_price, items.* "))
             ->get();
 
         $stockValueNew = 0;
 
         foreach ($stockNew as $data) {
-            if ($data->old_stock != null) $stockValueNew += $data->old_stock * $data->old_sell_price;
-            else $stockValueNew += $data->stock * $data->sell_price;
+            if ($data->old_stock != null) $stockValueNew += $data->old_stock * $data->old_buy_price;
+            else $stockValueNew += $data->stock * $data->buy_price;
         }
 
         $otherExpenseSummary = OtherExpense::whereBetween('created_at', [$date_start, $date_end])->sum('summary');
