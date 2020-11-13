@@ -87,6 +87,7 @@
                 </div>
                 <div class="row no-print text-right mt-3">
                     <div class="col-12">
+                        <a href="{{ route('item_report.print_pdf') }}" class="btn btn-primary sm"><i class="fas fa-file"></i> Generate PDF</a>
                         <button type="button" class="btn btn-info sm" id="btnPrint"><i class="fas fa-print"></i> Print</button>
                     </div>
                 </div>

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\BadgeHelper;
 use App\Item;
+use Dompdf\Dompdf;
 use App\SystemParam;
+use App\Helpers\BadgeHelper;
 use Illuminate\Http\Request;
 
 class ItemReportController extends Controller
@@ -24,70 +25,18 @@ class ItemReportController extends Controller
         return response()->view('item_report.index', compact('mrch_name', 'mrch_addr', 'mrch_phone', 'items'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function generatePdf()
     {
-        //
-    }
+        $items = Item::with('categories', 'unit')->selectRaw('distinct items.*')->where('is_stock_active', 1)->get();
+        $mrch_name = SystemParam::where('param_code', 'MRCH_NAME')->first();
+        $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
+        $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml(view('item_report.pdf', compact('items', 'mrch_name', 'mrch_addr', 'mrch_phone'))->render());
+        $dompdf->setPaper('A5', 'landscape');
+        $dompdf->render();
+        $dompdf->stream("Laporan Stok.pdf", array("Attachment" => false));
     }
 
     public function itemDatatables(Request $request)
