@@ -52,7 +52,7 @@ class SellPaymentHsController extends Controller
     public function show($id)
     {
         $sell = Sell::with('user', 'member', 'sellDetails', 'sellDetails.item', 'sellPaymentHs', 'sellPaymentHs.user')->findOrFail($id);
-        $sell->kode = "PJ-" . str_pad($sell->id, 5, '0', STR_PAD_LEFT);
+        $sell->kode = "HT-" . str_pad($sell->id, 5, '0', STR_PAD_LEFT);
         $sell->status_text = $sell->statusText();
         return response()->json([
             'sell' => $sell,
@@ -153,7 +153,7 @@ class SellPaymentHsController extends Controller
     {
         $sells = Sell::select([
             'sells.id',
-            DB::raw("CONCAT('PJ-', LPAD(sells.id, 5, '0')) AS _id"),
+            DB::raw("CONCAT('HT-', LPAD(sells.id, 5, '0')) AS _id"),
             DB::raw("DATE_FORMAT(sells.updated_at, '%d %b %Y') AS _updated_at"),
             'members.name AS _member_name',
             'sells.summary',
@@ -178,7 +178,7 @@ class SellPaymentHsController extends Controller
             ->of($sells)
             ->addIndexColumn()
             ->filterColumn('_id', function ($query, $keyword) {
-                $sql = "CONCAT('PJ-', LPAD(sells.id, 5, '0')) like ?";
+                $sql = "CONCAT('HT-', LPAD(sells.id, 5, '0')) like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('_updated_at', function ($query, $keyword) {
