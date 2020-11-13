@@ -113,6 +113,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('cash_count/datatables', 'CashCountController@datatables')->name('cash_count.datatables');
 
     Route::get('profit_loss', 'ProfitLossController@index')->name('profit_loss');
+    Route::get('profit_loss/print_pdf', 'ProfitLossController@generatePdf')->name('profit_loss.print_pdf');
 
     // item report
     Route::get('item_report/item_datatables', 'ItemReportController@itemDatatables')->name('item_report.item_datatables');

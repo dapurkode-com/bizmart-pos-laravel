@@ -92,15 +92,15 @@
             <td width="50%" class="has-text-centered">Denpasar, {{ \Carbon\Carbon::today()->format('j F Y')  }}</td>
         </tr>
         <tr>
-            <td class="has-text-centered">Penerima,</td>
-            <td class="has-text-centered">Pemohon,</td>
+            <td class="has-text-centered"></td>
+            <td class="has-text-centered"></td>
         </tr>
         <tr>
             <td height="10mm"></td>
             <td height="10mm"></td>
         </tr>
         <tr>
-            <td class="has-text-centered">(____________________________)</td>
+            <td class="has-text-centered"></td>
             <td class="has-text-centered">(____________________________)</td>
         </tr>
     </table>

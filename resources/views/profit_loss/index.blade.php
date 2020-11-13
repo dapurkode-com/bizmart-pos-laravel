@@ -143,6 +143,7 @@
                 </div>
                 <div class="row no-print text-right">
                     <div class="col-12">
+                        <a href="{{ route('profit_loss.print_pdf', ['month' => $month, 'year' => $year]) }}" class="btn btn-primary sm"><i class="fas fa-file"></i> Generate PDF</a>
                         <button type="button" class="btn btn-info sm" id="btnPrint"><i class="fas fa-print"></i> Print</button>
                     </div>
                 </div>
