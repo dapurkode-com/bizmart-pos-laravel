@@ -107,6 +107,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('buy_report/suplier_datatables', 'BuyReportController@suplierDatatables')->name('buy_report.suplier_datatables');
 
     Route::get('cashflow', 'CashflowController@index')->name('cashflow');
+    Route::get('cashflow/generate_pdf', 'CashflowController@generatePdf')->name('cashflow.generate_pdf');
 
 
     // for cash count

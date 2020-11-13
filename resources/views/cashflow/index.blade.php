@@ -117,6 +117,9 @@
                 </div>
                 <div class="row no-print text-right">
                     <div class="col-12">
+                        {{-- <a href="{{ route('cashflow.generate_pdf', ['date_start' => $date_start, 'date_end' => $date_end]) }}" class="btn btn-primary sm"><i class="fas fa-file"></i> Generate PDF</a> --}}
+                        <a href="{{ route('cashflow.generate_pdf') }}?date_start={{ $date_start }}&date_end={{ $date_end }}" class="btn btn-primary sm"><i class="fas fa-file"></i> Generate PDF</a>
+                        {{-- <a href="{{ route('cashflow.generate_pdf', ['date_start' => $date_start, 'date_end' => $date_end]) }}" class="btn btn-primary sm"><i class="fas fa-file"></i> Generate PDF</a> --}}
                         <button type="button" class="btn btn-info sm" id="btnPrint"><i class="fas fa-print"></i> Print</button>
                     </div>
                 </div>
