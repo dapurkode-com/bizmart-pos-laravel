@@ -36,7 +36,7 @@ class ItemReportController extends Controller
         $dompdf->loadHtml(view('item_report.pdf', compact('items', 'mrch_name', 'mrch_addr', 'mrch_phone'))->render());
         $dompdf->setPaper('A5', 'landscape');
         $dompdf->render();
-        $dompdf->stream("Laporan Stok.pdf", array("Attachment" => false));
+        $dompdf->stream("Laporan Stok.pdf", array("Attachment" => true));
     }
 
     public function itemDatatables(Request $request)
