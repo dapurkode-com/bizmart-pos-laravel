@@ -40,8 +40,8 @@
                             <tr>
                                 <th>#</th>
                                 <th>ID</th>
+                                <th>Kode</th>
                                 <th>Tgl</th>
-                                <th>Uniq ID</th>
                                 <th>Oleh</th>
                                 <th>Total</th>
                                 <th>Status</th>
@@ -359,8 +359,8 @@
                 columns: [
                     {data: 'DT_RowIndex', orderable: false, searchable: false },
                     {data: 'id', searchable: false, visible: false, printable: false},
+                    {data: 'kode'},
                     {data: 'created_at_idn'},
-                    {data: 'uniq_id'},
                     {data: 'created_by'},
                     {data: 'summary_iso'},
                     {data: 'status_color', name: 'status_text'},
@@ -683,8 +683,8 @@
                         <dl class="row mb-0">
                             <dt class="col-sm-3">Tanggal</dt>
                             <dd class="col-sm-9">${getIndoDate(data.opname.created_at)}</dd>
-                            <dt class="col-sm-3">Uniq ID</dt>
-                            <dd class="col-sm-9">${data.opname.uniq_id}</dd>
+                            <dt class="col-sm-3">Kode</dt>
+                            <dd class="col-sm-9">${data.opname.kode}</dd>
                             <dt class="col-sm-3">Pembuat</dt>
                             <dd class="col-sm-9">${data.opname.user.name}</dd>
                             <dt class="col-sm-3">Status</dt>

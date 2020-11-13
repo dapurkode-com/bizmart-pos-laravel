@@ -18,7 +18,8 @@ class CashCountController extends Controller
      */
     public function index()
     {
-        return response()->view('cash_count.index');
+        $tglNow = Carbon::now()->toDateString();
+        return response()->view('cash_count.index', compact('tglNow'));
     }
 
     /**

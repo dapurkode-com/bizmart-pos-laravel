@@ -26,12 +26,12 @@
                 <div class="card-body">
                     <div class="indexTableFilter">
                         <div class="form-group mb-0">
-                            <input type="date" name="date_start" value="{{ Carbon::now()->toDateString() }}" class="form-control">
+                            <input type="date" name="date_start" value="{{ $tglNow }}" class="form-control">
                             <div class="invalid-feedback"></div>
                         </div>
                         <p class="mb-0">sampai</p>
                         <div class="form-group mb-0">
-                            <input type="date" name="date_end" value="{{ Carbon::now()->toDateString() }}" class="form-control">
+                            <input type="date" name="date_end" value="{{ $tglNow }}" class="form-control">
                             <div class="invalid-feedback"></div>
                         </div>
                         <button type="button" class="btn btn-info filterButton"><i class="fas fa-search mr-2"></i>Cari</button>
