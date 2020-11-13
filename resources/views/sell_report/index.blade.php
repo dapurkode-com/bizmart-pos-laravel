@@ -26,12 +26,12 @@
                 <div class="card-body">
                     <div class="filter">
                         <div class="form-group mb-0">
-                            <input type="date" name="date_start" value="{{ date('Y-m-d') }}" class="form-control">
+                            <input type="date" name="date_start" value="{{ $tglNow }}" class="form-control">
                             <div class="invalid-feedback"></div>
                         </div>
                         <p class="mb-0">sampai</p>
                         <div class="form-group mb-0">
-                            <input type="date" name="date_end" value="{{ date('Y-m-d') }}" class="form-control">
+                            <input type="date" name="date_end" value="{{ $tglNow }}" class="form-control">
                             <div class="invalid-feedback"></div>
                         </div>
                         <button type="button" class="btn btn-info filterButton"><i class="fas fa-search mr-2"></i>Cari</button>

@@ -8,6 +8,7 @@ use App\Item;
 use App\Opname;
 use App\OpnameDetail;
 use App\StockLog;
+use Carbon\Carbon;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
@@ -121,6 +122,7 @@ class OpnameController extends Controller
                 }
 
                 $opname = Opname::with('user')->findOrFail($request->opname_id);
+                $opname->kode = "SO-" . str_pad($opname->id, 5, 0, STR_PAD_LEFT);
                 return response()->json([
                     'status' => 'valid',
                     'pesan' => 'Barang berhasil diopname',
@@ -189,7 +191,7 @@ class OpnameController extends Controller
             // adjust stock on item
             Item::findOrFail($request->item_id)->update([
                 'stock' => $request->new_stock,
-                'last_opname_at' => date('Y-m-d H:i:s'),
+                'last_opname_at' => Carbon::now(),
             ]);
 
             // update status opname
@@ -234,6 +236,7 @@ class OpnameController extends Controller
     public function show($id)
     {
         $opname = Opname::with('user')->findOrFail($id);
+        $opname->kode = "SO-" . str_pad($opname->id, 5, 0, STR_PAD_LEFT);
         return response()->json([
             'opname' => $opname,
             'statusText' => $opname->statusText(),
@@ -339,7 +342,7 @@ class OpnameController extends Controller
         $opnames = Opname::select([
             'opnames.id',
             DB::raw("DATE_FORMAT(opnames.created_at, '%d %b %Y') AS created_at_idn"),
-            'opnames.uniq_id',
+            DB::raw("CONCAT('SO-', LPAD(opnames.id, 5, '0')) AS kode"),
             'opnames.created_by',
             DB::raw("FORMAT(opnames.summary, 2) AS summary_iso"),
             'opnames.status',
@@ -358,6 +361,10 @@ class OpnameController extends Controller
                 }
             })
             ->rawColumns(['action', 'status_color'])
+            ->filterColumn('kode', function ($query, $keyword) {
+                $sql = "CONCAT('SO-', LPAD(opnames.id, 5, '0')) like ?";
+                $query->whereRaw($sql, ["%{$keyword}%"]);
+            })
             ->filterColumn('created_at_idn', function ($query, $keyword) {
                 $sql = "DATE_FORMAT(opnames.created_at, '%d %b %Y') like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);

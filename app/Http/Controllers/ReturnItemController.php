@@ -131,6 +131,7 @@ class ReturnItemController extends Controller
     public function show($id)
     {
         $returnItem = ReturnItem::with('user', 'suplier', 'details.item')->findOrFail($id);
+        $returnItem->kode = "RT-" . str_pad($returnItem->id, 5, 0, STR_PAD_LEFT);
         return response()->json([
             'return_item' => $returnItem,
             'url_pdf' => route('return_item.generate_pdf', $id)
@@ -182,7 +183,7 @@ class ReturnItemController extends Controller
         $returnItems = ReturnItem::select([
             'return_items.id',
             DB::raw("DATE_FORMAT(return_items.updated_at, '%d %b %Y') AS updated_at_idn"),
-            'return_items.uniq_id',
+            DB::raw("CONCAT('RT-', LPAD(return_items.id, 5, '0')) AS kode"),
             'supliers.name AS suplier_name',
             DB::raw("FORMAT(return_items.summary, 2) AS summary_iso"),
             'users.name as user_name',
@@ -193,6 +194,10 @@ class ReturnItemController extends Controller
         return datatables()
             ->of($returnItems)
             ->addIndexColumn()
+            ->filterColumn('kode', function ($query, $keyword) {
+                $sql = "CONCAT('RT-', LPAD(return_items.id, 5, '0')) like ?";
+                $query->whereRaw($sql, ["%{$keyword}%"]);
+            })
             ->filterColumn('updated_at_idn', function ($query, $keyword) {
                 $sql = "DATE_FORMAT(return_items.updated_at, '%d %b %Y') like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
