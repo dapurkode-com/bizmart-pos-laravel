@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Item;
+use App\StockLog;
 use App\SystemParam;
 use Illuminate\Support\ServiceProvider;
 
@@ -67,6 +68,19 @@ class ItemServiceProvider extends ServiceProvider
                 $item->markup = 100;
                 $item->margin = 100;
             }
+        });
+
+        Item::created(function ($item) {
+            StockLog::create([
+                'cause' => 'NIT',
+                'in_out_position' => 'IN',
+                'qty' => $item->stock != null ? $item->stock : 0,
+                'old_stock' => $item->stock != null ? $item->stock : 0,
+                'new_stock' => $item->stock != null ? $item->stock : 0,
+                'buy_price' => $item->buy_price,
+                'sell_price' => $item->sell_price,
+                'item_id' => $item->id
+            ]);
         });
 
         //Pada proses update data barang

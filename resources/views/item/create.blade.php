@@ -30,6 +30,9 @@
                     <h3 class="card-title">Form Tambah Barang Baru</h3>
                 </div>
                 <div class="card-body">
+                    @error('message')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
                     <form action="{{ route('item.store') }}" method="post" autocomplete="off">
                         @csrf
                         <div class="form-group">

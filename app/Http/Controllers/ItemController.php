@@ -90,7 +90,7 @@ class ItemController extends Controller
             return redirect()->route('item.index');
         } catch (Exception $exception) {
             DB::rollBack();
-            return redirect()->back()->with('message', $exception)->withInput();
+            return redirect()->back()->withErrors(['message' => $exception->getMessage()])->withInput();
         }
     }
 
