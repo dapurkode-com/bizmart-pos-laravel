@@ -8,6 +8,7 @@ use App\Item;
 use App\Opname;
 use App\OpnameDetail;
 use App\StockLog;
+use Carbon\Carbon;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
@@ -189,7 +190,7 @@ class OpnameController extends Controller
             // adjust stock on item
             Item::findOrFail($request->item_id)->update([
                 'stock' => $request->new_stock,
-                'last_opname_at' => date('Y-m-d H:i:s'),
+                'last_opname_at' => Carbon::now(),
             ]);
 
             // update status opname

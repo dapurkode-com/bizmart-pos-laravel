@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CashCount;
 use App\Http\Requests\CashCountStoreRequest;
+use Carbon\Carbon;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
@@ -68,7 +69,7 @@ class CashCountController extends Controller
             // store to sell payment history
             CashCount::create([
                 'user_id' => auth()->user()->id,
-                'count_date' => date('Y-m-d H:i:s'),
+                'count_date' => Carbon::now(),
                 'counted_amount' => $request->counted_amount,
                 'counted_system' => $countedSystem,
                 'deviation' => $deviation,

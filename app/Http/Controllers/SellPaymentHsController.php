@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SellPaymentHsUpdateRequest;
 use App\Sell;
 use App\SellPaymentHs;
+use Carbon\Carbon;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
@@ -104,7 +105,7 @@ class SellPaymentHsController extends Controller
                     'user_id' => auth()->user()->id,
                     'amount' => $request->amount,
                     'note' => $request->note,
-                    'payment_date' => date('Y-m-d H:i:s'),
+                    'payment_date' => Carbon::now(),
                 ]);
 
                 //update status on sell table

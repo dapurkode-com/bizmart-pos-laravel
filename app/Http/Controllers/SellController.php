@@ -10,6 +10,7 @@ use App\SellDetail;
 use App\SellPaymentHs;
 use App\StockLog;
 use App\SystemParam;
+use Carbon\Carbon;
 use DB;
 use Dompdf\Dompdf;
 
@@ -116,7 +117,7 @@ class SellController extends Controller
                     // update stock on item
                     Item::findOrFail($itemId)->update([
                         'stock' => $itemObj['stock'] - $sellDetailItemArr['qty'],
-                        'last_sell_at' => date('Y-m-d H:i:s'),
+                        'last_sell_at' => Carbon::now(),
                     ]);
                 }
             }
@@ -127,7 +128,7 @@ class SellController extends Controller
                 'user_id' => auth()->user()->id,
                 'amount' => $request->paid_amount,
                 'note' => $request->note,
-                'payment_date' => date('Y-m-d H:i:s'),
+                'payment_date' => Carbon::now(),
             ]);
 
             DB::commit();
