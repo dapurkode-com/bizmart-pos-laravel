@@ -52,8 +52,8 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Tanggal</th>
-                                <th>Kode Pembelian</th>
+                                <th>Tgl</th>
+                                <th>ID</th>
                                 <th>Suplier</th>
                                 <th>Total Harga</th>
                                 <th>Status</th>
@@ -140,7 +140,7 @@
         columns: [
             {data: 'DT_RowIndex', orderable: false, searchable: false },
             {data: 'created_at'},
-            {data: 'uniq_id'},
+            {data: 'buy_code'},
             {data: 'suplier.name'},
             {data: 'summary'},
             {data: 'buy_status'},

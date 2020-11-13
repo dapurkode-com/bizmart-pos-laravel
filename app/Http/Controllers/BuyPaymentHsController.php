@@ -144,7 +144,7 @@ class BuyPaymentHsController extends Controller
     {
         $buys = Buy::select([
             'buys.id',
-            DB::raw("CONCAT('PJ-', LPAD(buys.id, 5, '0')) AS _id"),
+            DB::raw("CONCAT('HT-', LPAD(buys.id, 5, '0')) AS _id"),
             DB::raw("DATE_FORMAT(buys.updated_at, '%d %b %Y') AS _updated_at"),
             'supliers.name AS _suplier_name',
             'buys.summary',
@@ -169,7 +169,7 @@ class BuyPaymentHsController extends Controller
             ->of($buys)
             ->addIndexColumn()
             ->filterColumn('_id', function ($query, $keyword) {
-                $sql = "CONCAT('PJ-', LPAD(buys.id, 5, '0')) like ?";
+                $sql = "CONCAT('HT-', LPAD(buys.id, 5, '0')) like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('_updated_at', function ($query, $keyword) {

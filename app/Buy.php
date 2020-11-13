@@ -4,6 +4,7 @@ namespace App;
 
 use App\Traits\Blameable;
 use App\Traits\UniqID;
+use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -117,5 +118,13 @@ class Buy extends Model
             ->first();
 
         return $lookUp != null ? $lookUp->label : '-';
+    }
+
+    public function codeText()
+    {
+        $code = DB::table('buys')->select(DB::raw('CONCAT("PB-", LPAD(MIN(id), 5, "0")) AS buy_code'))
+                ->where('id', $this->id)
+                ->first();
+        return $code->buy_code;
     }
 }
