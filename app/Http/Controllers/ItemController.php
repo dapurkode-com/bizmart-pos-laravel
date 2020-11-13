@@ -201,7 +201,8 @@ class ItemController extends Controller
             ->addColumn('action', function ($item) {
                 $btn = '';
                 // $btn = "<button data-remote='" . route('item.show', $item->slug) . "' type='button' class='btn btn-sm btn-danger' title='Hapus Data'><i class='fa fa-trash'></i></button> ";
-                $btn .= " <a href='" . route('item.edit', $item->slug) . "' class='edit btn btn-warning btn-sm' title='Ubah Data'><i class='fa fa-edit'></i></a> ";
+                if (auth()->user()->privilege_code == 'OW')
+                    $btn .= " <a href='" . route('item.edit', $item->slug) . "' class='edit btn btn-warning btn-sm' title='Ubah Data'><i class='fa fa-edit'></i></a> ";
                 $btn .= " <a href='" . route('item.show', $item->slug) . "' class=' btn btn-info btn-sm' title='Lihat Data'><i class='fa fa-eye'></i></a> ";
 
                 return $btn;
