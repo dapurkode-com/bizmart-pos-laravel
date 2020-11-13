@@ -70,7 +70,7 @@ class BuyController extends Controller
                 'note'          => $note,
             ]);
 
-            foreach ($buy_prices as $i => $buy_price){
+            foreach ($buy_prices as $i => $buy_price) {
 
                 $item = Item::findOrFail($item_id[$i]);
 
@@ -82,8 +82,9 @@ class BuyController extends Controller
                 }
 
                 $item->buy_price = $new_buy_price;
+                $item->last_buy_at = Carbon::now();
                 $item->save();
-                
+
                 $dataDetail = array(
                     'buy_id'    => $buy->id,
                     'item_id'   => $item_id[$i],
@@ -93,7 +94,7 @@ class BuyController extends Controller
 
                 BuyDetail::create($dataDetail);
 
-                $total +=$buy_price * $qty[$i];
+                $total += $buy_price * $qty[$i];
 
                 $log = array(
                     'ref_uniq_id'       => $buy->uniq_id,
@@ -108,16 +109,15 @@ class BuyController extends Controller
                 );
 
                 StockLog::create($log);
-
             }
 
             $buy->summary = $total;
-            
-            if($paid_amount > $total){
+
+            if ($paid_amount > $total) {
+                DB::rollBack();
                 return redirect()->back()
-                ->with('message', "Nominal tidak boleh melebihi total pembelian.");
-            } 
-            elseif ($paid_amount == $total) {
+                    ->with('message', "Nominal tidak boleh melebihi total pembelian.");
+            } elseif ($paid_amount == $total) {
                 $buy->paid_amount = $paid_amount;
                 $buy->buy_status = 'PO';
                 $buy->save();
@@ -128,24 +128,24 @@ class BuyController extends Controller
                     'payment_date'  => $buy->created_at,
                     'amount'        => $paid_amount,
                 );
-                
+
                 BuyPaymentHs::create($dataPayment);
-                
+
                 DB::commit();
                 $request->session()->flash('buy.summary', $buy->summary);
                 return redirect()->back()
-                ->with('message', "Data berhasil tersimpan.");
+                    ->with('message', "Data berhasil tersimpan.");
             } else {
                 $buy->paid_amount = $paid_amount;
                 $buy->save();
-                
+
                 $dataPayment = array(
                     'buy_id' => $buy->id,
                     'user_id' => auth()->user()->id,
                     'payment_date'  => $buy->created_at,
                     'amount'        => $paid_amount,
                 );
-                
+
                 BuyPaymentHs::create($dataPayment);
 
                 DB::commit();
@@ -159,7 +159,6 @@ class BuyController extends Controller
                 ->with('message', $exception)
                 ->withInput();
         }
- 
     }
 
     /**
@@ -170,13 +169,13 @@ class BuyController extends Controller
      */
     public function show($uniq_id)
     {
-        $buys = Buy::with('suplier')->where('uniq_id',$uniq_id)->first();
+        $buys = Buy::with('suplier')->where('uniq_id', $uniq_id)->first();
         // dd($buys);
         $mrch_name = SystemParam::where('param_code', 'MRCH_NAME')->first();
         $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
         $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
-        
-        return view('buy.show', compact('buys','mrch_name','mrch_addr','mrch_phone'));
+
+        return view('buy.show', compact('buys', 'mrch_name', 'mrch_addr', 'mrch_phone'));
     }
 
     /**
@@ -221,13 +220,12 @@ class BuyController extends Controller
             return response()->json([
                 'suplier' => Suplier::findOrFail($id)
             ]);
-        }
-        else if ($flag == 'barcode'){
+        } else if ($flag == 'barcode') {
             $id = $request->item;
-            
-            $item = Item::where('barcode',$id)->get();
+
+            $item = Item::where('barcode', $id)->get();
             if ($item != null) {
-                
+
                 return response()->json([
                     'status' => 'valid',
                     'row' => $item
@@ -247,25 +245,25 @@ class BuyController extends Controller
 
     public function printReport($uniq_id)
     {
-        $buys = Buy::with('suplier')->where('uniq_id',$uniq_id)->first();
-        $details = BuyDetail::with('item')->where('buy_id',$buys->id)->get();
+        $buys = Buy::with('suplier')->where('uniq_id', $uniq_id)->first();
+        $details = BuyDetail::with('item')->where('buy_id', $buys->id)->get();
         $mrch_name = SystemParam::where('param_code', 'MRCH_NAME')->first();
         $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
         $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
-        
-        return view('buy.print', compact('buys','details','mrch_name','mrch_addr','mrch_phone'));
+
+        return view('buy.print', compact('buys', 'details', 'mrch_name', 'mrch_addr', 'mrch_phone'));
     }
 
     public function generatePdfReport($uniq_id)
     {
-        $buys = Buy::with('suplier')->where('uniq_id',$uniq_id)->first();
-        $details = BuyDetail::with('item')->where('buy_id',$buys->id)->get();
+        $buys = Buy::with('suplier')->where('uniq_id', $uniq_id)->first();
+        $details = BuyDetail::with('item')->where('buy_id', $buys->id)->get();
         $mrch_name = SystemParam::where('param_code', 'MRCH_NAME')->first();
         $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
         $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
-        
+
         $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('buy.pdf', compact('buys','details','mrch_name','mrch_addr','mrch_phone'))->render());
+        $dompdf->loadHtml(view('buy.pdf', compact('buys', 'details', 'mrch_name', 'mrch_addr', 'mrch_phone'))->render());
         $dompdf->setPaper('A5', 'landscape');
         $dompdf->render();
         $dompdf->stream("Pembelian $uniq_id bizmart.pdf", array("Attachment" => false));
@@ -276,19 +274,19 @@ class BuyController extends Controller
     {
         $data = Item::with('categories')->selectRaw('distinct items.*');
         return datatables()
-        ->of($data)
-        ->addIndexColumn()
-        ->addColumn('categories', function ($item) {
-            return $item->categories->map(function ($item) {
-                return join('', ["<span class='badge ", BadgeHelper::getBadgeClass($item->id), "'>", $item->name, '</span>']); //Customize warna badge
-            })->implode(' ');
-        })
-        ->addColumn('action', function ($item) {
-            $btn = "";
-            $btn .= '<button data-id="'.$item->id.'" class="btn btn-primary btn-sm my_btn"><i class="fa fa-plus"></i></button>';
-            return $btn;
-        })
-        ->rawColumns(['action', 'categories'])
+            ->of($data)
+            ->addIndexColumn()
+            ->addColumn('categories', function ($item) {
+                return $item->categories->map(function ($item) {
+                    return join('', ["<span class='badge ", BadgeHelper::getBadgeClass($item->id), "'>", $item->name, '</span>']); //Customize warna badge
+                })->implode(' ');
+            })
+            ->addColumn('action', function ($item) {
+                $btn = "";
+                $btn .= '<button data-id="' . $item->id . '" class="btn btn-primary btn-sm my_btn"><i class="fa fa-plus"></i></button>';
+                return $btn;
+            })
+            ->rawColumns(['action', 'categories'])
             ->make(true);
     }
 
@@ -298,41 +296,41 @@ class BuyController extends Controller
         $end_date = $request->filter["end_date"];
         $data = Buy::with('suplier');
         // dd($start_date);
-        
-        if ($start_date != null && $end_date != null) {
-            $data->whereBetween('created_at', [$start_date." 00:00:00",$end_date." 23:59:59"]);
-        }
-        
-        return datatables()
-        ->of($data)
-        ->addIndexColumn()
-        ->editColumn('buy_status', function ($buy){
-            return $buy->statusText();
-        })
-        ->editColumn('created_at', function ($buy){
-            return $buy->created_at->isoFormat('dddd, D MMMM Y');
-        })
-        ->addColumn('action', function ($buy) {
-            $btn = '<a href="' . route('buy.show', $buy->uniq_id) . '" class=" btn btn-info btn-sm" title="Lihat Data"><i class="fa fa-eye"></i></a>';
 
-            // $btn .= '<button data-remote_delete="'. route('buy.delete', $buy->id).'" class="btn btn-danger btn-sm my_btn"><i class="fa fa-trash"></i></button>';
-            return $btn;
-        })
-        ->rawColumns(['action'])
+        if ($start_date != null && $end_date != null) {
+            $data->whereBetween('created_at', [$start_date . " 00:00:00", $end_date . " 23:59:59"]);
+        }
+
+        return datatables()
+            ->of($data)
+            ->addIndexColumn()
+            ->editColumn('buy_status', function ($buy) {
+                return $buy->statusText();
+            })
+            ->editColumn('created_at', function ($buy) {
+                return $buy->created_at->isoFormat('dddd, D MMMM Y');
+            })
+            ->addColumn('action', function ($buy) {
+                $btn = '<a href="' . route('buy.show', $buy->uniq_id) . '" class=" btn btn-info btn-sm" title="Lihat Data"><i class="fa fa-eye"></i></a>';
+
+                // $btn .= '<button data-remote_delete="'. route('buy.delete', $buy->id).'" class="btn btn-danger btn-sm my_btn"><i class="fa fa-trash"></i></button>';
+                return $btn;
+            })
+            ->rawColumns(['action'])
             ->make(true);
     }
 
     public function datatablesReportDetail(Request $request)
     {
-        $buy = Buy::where('uniq_id',$request->uniq_id)->first();
-        $data = BuyDetail::with('item')->where('buy_id',$buy->id)->get();
+        $buy = Buy::where('uniq_id', $request->uniq_id)->first();
+        $data = BuyDetail::with('item')->where('buy_id', $buy->id)->get();
         return datatables()
-        ->of($data)
-        ->addIndexColumn()
-        ->addColumn('subtotal', function ($buy_detail) {
-            $subtotal = $buy_detail->qty * $buy_detail->buy_price;
-            return $subtotal;
-        })
-        ->make(true);
+            ->of($data)
+            ->addIndexColumn()
+            ->addColumn('subtotal', function ($buy_detail) {
+                $subtotal = $buy_detail->qty * $buy_detail->buy_price;
+                return $subtotal;
+            })
+            ->make(true);
     }
 }

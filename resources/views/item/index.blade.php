@@ -26,7 +26,9 @@
                 <div class="card-header">
                     <h3 class="card-title">Daftar Barang</h3>
                     <div class="card-tools">
-                        <a href="{{route('item.create')}}" class="btn btn-info btn-sm" title="Tambah Data"><i class="fas fa-plus" style="padding-right: 1rem;"></i>Tambah</a>
+                        @if (auth()->user()->privilege_code == 'OW')
+                            <a href="{{route('item.create')}}" class="btn btn-info btn-sm" title="Tambah Data"><i class="fas fa-plus" style="padding-right: 1rem;"></i>Tambah</a>
+                        @endif
                     </div>
                 </div>
                 <div class="card-body">

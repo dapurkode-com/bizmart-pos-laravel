@@ -55,7 +55,7 @@
                         </tr>
                         <tr>
                             <th>Deskripsi</th>
-                            <td>{{ $item->description }}</td>
+                            <td>{{ $item->description ?? '-' }}</td>
                         </tr>
                         <tr>
                             <th>Stok Aktif</th>
@@ -63,15 +63,15 @@
                         </tr>
                         <tr>
                             <th>Stok Minimal</th>
-                            <td>{{ $item->min_stock }}</td>
+                            <td>{{ number_format($item->min_stock) }}</td>
                         </tr>
                         <tr>
                             <th>Satuan Stok</th>
-                            <td>{{ $item->unit->name }}</td>
+                            <td>{{ $item->unit ? $item->unit->name  : '-'}}</td>
                         </tr>
                         <tr>
                             <th>Harga Beli</th>
-                            <td>{{ $item->buy_price }}</td>
+                            <td>{{ number_format($item->buy_price) }}</td>
                         </tr>
                         <tr>
                             <th>Penentu Harga Jual</th>
@@ -79,31 +79,31 @@
                         </tr>
                         <tr>
                             <th>Harga Jual</th>
-                            <td>{{ $item->sell_price }}</td>
+                            <td>{{ number_format($item->sell_price) }}</td>
                         </tr>
                         <tr>
                             <th>Profit</th>
-                            <td>{{ $item->profit }}</td>
+                            <td>{{ number_format($item->profit) }}</td>
                         </tr>
-                        <tr>
+                        {{-- <tr>
                             <th>Margin</th>
                             <td>{{ $item->margin }}</td>
                         </tr>
                         <tr>
                             <th>Markup</th>
                             <td>{{ $item->markup }}</td>
-                        </tr>
+                        </tr> --}}
                         <tr>
                             <th>Pembelian Terakhir</th>
-                            <td>{{ $item->last_buy_at ?? '-' }}</td>
+                            <td>{{ $item->last_buy_at ? $item->last_buy_at->diffForHumans(['options' => 0]) : '-' }}</td>
                         </tr>
                         <tr>
                             <th>Penjualan Terakhir</th>
-                            <td>{{ $item->last_sell_at ?? '-' }}</td>
+                            <td>{{ $item->last_sell_at ? $item->last_sell_at->diffForHumans(['options' => 0]) : '-' }}</td>
                         </tr>
                         <tr>
                             <th>Stock Opname Terakhir</th>
-                            <td>{{ $item->last_opname_at ?? '-' }}</td>
+                            <td>{{ $item->last_opname_at ? $item->last_opname_at->diffForHumans(['options' => 0]) : '-' }}</td>
                         </tr>
                     </table>
                 </div>
