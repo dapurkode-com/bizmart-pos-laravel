@@ -93,7 +93,7 @@
     </table>
     <table class="table mt-2 is-bordered is-content">
         <tr>
-            <th colspan="4">Daftar barang yang dibeli</th>
+            <th colspan="3">Daftar barang yang dibeli</th>
         </tr>
         <tr>
             <th>Barang / Jasa</th>

@@ -95,8 +95,8 @@ class BuyReportController extends Controller
     {
         $start_date = $request->start_date;
         $end_date = $request->end_date;
-        $buy_count = Buy::whereBetween('updated_at', [$start_date." 00:00:00",$end_date." 23:59:59"])
-                        ->count();
+        $buy_count = Buy::whereBetween('updated_at', [$start_date . " 00:00:00", $end_date . " 23:59:59"])
+            ->count();
 
         return response()->json([
             'buy_count' => $buy_count,
@@ -108,13 +108,12 @@ class BuyReportController extends Controller
     {
         $start_date = $request->start_date;
         $end_date = $request->end_date;
-        $total_expend = BuyPaymentHs::whereBetween('payment_date', [$start_date." 00:00:00",$end_date." 23:59:59"])
-                    ->sum('amount');
+        $total_expend = BuyPaymentHs::whereBetween('payment_date', [$start_date . " 00:00:00", $end_date . " 23:59:59"])
+            ->sum('amount');
 
         return response()->json([
             'total_expend' => $total_expend,
         ]);
-        
     }
 
     public function getOverallDept(Request $request)
@@ -136,18 +135,18 @@ class BuyReportController extends Controller
                 ) result
             "))[0];
 
-        
+
         return response()->json([
             'buy_dept' => $dept->sum_dept,
-        ]); 
+        ]);
     }
 
     public function getEstimatedTotalExpend(Request $request)
     {
         $start_date = $request->start_date;
         $end_date = $request->end_date;
-        $buy_expend = Buy::whereBetween('created_at', [$start_date." 00:00:00",$end_date." 23:59:59"])
-                    ->sum('summary');
+        $buy_expend = Buy::whereBetween('created_at', [$start_date . " 00:00:00", $end_date . " 23:59:59"])
+            ->sum('summary');
         // dd($buys);
         return response()->json([
             'buy_expend' => $buy_expend,
@@ -250,12 +249,13 @@ class BuyReportController extends Controller
             ->whereBetween('buys.updated_at', [$start_date, $end_date])
             ->get();
 
-            $stockLogs = StockLog::select(DB::raw('
+        $stockLogs = StockLog::select(DB::raw('
             min(items.name) as item_name,
             sum(stock_logs.qty) as sum_qty,
             sum(stock_logs.qty * stock_logs.buy_price) as expend
         '))
             ->leftJoin('items', 'items.id', '=', 'stock_logs.item_id')
+            ->where('cause', 'BUY')
             ->whereBetween('stock_logs.updated_at', [$start_date, $end_date])
             ->groupBy('stock_logs.item_id')
             ->orderBy('sum_qty', 'desc')
