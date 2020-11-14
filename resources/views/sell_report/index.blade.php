@@ -34,7 +34,10 @@
                             <input type="date" name="date_end" value="{{ $tglNow }}" class="form-control">
                             <div class="invalid-feedback"></div>
                         </div>
-                        <button type="button" class="btn btn-info filterButton"><i class="fas fa-search mr-2"></i>Cari</button>
+                        <div style="justify-self: end">
+                            <button type="button" class="btn btn-info filterButton"><i class="fas fa-search mr-2"></i>Cari</button>
+                            <button type="button" class="btn btn-primary generatePdf"><i class="fas fa-file mr-2"></i> PDF</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -51,7 +54,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-4 col-sm-6">
                     <div class="small-box bg-success">
                         <div class="inner">
@@ -64,7 +67,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-4 col-sm-6">
                     <div class="small-box bg-warning">
                         <div class="inner">
@@ -77,7 +80,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- <div class="col-lg-3 col-6">
                     <div class="small-box bg-danger">
                         <div class="inner">
@@ -229,7 +232,6 @@
         }
         .filter .filterButton {
             width: 80px;
-            justify-self: end;
         }
 
         @media only screen and (max-width: 617px) {
@@ -250,7 +252,7 @@
 @section('js')
     <script type="module">
         import { select2DatatableInit, domReady, addListenToEvent, getIsoNumberWithSeparator } from '{{ asset("plugins/custom/global.app.js") }}'
-        
+
         const mainContentElm = document.querySelector('.mainContent');
         const dateStartInput = document.querySelector('.filter [name="date_start"]');
         const dateEndInput = document.querySelector('.filter [name="date_end"]');
@@ -464,6 +466,14 @@
                 memberTable.ajax.reload()
             });
 
+            addListenToEvent('.generatePdf', 'click', (event) => {
+                console.log("haha");
+                let targetUrl = new URL("{{ route('sell_report.generate_pdf') }}");
+                targetUrl.searchParams.append("date_start", dateStartInput.value);
+                targetUrl.searchParams.append("date_end", dateEndInput.value);
+                window.open(targetUrl);
+            });
+
             addListenToEvent('.mainContent .incomeTableRefreshBtn', 'click', (event) => {
                 incomeTable.ajax.reload();
             });
@@ -481,7 +491,7 @@
             });
         });
 
-        
+
 
 
         function drawTransaction() {
