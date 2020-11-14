@@ -120,15 +120,23 @@
         <tr>
             <th colspan="4">BEBAN USAHA</th>
         </tr>
+        @foreach ($otherExpenseSummary as $oe)
         <tr>
-            <td colspan="1">Biaya Lainnya.</td>
-            <td style="border-bottom: 2px solid black;">{{ number_format($otherExpenseSummary) }}</td>
-            <td></td><td></td>
+            <td colspan="2">{{ $oe->note?? '-' }}</td>
+            <td>{{ number_format($oe->summary) }}</td>
+            <td></td>
+        </tr>
+        @endforeach
+        <tr>
+            <th colspan="2">JUMLAH BEBAN USAHA</th>
+            <td style="border-top: 2px solid black;"></td>
+            <td style="border-bottom: 2px solid black;">{{ number_format($otherExpenseSummary->sum('summary')) }}</td>
         </tr>
         <tr>
             <th colspan="3">LABA/RUGI BERSIH</th>
-            <td>{{ number_format($sellSummary - ($buySummary + $stockValueOld - $stockValueNew) - $otherExpenseSummary) }}</td>
+            <td>{{ number_format($sellSummary - ($buySummary + $stockValueOld - $stockValueNew) - $otherExpenseSummary->sum('summary')) }}</td>
         </tr>
+
     </table>
 
     <table class="table mt-3 is-borderless is-paddingless">

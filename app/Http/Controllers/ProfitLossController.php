@@ -61,7 +61,7 @@ class ProfitLossController extends Controller
             else $stockValueNew += $data->stock * $data->buy_price;
         }
 
-        $otherExpenseSummary = OtherExpense::whereBetween('created_at', [$date_start, $date_end])->sum('summary');
+        $otherExpenseSummary = OtherExpense::whereBetween('created_at', [$date_start, $date_end])->get();
 
         return response()->view('profit_loss.index', compact(
             'mrch_name',
@@ -122,7 +122,7 @@ class ProfitLossController extends Controller
             else $stockValueNew += $data->stock * $data->buy_price;
         }
 
-        $otherExpenseSummary = OtherExpense::whereBetween('created_at', [$date_start, $date_end])->sum('summary');
+        $otherExpenseSummary = OtherExpense::whereBetween('created_at', [$date_start, $date_end])->get();
 
         $dompdf = new Dompdf();
         $dompdf->loadHtml(view('profit_loss.pdf', compact(
