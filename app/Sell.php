@@ -110,7 +110,7 @@ class Sell extends Model
 
     public function sellCode()
     {
-        $kode = $this->sell_status == "RE" ?  "PI-" : "PJ-";
+        $kode = $this->sell_status == "RE" ?  "PT-" : "PJ-";
         return  $kode . str_pad($this->id, 5, "0", STR_PAD_LEFT);
     }
 }

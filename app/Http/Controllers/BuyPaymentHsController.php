@@ -50,7 +50,7 @@ class BuyPaymentHsController extends Controller
     public function show($id)
     {
         $buy = Buy::with('user', 'suplier', 'buyDetails', 'buyDetails.item', 'buyPaymentHs', 'buyPaymentHs.user')->findOrFail($id);
-        $buy->kode = "PB-" . str_pad($buy->id, 5, '0', STR_PAD_LEFT);
+        $buy->kode = $buy->buyCode();
         $buy->status_text = $buy->statusText();
         return response()->json([
             'buy' => $buy,
@@ -144,6 +144,7 @@ class BuyPaymentHsController extends Controller
     {
         $buys = Buy::select([
             'buys.id',
+            'buys.updated_at',
             DB::raw("CONCAT('HT-', LPAD(buys.id, 5, '0')) AS _id"),
             DB::raw("DATE_FORMAT(buys.updated_at, '%d %b %Y') AS _updated_at"),
             'supliers.name AS _suplier_name',
@@ -194,6 +195,15 @@ class BuyPaymentHsController extends Controller
                 } else {
                     return '<p class="text-warning">' . $buy->_status . '</p>';
                 }
+            })
+            ->editColumn('_id', function ($buy) {
+                return $buy->buyCode();
+            })
+            ->editColumn('summary', function ($buy) {
+                return number_format($buy->summary);
+            })
+            ->editColumn('_updated_at', function ($buy) {
+                return $buy->updated_at->isoFormat('dddd, D MMMM Y');
             })
             ->addColumn('_action_raw', function ($buy) {
                 $btn = auth()->user()->privilege_code == 'EM' ? '<button data-remote_get="' . route('buy_payment_hs.show', $buy->id) . '" data-remote_set="' . route('buy_payment_hs.update', $buy->id) . '" type="button" class="btn btn-primary btn-sm addBtn" title="Tambah"><i class="fas fa-plus fa-fw"></i></button> ' : '';
