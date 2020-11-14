@@ -266,7 +266,7 @@ class BuyController extends Controller
         $dompdf->loadHtml(view('buy.pdf', compact('buys', 'details', 'mrch_name', 'mrch_addr', 'mrch_phone'))->render());
         $dompdf->setPaper('A5', 'landscape');
         $dompdf->render();
-        $dompdf->stream("Pembelian $uniq_id bizmart.pdf", array("Attachment" => false));
+        $dompdf->stream("Pembelian $uniq_id bizmart.pdf", array("Attachment" => true));
     }
 
 

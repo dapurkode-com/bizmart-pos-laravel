@@ -380,7 +380,7 @@ class SellController extends Controller
         $dompdf->loadHtml(view('sell.pdf', compact('sys_param', 'sell'))->render());
         $dompdf->setPaper('A5', 'landscape');
         $dompdf->render();
-        $dompdf->stream("Invoice Penjualan $sell->uniq_id SIPDS.pdf", array("Attachment" => false));
+        $dompdf->stream("Invoice Penjualan $sell->uniq_id SIPDS.pdf", array("Attachment" => true));
 
         exit(0);
     }

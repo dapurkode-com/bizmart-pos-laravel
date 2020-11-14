@@ -89,8 +89,7 @@ class ReturnItemController extends Controller
                     Item::findOrFail($itemObj['id'])->update([
                         'stock' => $itemObj['stock'] - $itemObj['qty']
                     ]);
-                }
-                else {
+                } else {
                     $isSuccess = false;
                     $itemName = $itemObj['name'];
                     $pesan = "Qty retur dari barang $itemName melebihi stock";
@@ -104,15 +103,13 @@ class ReturnItemController extends Controller
                     'status' => 'valid',
                     'pesan' => 'Retur Barang berhasil ditambah',
                 ]);
-            }
-            else {
+            } else {
                 DB::rollBack();
                 return response()->json([
                     'status' => 'error',
                     'pesan' => $pesan,
                 ]);
             }
-
         } catch (Exception $exc) {
             DB::rollBack();
             return response()->json([
@@ -277,9 +274,9 @@ class ReturnItemController extends Controller
 
         $items = Item::select('*')
             ->where('stock', '>', '0')
-            ->where(function($query) use ($search){
+            ->where(function ($query) use ($search) {
                 $query->where('barcode', 'like', "%$search%")
-                      ->orWhere('name', 'like', "%$search%");
+                    ->orWhere('name', 'like', "%$search%");
             })
             ->orderby('name', 'asc')
             ->skip($offset)->take($limit)
@@ -325,9 +322,8 @@ class ReturnItemController extends Controller
         $dompdf->loadHtml(view('return_item.pdf', compact('sys_param', 'return_item'))->render());
         $dompdf->setPaper('A5', 'landscape');
         $dompdf->render();
-        $dompdf->stream("Retur Barang $return_item->uniq_id SIPDS.pdf", array("Attachment" => false));
+        $dompdf->stream("Retur Barang $return_item->uniq_id SIPDS.pdf", array("Attachment" => true));
 
         exit(0);
     }
-
 }
