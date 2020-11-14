@@ -99,7 +99,7 @@
     <table class="table mt-3 is-borderless is-paddingless">
         <tr>
             <td width="50%"></td>
-            <td width="50%" class="has-text-right">Singaraja, {{ $buys->updated_at->format('j F Y')  }}</td>
+            <td width="50%" class="has-text-right"> Denpasar, {{ $buys->updated_at->format('j F Y')  }}</td>
         </tr>
         <tr>
             <td class="has-text-centered">Penerima,</td>

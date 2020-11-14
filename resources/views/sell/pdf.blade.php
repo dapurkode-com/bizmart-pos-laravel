@@ -54,7 +54,7 @@
 			<table class="table mt-1 is-borderless is-paddingless">
 				<tr>
 					<td>
-						<div>Singaraja, {{ $sell->updated_at->format('j F Y') }}</div>
+						<div> Denpasar, {{ $sell->updated_at->format('j F Y') }}</div>
 						<div class="has-text-weight-bold">{{ $sell->member->name }}</div>
 						<div>{{ $sell->member->address ?? '-' }}</div>
 						<div>Telp/HP: {{ $sell->suplier->phone ?? '-' }}</div>

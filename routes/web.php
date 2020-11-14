@@ -87,6 +87,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('sell_report/piutang_datatables', 'SellReportController@piutangDatatables')->name('sell_report.piutang_datatables');
     Route::get('sell_report/item_datatables', 'SellReportController@itemDatatables')->name('sell_report.item_datatables');
     Route::get('sell_report/member_datatables', 'SellReportController@memberDatatables')->name('sell_report.member_datatables');
+    Route::get('sell_report/generate_pdf', 'SellReportController@generatePdf')->name('sell_report.generate_pdf');
     // for sell report
 
     Route::resource('unit', 'UnitController')->only('index', 'store', 'update', 'show', 'destroy');
