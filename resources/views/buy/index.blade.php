@@ -36,7 +36,7 @@
                         </div>
                         <button type="button" class="btn btn-info filterButton"><i class="fas fa-search mr-2"></i>Cari</button>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
@@ -52,8 +52,8 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Tgl</th>
-                                <th>ID</th>
+                                <th>Kode Pembelian</th>
+                                <th>Tanggal</th>
                                 <th>Suplier</th>
                                 <th>Total Harga</th>
                                 <th>Status</th>
@@ -61,7 +61,7 @@
                             </tr>
                         </thead>
                         <tbody>
-    
+
                         </tbody>
                     </table>
                </div>
@@ -139,10 +139,10 @@
         },
         columns: [
             {data: 'DT_RowIndex', orderable: false, searchable: false },
+            {data: 'id'},
             {data: 'created_at'},
-            {data: 'buy_code'},
             {data: 'suplier.name'},
-            {data: 'summary'},
+            {data: 'summary', class:'text-right'},
             {data: 'buy_status'},
             {data: 'action', orderable: false, searchable: false, className: 'text-right'},
         ],
@@ -154,7 +154,7 @@
         $('.filterButton').click(function (e) {
             $('#tbIndex').DataTable().ajax.reload();
         })
-        
+
     });
 
 </script>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Arus Kas |  </title>
+    <title>Laporan Arus Kas</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
 		<style>
 			body {
@@ -49,6 +49,9 @@
     <table class="table is-borderless is-paddingless">
         <tr>
             <td class="has-text-centered has-text-weight-bold is-title">Laporan Arus Kas</td>
+        </tr>
+        <tr>
+            <td class="has-text-centered">Tanggal {{ $date_start->format('d M Y') }} - {{ $date_end->format('d M Y') }}</td>
         </tr>
     </table>
 
@@ -98,15 +101,15 @@
             <td width="50%" class="has-text-centered">Denpasar, {{ \Carbon\Carbon::today()->format('j F Y')  }}</td>
         </tr>
         <tr>
-            <td class="has-text-centered">Penerima,</td>
-            <td class="has-text-centered">Pemohon,</td>
+            <td class="has-text-centered"></td>
+            <td class="has-text-centered"></td>
         </tr>
         <tr>
             <td height="10mm"></td>
             <td height="10mm"></td>
         </tr>
         <tr>
-            <td class="has-text-centered">(____________________________)</td>
+            <td class="has-text-centered"></td>
             <td class="has-text-centered">(____________________________)</td>
         </tr>
     </table>

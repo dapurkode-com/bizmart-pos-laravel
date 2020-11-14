@@ -34,7 +34,7 @@ class CashflowController extends Controller
         $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
 
         $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('cashflow.pdf', compact('cashflows', 'mrch_name', 'mrch_addr', 'mrch_phone'))->render());
+        $dompdf->loadHtml(view('cashflow.pdf', compact('cashflows', 'mrch_name', 'mrch_addr', 'mrch_phone', 'date_start', 'date_end'))->render());
         $dompdf->setPaper('A5', 'landscape');
         $dompdf->render();
         $dompdf->stream("Laporan Arus Kas.pdf", array("Attachment" => true));

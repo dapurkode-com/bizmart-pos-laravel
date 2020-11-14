@@ -389,6 +389,12 @@ return [
             'privilege' => 'OW',
         ],
         [
+            'text'      => 'Retur',
+            'url'       => '/return_item',
+            'icon'      => 'fas fa-fw fa-clipboard-list',
+            'privilege' => 'OW',
+        ],
+        [
             'text'      => 'Riwayat Hitung Kas',
             'url'       => '/cash_count',
             'icon'      => 'fas fa-fw fa-donate',

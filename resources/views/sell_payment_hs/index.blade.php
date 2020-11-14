@@ -55,8 +55,8 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>ID</th>
-                                <th>Tgl</th>
+                                <th>Kode Piutang</th>
+                                <th>Tanggal</th>
                                 <th>Member</th>
                                 <th>Total</th>
                                 <th>Oleh</th>
@@ -121,7 +121,7 @@
 @section('js')
     <script type="module">
         import { select2DatatableInit, domReady, addListenToEvent, getIndoDate, getIsoNumberWithSeparator, swalConfirm, drawError, eraseErrorInit, swalAlert } from '{{ asset("plugins/custom/global.app.js") }}'
-        
+
         const mainContentElm = document.querySelector('.mainContent');
         const sellTable = $('#sellTable').DataTable({
             processing: true,
@@ -165,7 +165,7 @@
                 {data: '_id'},
                 {data: '_updated_at'},
                 {data: '_member_name'},
-                {data: 'summary'},
+                {data: 'summary', class:'text-right'},
                 {data: '_user_name'},
                 {data: '_status_raw', name:"_status"},
                 {data: '_action_raw', orderable: false, searchable: false, className: 'text-right text-nowrap'},
@@ -250,14 +250,14 @@
                             _method : 'PUT',
                         }
                         // end prepare data
-                        
+
                         // loading and disabled button
                         const thisBtnText = thisBtn.innerHTML;
                         thisBtn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> ${thisBtnText}...`
                         for (const elm of detailModal.querySelectorAll('button')) {
                             elm.disabled = true;
                         }
-                        
+
                         fetch(`${REMOTE_SET}`, {
                                 method: "PUT",
                                 headers: {
@@ -378,7 +378,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="card bg-default">
@@ -458,7 +458,7 @@
                     </div>
                 </div>
             `;
-            
+
             return html;
         }
 
@@ -499,11 +499,11 @@
                     </div>
                 </div>
             `;
-            
+
             return html;
         }
 
-        function drawToDetailModalFooter() {            
+        function drawToDetailModalFooter() {
             return `
                 <button type="reset" class="myReset btn btn-default">Reset</button>
                 <button type="submit" class="btn btn-primary submitButton">Simpan</button>

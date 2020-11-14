@@ -120,11 +120,9 @@ class Buy extends Model
         return $lookUp != null ? $lookUp->label : '-';
     }
 
-    public function codeText()
+    public function buyCode()
     {
-        $code = DB::table('buys')->select(DB::raw('CONCAT("PB-", LPAD(MIN(id), 5, "0")) AS buy_code'))
-                ->where('id', $this->id)
-                ->first();
-        return $code->buy_code;
+        $kode = $this->buy_status == "DE" ?  "HT-" : "PB-";
+        return  $kode . str_pad($this->id, 5, "0", STR_PAD_LEFT);
     }
 }

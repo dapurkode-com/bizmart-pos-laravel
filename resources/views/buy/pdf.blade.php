@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice Barang |  </title>
+    <title>Invoice Pembelian Barang</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
 		<style>
 			body {
@@ -46,7 +46,7 @@
             </td>
             <td class="has-text-right">
                 <div class="has-text-weight-bold">No Invoice</div>
-                <div>{{ $buys->uniq_id }}</div>
+                <div>{{ $buys->buyCode() }}</div>
             </td>
         </tr>
     </table>
@@ -64,7 +64,7 @@
 
     <table class="table is-borderless is-paddingless">
         <tr>
-            <td class="has-text-centered has-text-weight-bold is-title">Invoice Barang</td>
+            <td class="has-text-centered has-text-weight-bold is-title">Invoice Pembelian Barang</td>
         </tr>
     </table>
 
@@ -99,7 +99,7 @@
     <table class="table mt-3 is-borderless is-paddingless">
         <tr>
             <td width="50%"></td>
-            <td width="50%" class="has-text-right">Singaraja, {{ $buys->updated_at->format('j F Y')  }}</td>
+            <td width="50%" class="has-text-centered"> Denpasar, {{ $buys->updated_at->format('j F Y')  }}</td>
         </tr>
         <tr>
             <td class="has-text-centered">Penerima,</td>

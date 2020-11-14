@@ -50,7 +50,7 @@
                     <div class="col-sm-4 invoice-col"></div>
                     <div class="col-sm-4 invoice-col">
                         <b>Invoice</b><br>
-                        {{ $otherExpense->uniq_id }}<br><br>
+                        BY-{{ str_pad($otherExpense->id, 5, '0', STR_PAD_LEFT) }}<br><br>
                         <b>Oleh </b> {{ $otherExpense->user->name }}
                     </div>
                </div>

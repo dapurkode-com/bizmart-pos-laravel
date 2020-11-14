@@ -55,8 +55,8 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>ID</th>
-                                <th>Tgl</th>
+                                <th>Kode Penjualan</th>
+                                <th>Tanggal</th>
                                 <th>Member</th>
                                 <th>Total</th>
                                 <th>Oleh</th>
@@ -163,7 +163,7 @@
                 {data: '_id'},
                 {data: '_updated_at'},
                 {data: '_member_name'},
-                {data: 'summary'},
+                {data: 'summary', class:'text-right'},
                 {data: '_user_name'},
                 {data: '_status_raw', name:"_status"},
                 {data: '_action_raw', orderable: false, searchable: false, className: 'text-right text-nowrap'},

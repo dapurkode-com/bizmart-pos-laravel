@@ -139,7 +139,7 @@ class OtherExpenseController extends Controller
         }
 
         $or = DB::select(DB::raw("SELECT
-                    CONCAT('OR-', LPAD(other_expenses.id, 5, 0)) AS id,
+                    CONCAT('BY-', LPAD(other_expenses.id, 5, 0)) AS id,
                     other_expenses.id as _id,
                     users.name,
                     summary,
