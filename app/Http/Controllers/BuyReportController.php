@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Buy;
 use App\BuyPaymentHs;
 use App\Item;
+use App\StockLog;
+use App\SystemParam;
+use Carbon\Carbon;
 use DB;
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 
 class BuyReportController extends Controller
@@ -223,5 +227,54 @@ class BuyReportController extends Controller
             ->of($reports)
             ->addIndexColumn()
             ->toJson();
+    }
+
+    public function generatePdf(Request $request)
+    {
+        $mrch_name = SystemParam::where('param_code', 'MRCH_NAME')->first();
+        $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
+        $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
+
+        $start_date = Carbon::parse($request->input('start_date', Carbon::today()->toString()))->startOfDay();
+        $end_date = Carbon::parse($request->input('end_date', Carbon::today()->toString()))->endOfDay();
+
+        $buys = Buy::select(DB::raw('
+            buys.*,
+            look_ups.label as status,
+            (select sum(sph.amount) from buy_payment_hs sph where sph.buy_id = buys.id) as payment
+        '))
+            ->leftJoin('look_ups', function ($join) {
+                $join->on('look_ups.key', '=', 'buys.buy_status');
+                $join->where('look_ups.group_code', '=', 'BUY_STATUS');
+            })
+            ->whereBetween('buys.updated_at', [$start_date, $end_date])
+            ->get();
+
+            $stockLogs = StockLog::select(DB::raw('
+            min(items.name) as item_name,
+            sum(stock_logs.qty) as sum_qty,
+            sum(stock_logs.qty * stock_logs.buy_price) as expend
+        '))
+            ->leftJoin('items', 'items.id', '=', 'stock_logs.item_id')
+            ->whereBetween('stock_logs.updated_at', [$start_date, $end_date])
+            ->groupBy('stock_logs.item_id')
+            ->orderBy('sum_qty', 'desc')
+            ->get();
+
+        $supliers = buy::select(DB::raw('
+                min(supliers.name) as suplier_name,
+                count(buys.suplier_id) as count_tx
+            '))
+            ->join('supliers', 'supliers.id', '=', 'buys.suplier_id')
+            ->whereBetween('buys.updated_at', [$start_date, $end_date])
+            ->groupBy('buys.suplier_id')
+            ->get();
+
+        // return response()->view('buy_report.pdf', compact('mrch_name', 'mrch_addr', 'mrch_phone', 'buys', 'stockLogs', 'supliers', 'start_date', 'end_date'));
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml(view('buy_report.pdf', compact('mrch_name', 'mrch_addr', 'mrch_phone', 'buys', 'stockLogs', 'supliers', 'start_date', 'end_date'))->render());
+        $dompdf->setPaper('A5', 'landscape');
+        $dompdf->render();
+        $dompdf->stream("Laporan Pembelian Tanggal $start_date sampai $end_date.pdf", array("Attachment" => true));
     }
 }

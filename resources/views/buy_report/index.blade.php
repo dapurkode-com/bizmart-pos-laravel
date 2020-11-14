@@ -24,6 +24,7 @@
         <div class="col-sm-12">
             <div class="card bg-default">
                 <div class="card-body">
+                <form action="{{route('buy_report.generate_pdf')}}">
                     <div class="buyTableFilter">
                         <div class="form-group mb-0">
                         <input type="date" name="start_date" class="form-control" value="{{$date_now}}">
@@ -35,7 +36,9 @@
                             <div class="invalid-feedback"></div>
                         </div>
                         <button type="button" class="btn btn-info filterButton"><i class="fas fa-search mr-2"></i>Cari</button>
+                        <button type="submit" class="btn btn-primary pdfButton">Generate PDF</button>
                     </div>
+                </form>
                 </div>
             </div>
             <div class="row">
@@ -227,7 +230,7 @@
     <style>
         .buyTableFilter {
             display: grid;
-            grid-template-columns: 0fr 0fr 0fr 1fr;
+            grid-template-columns: 0fr 0fr 0fr 1fr 0fr;
             gap: 1rem;
             align-items: center;
         }
@@ -235,7 +238,11 @@
             width: 80px;
             justify-self: end;
         }
-        @media only screen and (max-width: 617px) {
+        .buyTableFilter .pdfButton {
+            width: 130px;
+            justify-self: end;
+        }
+        @media only screen and (max-width: 790px) {
             .buyTableFilter {
                 grid-template-columns: 1fr;
                 justify-items: center;
@@ -246,6 +253,12 @@
                 width: 185.19px;
                 justify-self: center;
             }
+            .buyTableFilter .pdfButton {
+                margin-top: 1rem;
+                width: 185.19px;
+                justify-self: center;
+            }
+            
         }
     </style>
 @stop
