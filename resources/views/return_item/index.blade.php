@@ -38,8 +38,8 @@
                             <tr>
                                 <th>#</th>
                                 <th>ID</th>
+                                <th>Kode</th>
                                 <th>Tgl</th>
-                                <th>Uniq ID</th>
                                 <th>Suplier</th>
                                 <th>Total</th>
                                 <th>Oleh</th>
@@ -300,11 +300,11 @@
                 columns: [
                     {data: 'DT_RowIndex', orderable: false, searchable: false },
                     {data: 'id', searchable: false, visible: false, printable: false},
+                    {data: 'kode'},
                     {data: 'updated_at_idn'},
-                    {data: 'uniq_id'},
                     {data: 'suplier_name'},
                     {data: 'summary_iso'},
-                    {data: 'user_name', name: 'status_text'},
+                    {data: 'user_name'},
                     {data: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'},
                 ],
                 order: [[1, 'desc']],
@@ -699,8 +699,8 @@
                             </div>
                             <div class="card-body">
                                 <dl class="row mb-0">
-                                    <dt class="col-sm-4">Unik ID</dt>
-                                    <dd class="col-sm-8">${returnItem.uniq_id}</dd>
+                                    <dt class="col-sm-4">Kode</dt>
+                                    <dd class="col-sm-8">${returnItem.kode}</dd>
                                     <dt class="col-sm-4">Nama Supplier</dt>
                                     <dd class="col-sm-8">${returnItem.suplier.name}</dd>
                                     <dt class="col-sm-4">No Telp</dt>

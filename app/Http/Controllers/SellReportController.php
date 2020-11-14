@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Sell;
 use App\SellPaymentHs;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,8 @@ class SellReportController extends Controller
      */
     public function index()
     {
-        return response()->view('sell_report.index');
+        $tglNow = Carbon::now()->toDateString();
+        return response()->view('sell_report.index', compact('tglNow'));
     }
 
     /**
