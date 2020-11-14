@@ -345,6 +345,7 @@ class SellReportController extends Controller
             sum(stock_logs.qty * (stock_logs.sell_price - stock_logs.buy_price)) as net_income
         '))
             ->leftJoin('items', 'items.id', '=', 'stock_logs.item_id')
+            ->where('cause', 'SELL')
             ->whereBetween('stock_logs.updated_at', [$date_start, $date_end])
             ->groupBy('stock_logs.item_id')
             ->orderBy('sum_qty', 'desc')

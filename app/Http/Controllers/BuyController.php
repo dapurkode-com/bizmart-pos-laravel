@@ -303,6 +303,9 @@ class BuyController extends Controller
         return datatables()
             ->of($data)
             ->addIndexColumn()
+            ->editColumn('buy_code', function ($buy){
+                return $buy->codeText();
+            })
             ->editColumn('buy_status', function ($buy) {
                 return $buy->statusText();
             })

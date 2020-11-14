@@ -4,6 +4,7 @@ namespace App;
 
 use App\Traits\Blameable;
 use App\Traits\UniqID;
+use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
