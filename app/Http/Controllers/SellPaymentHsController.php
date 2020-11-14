@@ -52,7 +52,7 @@ class SellPaymentHsController extends Controller
     public function show($id)
     {
         $sell = Sell::with('user', 'member', 'sellDetails', 'sellDetails.item', 'sellPaymentHs', 'sellPaymentHs.user')->findOrFail($id);
-        $sell->kode = "HT-" . str_pad($sell->id, 5, '0', STR_PAD_LEFT);
+        $sell->kode = $sell->sellCode();
         $sell->status_text = $sell->statusText();
         return response()->json([
             'sell' => $sell,
@@ -153,6 +153,7 @@ class SellPaymentHsController extends Controller
     {
         $sells = Sell::select([
             'sells.id',
+            'sells.updated_at',
             DB::raw("CONCAT('HT-', LPAD(sells.id, 5, '0')) AS _id"),
             DB::raw("DATE_FORMAT(sells.updated_at, '%d %b %Y') AS _updated_at"),
             'members.name AS _member_name',
@@ -196,6 +197,15 @@ class SellPaymentHsController extends Controller
             ->filterColumn('_status', function ($query, $keyword) {
                 $sql = "look_ups.label like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
+            })
+            ->editColumn('_id', function ($sell) {
+                return $sell->sellCode();
+            })
+            ->editColumn('summary', function ($sell) {
+                return number_format($sell->summary);
+            })
+            ->editColumn('_updated_at', function ($sell) {
+                return $sell->updated_at->isoFormat('dddd, D MMMM Y');
             })
             ->addColumn('_status_raw', function ($sell) {
                 if ($sell->sell_status == 'PO') {
