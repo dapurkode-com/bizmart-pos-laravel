@@ -17,13 +17,13 @@ class SystemParamsSeeder extends Seeder
             array(
                 'name'          => 'Nama Toko',
                 'param_code'    => 'MRCH_NAME',
-                'param_value'   => 'Bizmart Free Wifi',
+                'param_value'   => 'CV. DS Grafika',
                 'in_type'       => 'text'
             ),
             array(
                 'name'          => 'Alamat Toko',
                 'param_code'    => 'MRCH_ADDR',
-                'param_value'   => 'Jalan Bisma No. 29, Singaraja - Bali',
+                'param_value'   => 'Jl. Jayagiri XXI B No. 2, Sumerta Kauh, Kec. Denpasar Timur',
                 'in_type'       => 'text'
             ),
             array(
