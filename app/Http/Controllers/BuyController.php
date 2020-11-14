@@ -309,6 +309,9 @@ class BuyController extends Controller
             ->editColumn('id', function ($buy) {
                 return $buy->buyCode();
             })
+            ->editColumn('summary', function ($buy) {
+                return number_format($buy->summary);
+            })
             ->editColumn('created_at', function ($buy) {
                 return $buy->created_at->isoFormat('dddd, D MMMM Y');
             })
@@ -329,9 +332,12 @@ class BuyController extends Controller
         return datatables()
             ->of($data)
             ->addIndexColumn()
+            ->editColumn('buy_price', function ($buy_detail) {
+                return number_format($buy_detail->buy_price);
+            })
             ->addColumn('subtotal', function ($buy_detail) {
                 $subtotal = $buy_detail->qty * $buy_detail->buy_price;
-                return $subtotal;
+                return number_format($subtotal);
             })
             ->make(true);
     }

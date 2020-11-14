@@ -154,7 +154,7 @@ class SellController extends Controller
     public function show($id)
     {
         $sell = Sell::with('user', 'member', 'sellDetails', 'sellDetails.item', 'sellPaymentHs', 'sellPaymentHs.user')->findOrFail($id);
-        $sell->kode = "PJ-" . str_pad($sell->id, 5, '0', STR_PAD_LEFT);
+        $sell->kode = $sell->sellCode();
         $sell->status_text = $sell->statusText();
         return response()->json([
             'sell' => $sell,
@@ -293,6 +293,7 @@ class SellController extends Controller
     {
         $sells = Sell::select([
             'sells.id',
+            'sells.updated_at',
             DB::raw("CONCAT('PJ-', LPAD(sells.id, 5, '0')) AS _id"),
             DB::raw("DATE_FORMAT(sells.updated_at, '%d %b %Y') AS _updated_at"),
             'members.name AS _member_name',
@@ -317,8 +318,8 @@ class SellController extends Controller
             ->of($sells)
             ->addIndexColumn()
             ->filterColumn('_id', function ($query, $keyword) {
-                $sql = "CONCAT('PJ-', LPAD(sells.id, 5, '0')) like ?";
-                $query->whereRaw($sql, ["%{$keyword}%"]);
+                $sql = "CONCAT('PJ-', LPAD(sells.id, 5, '0')) like ? OR CONCAT('PI-', LPAD(sells.id, 5, '0')) like ?";
+                $query->whereRaw($sql, ["%{$keyword}%", "%{$keyword}%"]);
             })
             ->filterColumn('_updated_at', function ($query, $keyword) {
                 $sql = "DATE_FORMAT(sells.updated_at, '%d %b %Y') like ?";
@@ -335,6 +336,15 @@ class SellController extends Controller
             ->filterColumn('_status', function ($query, $keyword) {
                 $sql = "look_ups.label like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
+            })
+            ->editColumn('_id', function ($sell) {
+                return $sell->sellCode();
+            })
+            ->editColumn('summary', function ($sell) {
+                return number_format($sell->summary);
+            })
+            ->editColumn('_updated_at', function ($sell) {
+                return $sell->updated_at->isoFormat('dddd, D MMMM Y');
             })
             ->addColumn('_status_raw', function ($sell) {
                 if ($sell->sell_status == 'PO') {

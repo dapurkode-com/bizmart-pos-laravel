@@ -85,7 +85,7 @@
                                     <td> </td>
                                     <td> </td>
                                     <td><Strong>Total</Strong></td>
-                                    <td>{{ $buys->summary }}</td>
+                                    <td>{{ number_format($buys->summary) }}</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -160,8 +160,8 @@
                 {data: 'item.name', orderable: false, searchable: false },
                 {data: 'item.barcode', orderable: false, searchable: false },
                 {data: 'qty', orderable: false, searchable: false },
-                {data: 'buy_price', orderable: false, searchable: false },
-                {data: 'subtotal', orderable: false, searchable: false },
+                {data: 'buy_price', class:'text-right',  orderable: false, searchable: false },
+                {data: 'subtotal', class:'text-right', orderable: false, searchable: false },
             ],
             order: [[1, 'asc']]
         });

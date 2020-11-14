@@ -52,8 +52,8 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Tanggal</th>
                                 <th>Kode Pembelian</th>
+                                <th>Tanggal</th>
                                 <th>Suplier</th>
                                 <th>Total Harga</th>
                                 <th>Status</th>
@@ -139,10 +139,10 @@
         },
         columns: [
             {data: 'DT_RowIndex', orderable: false, searchable: false },
-            {data: 'created_at'},
             {data: 'id'},
+            {data: 'created_at'},
             {data: 'suplier.name'},
-            {data: 'summary'},
+            {data: 'summary', class:'text-right'},
             {data: 'buy_status'},
             {data: 'action', orderable: false, searchable: false, className: 'text-right'},
         ],
