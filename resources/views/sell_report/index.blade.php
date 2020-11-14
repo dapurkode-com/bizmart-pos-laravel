@@ -36,7 +36,7 @@
                         </div>
                         <div style="justify-self: end">
                             <button type="button" class="btn btn-info filterButton"><i class="fas fa-search mr-2"></i>Cari</button>
-                            <button type="button" class="btn btn-primary generatePdf"><i class="fas fa-file mr-2"></i> PDF</button>
+                            <button type="button" class="btn btn-primary generatePdf"><i class="fas fa-file mr-2"></i> Generate PDF</button>
                         </div>
                     </div>
                 </div>

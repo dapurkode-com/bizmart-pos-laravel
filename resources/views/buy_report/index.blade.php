@@ -35,8 +35,12 @@
                             <input type="date" name="end_date" class="form-control" value="{{$date_now}}">
                             <div class="invalid-feedback"></div>
                         </div>
-                        <button type="button" class="btn btn-info filterButton"><i class="fas fa-search mr-2"></i>Cari</button>
-                        <button type="submit" class="btn btn-primary pdfButton">Generate PDF</button>
+                        <div style="justify-self: end">
+                            <button type="button" class="btn btn-info filterButton"><i class="fas fa-search mr-2"></i>Cari</button>
+                            <button type="submit" class="btn btn-primary pdfButton"><i class="fas fa-file mr-2"></i> Generate PDF</button>
+                        </div>
+                        {{-- <button type="button" class="btn btn-info filterButton"><i class="fas fa-search mr-2"></i> Cari</button>
+                        <button type="submit" class="btn btn-primary pdfButton"><i class="fas fa-file mr-2"></i> PDF</button> --}}
                     </div>
                 </form>
                 </div>
@@ -47,13 +51,13 @@
                     <div class="small-box bg-info">
                         <div class="inner">
                         <h3 class="buy_qty">0</h3>
-    
+
                         <p>Jumlah Transaksi</p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-list-alt"></i>
                         </div>
-                        
+
                     </div>
                 </div>
                 <div class="col-lg-4 col-6">
@@ -61,13 +65,13 @@
                     <div class="small-box bg-success">
                         <div class="inner">
                             <h3 class="buy_expend">0</h3>
-            
+
                             <p>Total Pengeluaran</p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-file-invoice-dollar"></i>
                         </div>
-                        
+
                     </div>
                 </div>
                 <div class="col-lg-4 col-6">
@@ -75,13 +79,13 @@
                     <div class="small-box bg-warning">
                         <div class="inner">
                             <h3 class="buy_dept">0</h3>
-            
+
                             <p>Total Hutang</p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-file-invoice-dollar"></i>
                         </div>
-                        
+
                     </div>
                 </div>
                 {{-- <div class="col-lg-4 col-6">
@@ -89,13 +93,13 @@
                     <div class="small-box bg-danger">
                         <div class="inner">
                             <h3 class="buy_estimated_expend">0</h3>
-            
+
                             <p>Perkiraan Total Pengeluaran</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-pie-graph"></i>
                         </div>
-                        
+
                     </div>
                 </div> --}}
             </div>
@@ -234,21 +238,21 @@
             gap: 1rem;
             align-items: center;
         }
-        .buyTableFilter .filterButton {
+        /* .buyTableFilter .filterButton {
             width: 80px;
             justify-self: end;
         }
         .buyTableFilter .pdfButton {
             width: 130px;
             justify-self: end;
-        }
+        } */
         @media only screen and (max-width: 790px) {
             .buyTableFilter {
                 grid-template-columns: 1fr;
                 justify-items: center;
                 gap: 0;
             }
-            .buyTableFilter .filterButton {
+            /* .buyTableFilter .filterButton {
                 margin-top: 1rem;
                 width: 185.19px;
                 justify-self: center;
@@ -257,8 +261,8 @@
                 margin-top: 1rem;
                 width: 185.19px;
                 justify-self: center;
-            }
-            
+            } */
+
         }
     </style>
 @stop
@@ -458,8 +462,8 @@
         });
 
         domReady(() => {
-            
-            
+
+
             getTotalTransactions();
             getCurrentExpend();
             getOverallDept();
@@ -517,11 +521,11 @@
                 let deleteElement = selectElement.querySelector('.overlay');
                 deleteElement.remove();
             })
-            
+
         }
 
         function getCurrentExpend() {
-            
+
             const selectElement = document.querySelector('.bg-success')
             selectElement.innerHTML += `
                 <div class="overlay dark">
@@ -540,17 +544,17 @@
             .then(result => {
                 console.log(result.buy_expend)
                 selectElement.querySelector('.buy_expend').innerText = getIsoNumberWithSeparator(result.total_expend);
-            
+
                 // finish loading
                 let deleteElement = selectElement.querySelector('.overlay');
                 deleteElement.remove();
             })
-            
+
             // console.log(deleteElement)
         }
 
         function getOverallDept() {
-    
+
             const selectElement = document.querySelector('.bg-warning')
             selectElement.innerHTML += `
                 <div class="overlay dark">
@@ -569,17 +573,17 @@
             .then(result => {
                 // console.log(result.buy_dept)
                 selectElement.querySelector('.buy_dept').innerText = getIsoNumberWithSeparator(result.buy_dept);
-            
+
                 // finish loading
                 let deleteElement = selectElement.querySelector('.overlay');
                 deleteElement.remove();
             })
-            
+
             // console.log(deleteElement)
         }
 
         function getEstimatedTotalExpend() {
-            
+
             const selectElement = document.querySelector('.bg-danger')
             selectElement.innerHTML += `
                 <div class="overlay dark">
@@ -598,12 +602,12 @@
             .then(result => {
                 console.log(result.buy_expend)
                 selectElement.querySelector('.buy_estimated_expend').innerText = getIsoNumberWithSeparator(result.buy_expend);
-            
+
                 // finish loading
                 let deleteElement = selectElement.querySelector('.overlay');
                 deleteElement.remove();
             })
-            
+
             // console.log(deleteElement)
         }
     </script>
