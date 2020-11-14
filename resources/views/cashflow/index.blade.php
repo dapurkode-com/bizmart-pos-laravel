@@ -87,7 +87,8 @@
                                 @forelse ($cashflows as $key => $flow)
                                     @php
                                         $key++;
-                                        $total += $flow->amount;
+                                        if($flow->io_cash == 'I') {$total += $flow->amount;}
+                                        else {$total -= $flow->amount;}
                                     @endphp
                                     <tr>
                                         <td>{{ $key }}</td>
