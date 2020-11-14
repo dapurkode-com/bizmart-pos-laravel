@@ -118,4 +118,10 @@ class Buy extends Model
 
         return $lookUp != null ? $lookUp->label : '-';
     }
+
+    public function buyCode()
+    {
+        $kode = $this->buy_status == "DE" ?  "HT-" : "PB-";
+        return  $kode . str_pad($this->id, 5, "0", STR_PAD_LEFT);
+    }
 }

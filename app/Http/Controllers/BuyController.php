@@ -295,7 +295,6 @@ class BuyController extends Controller
         $start_date = $request->filter["start_date"];
         $end_date = $request->filter["end_date"];
         $data = Buy::with('suplier');
-        // dd($start_date);
 
         if ($start_date != null && $end_date != null) {
             $data->whereBetween('created_at', [$start_date . " 00:00:00", $end_date . " 23:59:59"]);
@@ -306,6 +305,9 @@ class BuyController extends Controller
             ->addIndexColumn()
             ->editColumn('buy_status', function ($buy) {
                 return $buy->statusText();
+            })
+            ->editColumn('id', function ($buy) {
+                return $buy->buyCode();
             })
             ->editColumn('created_at', function ($buy) {
                 return $buy->created_at->isoFormat('dddd, D MMMM Y');

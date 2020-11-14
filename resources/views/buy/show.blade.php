@@ -57,7 +57,7 @@
                     </div>
                     <div class="col-sm-4 invoice-col">
                         <b>Invoice</b><br>
-                        {{ $buys->uniq_id }}<br><br>
+                        {{ $buys->buyCode() }}<br><br>
                         <b>Pegawai: </b> {{ auth()->user()->name }}
                     </div>
                </div>
@@ -99,8 +99,8 @@
                 </div>
                 <div class="row no-print">
                     <div class="col-12">
-                        <a href="{{ route('buy.print_report', $buys->uniq_id)}}"  class="btn btn-default float-right"><i class="fas fa-print"></i> Print</a>
-                        <a href="{{ route('buy.pdf_report', $buys->uniq_id)}}" class="btn btn-primary float-right" style="margin-right: 5px;">
+                        <a href="{{ route('buy.print_report', $buys->uniq_id)}}" target="_blank"  class="btn btn-default float-right"><i class="fas fa-print"></i> Print</a>
+                        <a href="{{ route('buy.pdf_report', $buys->uniq_id)}}" target="_blank" class="btn btn-primary float-right" style="margin-right: 5px;">
                             <i class="fas fa-download"></i> Generate PDF
                         </a>
                     </div>
