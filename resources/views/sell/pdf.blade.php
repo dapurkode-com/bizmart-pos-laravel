@@ -66,7 +66,7 @@
 				<tr>
 					<td class="has-text-centered">
 						<div class="has-text-weight-bold is-title">Invoice</div>
-						<div class="is-title">{{ "PJ-" . str_pad($sell->id, 5, '0', STR_PAD_LEFT) }}</div>
+						<div class="is-title">{{ $sell->sellCode() }}</div>
 					</td>
 				</tr>
 				<tr>

@@ -46,7 +46,7 @@
 					</td>
 					<td class="has-text-right">
 						<div class="has-text-weight-bold">No Retur</div>
-						<div>{{ $return_item->uniq_id }}</div>
+						<div>{{ $return_item->returnCode() }}</div>
 					</td>
 				</tr>
 			</table>
