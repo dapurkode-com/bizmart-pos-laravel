@@ -58,7 +58,7 @@
                                 <th>Kode Hutang</th>
                                 <th>Tanggal</th>
                                 <th>Suplier</th>
-                                <th>Total</th>
+                                <th class="text-right">Total</th>
                                 <th>Oleh</th>
                                 <th>Status</th>
                                 <th class="text-right">Aksi</th>
@@ -165,7 +165,7 @@
                 {data: '_id'},
                 {data: '_updated_at'},
                 {data: '_suplier_name'},
-                {data: 'summary'},
+                {data: 'summary', className: 'text-right'},
                 {data: '_user_name'},
                 {data: '_status_raw', name:"_status"},
                 {data: '_action_raw', orderable: false, searchable: false, className: 'text-right text-nowrap'},

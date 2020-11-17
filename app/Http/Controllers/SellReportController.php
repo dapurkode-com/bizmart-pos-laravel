@@ -181,7 +181,7 @@ class SellReportController extends Controller
                 SELECT
                     DATE_FORMAT(MIN(payment_date), '%e %b %Y') AS `date`,
                     CONCAT('PJ-', LPAD(MIN(sell_id), 5, '0')) AS sell_code,
-                    SUM(amount) AS sum_amount
+                    FORMAT(SUM(amount), 0) AS sum_amount
                 FROM `sell_payment_hs`
                 WHERE updated_at >='" . $request->filter['date_start'] . " 00:00:00'
                 AND updated_at <='" . $request->filter['date_end'] . " 23:59:59'
@@ -205,7 +205,7 @@ class SellReportController extends Controller
                 SELECT
                     DATE_FORMAT(MIN(payment_date), '%e %b %Y') AS `date`,
                     CONCAT('PI-', LPAD(MIN(sell_id), 5, '0')) AS sell_code,
-                    (MIN(summary) - SUM(amount)) AS sum_piutang
+                    FORMAT((MIN(summary) - SUM(amount)), 0) AS sum_piutang
                 FROM `sell_payment_hs` sp
                 LEFT JOIN sells s ON s.`id` = sp.`sell_id`
                 WHERE sp.updated_at <= '" . $request->filter['date_end'] . " 23:59:59'
@@ -229,9 +229,9 @@ class SellReportController extends Controller
         $reports = DB::select(DB::raw("
                 SELECT
                     MIN(i.`name`) AS `name`,
-                    SUM(sl.`qty`) AS sum_qty,
-                    SUM((sl.sell_price * sl.`qty`)) AS sum_sell_price,
-                    SUM(((sl.sell_price * sl.`qty`) - (sl.buy_price * sl.`qty`))) AS net_income
+                    FORMAT(SUM(sl.`qty`), 0) AS sum_qty,
+                    FORMAT(SUM((sl.sell_price * sl.`qty`)), 0) AS sum_sell_price,
+                    FORMAT(SUM(((sl.sell_price * sl.`qty`) - (sl.buy_price * sl.`qty`))), 0) AS net_income
                 FROM stock_logs sl
                 LEFT JOIN items i ON i.`id` = sl.`item_id`
                 WHERE sl.`cause` = 'SELL'
@@ -256,7 +256,7 @@ class SellReportController extends Controller
         $reports = DB::select(DB::raw("
                 SELECT
                     MIN(m.`name`) AS `name`,
-                    COUNT(s.`member_id`) AS count_transaction
+                    FORMAT(COUNT(s.`member_id`), 0) AS count_transaction
                 FROM sells s
                 LEFT JOIN members m ON m.`id` = s.`member_id`
                 WHERE s.updated_at >= '" . $request->filter['date_start'] . " 00:00:00'

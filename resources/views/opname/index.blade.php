@@ -43,7 +43,7 @@
                                 <th>Kode</th>
                                 <th>Tgl</th>
                                 <th>Oleh</th>
-                                <th>Total</th>
+                                <th class="text-right">Total</th>
                                 <th>Status</th>
                                 <th class="text-right">Aksi</th>
                             </tr>
@@ -166,10 +166,10 @@
                                                     <th>Tanggal</th>
                                                     <th>Barcode</th>
                                                     <th>Nama Barang</th>
-                                                    <th>Stock Sistem</th>
-                                                    <th>Stock Sekarang</th>
-                                                    <th>Harga Beli</th>
-                                                    <th>Harga Jual</th>
+                                                    <th class="text-right">Stock Sistem</th>
+                                                    <th class="text-right">Stock Sekarang</th>
+                                                    <th class="text-right">Harga Beli</th>
+                                                    <th class="text-right">Harga Jual</th>
                                                     <th>Deskripsi</th>
                                                     <th class="text-right">Aksi</th>
                                                 </tr>
@@ -362,7 +362,7 @@
                     {data: 'kode'},
                     {data: 'created_at_idn'},
                     {data: 'created_by'},
-                    {data: 'summary_iso'},
+                    {data: 'summary_iso', className: 'text-right'},
                     {data: 'status_color', name: 'status_text'},
                     {data: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'},
                 ],
@@ -410,10 +410,10 @@
                     {data: 'updated_at_idn'},
                     {data: 'barcode'},
                     {data: 'name'},
-                    {data: 'old_stock'},
-                    {data: 'new_stock'},
-                    {data: 'buy_price'},
-                    {data: 'sell_price'},
+                    {data: 'old_stock', render: $.fn.dataTable.render.number( ',', '.', 0 ), className: 'text-right'},
+                    {data: 'new_stock', render: $.fn.dataTable.render.number( ',', '.', 0 ), className: 'text-right'},
+                    {data: 'buy_price', render: $.fn.dataTable.render.number( ',', '.', 0 ), className: 'text-right'},
+                    {data: 'sell_price', render: $.fn.dataTable.render.number( ',', '.', 0 ), className: 'text-right'},
                     {data: 'description'},
                     {data: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'},
                 ],

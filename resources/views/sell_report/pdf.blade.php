@@ -63,13 +63,13 @@
             <th colspan="7">Daftar Transaksi</th>
         </tr>
         <tr>
-            <th>#</th>
-            <th>ID</th>
-            <th>Pegawai</th>
-            <th>Member</th>
-            <th>Status</th>
-            <th>Total Pembelian</th>
-            <th>Total Hutang</th>
+            <th class="has-text-left">#</th>
+            <th class="has-text-left">ID</th>
+            <th class="has-text-left">Pegawai</th>
+            <th class="has-text-left">Member</th>
+            <th class="has-text-left">Status</th>
+            <th class="has-text-right">Total Pembelian</th>
+            <th class="has-text-right">Total Hutang</th>
         </tr>
         @foreach ($sells as $key => $sell)
             @php
@@ -86,7 +86,7 @@
             </tr>
         @endforeach
         <tr>
-            <th colspan="5">Total</th>
+            <th colspan="5" class="has-text-right">Total</th>
             <th class="text-right">{{ number_format($sells->sum('summary')) }}</th>
             <th class="text-right">{{ number_format($sells->sum('summary') - $sells->sum('payment')) }}</th>
         </tr>
@@ -96,21 +96,21 @@
             <th colspan="4">Daftar barang yang dibeli</th>
         </tr>
         <tr>
-            <th>Barang / Jasa</th>
-            <th>Qty</th>
-            <th>Laba Kotor</th>
-            <th>Laba Bersih</th>
+            <th class="has-text-left">Barang / Jasa</th>
+            <th class="has-text-right">Qty</th>
+            <th class="has-text-right">Laba Kotor</th>
+            <th class="has-text-right">Laba Bersih</th>
         </tr>
         @foreach ($stockLogs as $log)
             <tr>
                 <td>{{ $log->item_name }}</td>
-                <td>{{ $log->sum_qty }}</td>
+                <td class="has-text-right">{{ $log->sum_qty }}</td>
                 <td class="text-right">{{ number_format($log->gross_income) }}</td>
                 <td class="text-right">{{ number_format($log->net_income) }}</td>
             </tr>
         @endforeach
         <tr>
-            <th colspan="2">Total</th>
+            <th colspan="2" class="has-text-right">Total</th>
             <th class="text-right">{{ number_format($stockLogs->sum('gross_income')) }}</th>
             <th class="text-right">{{ number_format($stockLogs->sum('net_income')) }}</th>
         </tr>
@@ -120,13 +120,13 @@
             <th colspan="2">Daftar member yang membeli</th>
         </tr>
         <tr>
-            <th>Member</th>
-            <th>Jumlah Transaksi</th>
+            <th class="has-text-left">Member</th>
+            <th class="has-text-right">Jumlah Transaksi</th>
         </tr>
         @foreach ($members as $member)
             <tr>
                 <td>{{ $member->member_name }}</td>
-                <td>{{ $member->count_tx }}</td>
+                <td class="has-text-right">{{ $member->count_tx }}</td>
             </tr>
         @endforeach
     </table>

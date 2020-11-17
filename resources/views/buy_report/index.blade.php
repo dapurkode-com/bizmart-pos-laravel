@@ -122,7 +122,7 @@
                                 <th>#</th>
                                 <th>Tgl</th>
                                 <th>Kode</th>
-                                <th>Pengeluaran</th>
+                                <th class="text-right">Pengeluaran</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -149,7 +149,7 @@
                                 <th>#</th>
                                 <th>Tgl</th>
                                 <th>Kode</th>
-                                <th>Hutang</th>
+                                <th class="text-right">Hutang</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -175,8 +175,8 @@
                             <tr>
                                 <th>#</th>
                                 <th>Barang</th>
-                                <th>Qty</th>
-                                <th>Pengeluaran</th>
+                                <th class="text-right">Qty</th>
+                                <th class="text-right">Pengeluaran</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -202,7 +202,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Suplier</th>
-                                <th>Jumlah Transaksi</th>
+                                <th class="text-right">Jumlah Transaksi</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -313,7 +313,7 @@
                 {data: 'DT_RowIndex', orderable: false, searchable: false },
                 {data: 'date'},
                 {data: 'buy_code'},
-                {data: 'sum_amount'},
+                {data: 'sum_amount', className: 'text-right'},
             ],
             order: [[1, 'asc']],
             initComplete: () => {
@@ -360,7 +360,7 @@
                 {data: 'DT_RowIndex', orderable: false, searchable: false },
                 {data: 'date'},
                 {data: 'buy_code'},
-                {data: 'sum_dept'},
+                {data: 'sum_dept', className: 'text-right'},
             ],
             order: [[1, 'asc']],
             initComplete: () => {
@@ -406,8 +406,8 @@
             columns: [
                 {data: 'DT_RowIndex', orderable: false, searchable: false },
                 {data: 'name'},
-                {data: 'sum_qty'},
-                {data: 'sum_buy_price'},
+                {data: 'sum_qty', className: 'text-right'},
+                {data: 'sum_buy_price', className: 'text-right'},
             ],
             order: [[2, 'desc']],
             initComplete: () => {
@@ -453,7 +453,7 @@
             columns: [
                 {data: 'DT_RowIndex', orderable: false, searchable: false },
                 {data: 'name'},
-                {data: 'count_transaction'},
+                {data: 'count_transaction', className: 'text-right'},
             ],
             order: [[2, 'desc']],
             initComplete: () => {

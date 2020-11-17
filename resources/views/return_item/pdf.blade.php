@@ -84,14 +84,14 @@
 						<td class="has-text-left">{{ $detail->item->barcode }}</td>
 						<td class="has-text-left">{{ $detail->item->name }}</td>
 						<td class="has-text-right">{{ $detail->qty }}</td>
-						<td class="has-text-right">{{ number_format($detail->buy_price, 2, ".", ",") }}</td>
-						<td class="has-text-right">{{ number_format(($detail->qty * $detail->buy_price), 2, ".", ",") }}</td>
+						<td class="has-text-right">{{ number_format($detail->buy_price, 0, ".", ",") }}</td>
+						<td class="has-text-right">{{ number_format(($detail->qty * $detail->buy_price), 0, ".", ",") }}</td>
 					</tr>
 				@endforeach
 
 				<tr>
 					<th colspan="5" class="has-text-right">Total</th>
-					<th class="has-text-right">{{ number_format($return_item->summary, 2, ".", ",") }}</th>
+					<th class="has-text-right">{{ number_format($return_item->summary, 0, ".", ",") }}</th>
 				</tr>
 			</table>
 

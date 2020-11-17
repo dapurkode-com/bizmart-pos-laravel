@@ -90,18 +90,18 @@
 						<td class="has-text-left">{{ $detail->item->barcode }}</td>
 						<td class="has-text-left">{{ $detail->item->name }}</td>
 						<td class="has-text-right">{{ $detail->qty }}</td>
-						<td class="has-text-right">{{ number_format($detail->sell_price, 2, ".", ",") }}</td>
-						<td class="has-text-right">{{ number_format(($detail->qty * $detail->sell_price), 2, ".", ",") }}</td>
+						<td class="has-text-right">{{ number_format($detail->sell_price, 0, ".", ",") }}</td>
+						<td class="has-text-right">{{ number_format(($detail->qty * $detail->sell_price), 0, ".", ",") }}</td>
 					</tr>
 				@endforeach
 
 				<tr>
 					<th colspan="5" class="has-text-right">Total</th>
-					<th class="has-text-right">{{ number_format($sell->summary, 2, ".", ",") }}</th>
+					<th class="has-text-right">{{ number_format($sell->summary, 0, ".", ",") }}</th>
 				</tr>
 				<tr>
 					<th colspan="5" class="has-text-right">Nominal Bayar</th>
-					<th class="has-text-right">{{ number_format($sell->paid_amount, 2, ".", ",") }}</th>
+					<th class="has-text-right">{{ number_format($sell->paid_amount, 0, ".", ",") }}</th>
 				</tr>
 			</table>
 

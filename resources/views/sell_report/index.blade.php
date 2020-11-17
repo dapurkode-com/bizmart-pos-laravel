@@ -114,7 +114,7 @@
                                 <th>#</th>
                                 <th>Tgl</th>
                                 <th>Kode</th>
-                                <th>Pemasukan</th>
+                                <th class="text-right">Pemasukan</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -141,7 +141,7 @@
                                 <th>#</th>
                                 <th>Tgl</th>
                                 <th>Kode</th>
-                                <th>Piutang</th>
+                                <th class="text-right">Piutang</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -153,7 +153,7 @@
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-6">
-                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Barang</h5>
+                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Barang / Jasa</h5>
                         </div>
                         <div class="col-6 text-right">
                             <button type="button" class="btn btn-default itemTableRefreshBtn"><i class="fas fa-sync-alt" title="Refresh Table"></i></button>
@@ -166,10 +166,10 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Barang</th>
-                                <th>Qty</th>
-                                <th>Pemasukan</th>
-                                <th>Laba Bersih</th>
+                                <th>Barang / Jasa</th>
+                                <th class="text-right">Qty</th>
+                                <th class="text-right">Pemasukan</th>
+                                <th class="text-right">Laba Bersih</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -195,7 +195,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Konsumen</th>
-                                <th>Jumlah Transaksi</th>
+                                <th class="text-right">Jumlah Transaksi</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -301,7 +301,7 @@
                 {data: 'DT_RowIndex', orderable: false, searchable: false },
                 {data: 'date'},
                 {data: 'sell_code'},
-                {data: 'sum_amount'},
+                {data: 'sum_amount', className: 'text-right'},
             ],
             order: [[1, 'asc']],
             initComplete: () => {
@@ -348,7 +348,7 @@
                 {data: 'DT_RowIndex', orderable: false, searchable: false },
                 {data: 'date'},
                 {data: 'sell_code'},
-                {data: 'sum_piutang'},
+                {data: 'sum_piutang', className: 'text-right'},
             ],
             order: [[1, 'asc']],
             initComplete: () => {
@@ -394,9 +394,9 @@
             columns: [
                 {data: 'DT_RowIndex', orderable: false, searchable: false },
                 {data: 'name'},
-                {data: 'sum_qty'},
-                {data: 'sum_sell_price'},
-                {data: 'net_income'},
+                {data: 'sum_qty', className: 'text-right'},
+                {data: 'sum_sell_price', className: 'text-right'},
+                {data: 'net_income', className: 'text-right'},
             ],
             order: [[2, 'desc']],
             initComplete: () => {
@@ -442,7 +442,7 @@
             columns: [
                 {data: 'DT_RowIndex', orderable: false, searchable: false },
                 {data: 'name'},
-                {data: 'count_transaction'},
+                {data: 'count_transaction', className: 'text-right'},
             ],
             order: [[2, 'desc']],
             initComplete: () => {

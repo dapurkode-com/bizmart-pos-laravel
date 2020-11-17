@@ -182,7 +182,7 @@ class ReturnItemController extends Controller
             DB::raw("DATE_FORMAT(return_items.updated_at, '%d %b %Y') AS updated_at_idn"),
             DB::raw("CONCAT('RT-', LPAD(return_items.id, 5, '0')) AS kode"),
             'supliers.name AS suplier_name',
-            DB::raw("FORMAT(return_items.summary, 2) AS summary_iso"),
+            DB::raw("FORMAT(return_items.summary, 0) AS summary_iso"),
             'users.name as user_name',
         ])
             ->leftJoin('users', 'users.id', '=', 'return_items.user_id')
@@ -204,7 +204,7 @@ class ReturnItemController extends Controller
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('summary_iso', function ($query, $keyword) {
-                $sql = "FORMAT(return_items.summary, 2) like ?";
+                $sql = "FORMAT(return_items.summary, 0) like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('user_name', function ($query, $keyword) {

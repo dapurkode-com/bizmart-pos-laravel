@@ -54,12 +54,12 @@
 
     <table class="table mt-2 is-bordered is-content">
         <tr>
-            <th>#</th>
-            <th>Barcode</th>
-            <th>Nama</th>
-            <th>Kategori</th>
-            <th>Kuantitas</th>
-            <th>Satuan</th>
+            <th class="has-text-left">#</th>
+            <th class="has-text-left">Barcode</th>
+            <th class="has-text-left">Nama</th>
+            <th class="has-text-left">Kategori</th>
+            <th class="has-text-right">Kuantitas</th>
+            <th class="has-text-left">Satuan</th>
         </tr>
 
         @forelse ($items as $key => $item)
@@ -76,7 +76,7 @@
                     })
                     ->implode(', ') }}
                 </td>
-                <td>{{ $item->stock }}</td>
+                <td class="has-text-right">{{ $item->stock }}</td>
                 <td>{{ $item->unit ? $item->unit->name : '-' }}</td>
             </tr>
         @empty

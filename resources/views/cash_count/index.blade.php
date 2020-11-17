@@ -58,9 +58,9 @@
                                 <th>#</th>
                                 <th>Kode</th>
                                 <th>Tgl Waktu</th>
-                                <th>Saldo Hitung</th>
-                                <th>Saldo Sistem</th>
-                                <th>Selisih</th>
+                                <th class="text-right">Saldo Hitung</th>
+                                <th class="text-right">Saldo Sistem</th>
+                                <th class="text-right">Selisih</th>
                                 <th>Oleh</th>
                             </tr>
                         </thead>
@@ -175,9 +175,9 @@
                 {data: 'DT_RowIndex', orderable: false, searchable: false },
                 {data: 'kode'},
                 {data: 'date'},
-                {data: 'counted_amount'},
-                {data: 'counted_system'},
-                {data: 'deviation'},
+                {data: 'counted_amount', className: 'text-right'},
+                {data: 'counted_system', className: 'text-right'},
+                {data: 'deviation', className: 'text-right'},
                 {data: 'user'},
             ],
             order: [[1, 'desc']],
