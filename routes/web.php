@@ -89,14 +89,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('sell_report/member_datatables', 'SellReportController@memberDatatables')->name('sell_report.member_datatables');
     Route::get('sell_report/generate_pdf', 'SellReportController@generatePdf')->name('sell_report.generate_pdf');
     // for sell report
-    
+
     Route::resource('unit', 'UnitController')->only('index', 'store', 'update', 'show', 'destroy');
     Route::resource('category', 'CategoryController')->only('index', 'store', 'update', 'show', 'destroy');
     Route::resource('buy', 'BuyController')->only('index', 'store', 'create', 'show', 'destroy');
-    
+
     Route::get('other_revenue/datatables', 'OtherRevenueController@datatables')->name('other_revenue.datatables');
     Route::get('other_expense/datatables', 'OtherExpenseController@datatables')->name('other_expense.datatables');
-    
+
     // for buy report
     Route::get('buy_report/get_total_transactions', 'BuyReportController@getTotalTransactions')->name('buy_report.get_total_transactions');
     Route::get('buy_report/get_current_expend', 'BuyReportController@getCurrentExpend')->name('buy_report.get_current_expend');
@@ -107,7 +107,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('buy_report/dept_datatables', 'BuyReportController@deptDatatables')->name('buy_report.dept_datatables');
     Route::get('buy_report/suplier_datatables', 'BuyReportController@suplierDatatables')->name('buy_report.suplier_datatables');
     Route::get('buy_report/generate_pdf', 'BuyReportController@generatePdf')->name('buy_report.generate_pdf');
-    
+
     Route::get('cashflow', 'CashflowController@index')->name('cashflow');
     Route::get('cashflow/generate_pdf', 'CashflowController@generatePdf')->name('cashflow.generate_pdf');
 
@@ -122,6 +122,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('item_report/item_datatables', 'ItemReportController@itemDatatables')->name('item_report.item_datatables');
     Route::get('item_report/print_pdf', 'ItemReportController@generatePdf')->name('item_report.print_pdf');
     Route::get('item_report', 'ItemReportController@index')->name('item_report.index');
+
+    Route::get('profile/change_password', 'ProfileController@edit')->name('profile.edit');
+    Route::post('profile/change_password', 'ProfileController@update')->name('profile.update');
 
 
     Route::resources([

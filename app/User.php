@@ -54,6 +54,11 @@ class User extends Authenticatable
         return $this->privilegeText() . ' <br> ' . $this->isActiveBadge();
     }
 
+    public function adminlte_profile_url()
+    {
+        return route("profile.edit");
+    }
+
     public function privilegeText()
     {
         $lookUp = LookUp::where('group_code', 'PRIV_CODE')
