@@ -210,11 +210,18 @@ class SellController extends Controller
         $offset = ($page - 1) * $limit;
 
         $items = Item::select('*')
-            ->where('stock', '>', '0')
-            ->orWhere('is_stock_active', '0')
+            ->where(function ($query) {
+                $query->where(function ($query2) {
+                    $query2->where('stock', '>', '0')
+                           ->where('is_stock_active', '1');
+                })
+                ->orWhere(function ($query2) {
+                    $query2->where('is_stock_active', '0');
+                });
+            })
             ->where(function ($query) use ($search) {
                 $query->where('barcode', 'like', "%$search%")
-                    ->orWhere('name', 'like', "%$search%");
+                      ->orWhere('name', 'like', "%$search%");
             })
             ->orderby('name', 'asc')
             ->skip($offset)->take($limit)
