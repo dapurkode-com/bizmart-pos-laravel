@@ -344,7 +344,7 @@ class OpnameController extends Controller
             DB::raw("DATE_FORMAT(opnames.created_at, '%d %b %Y') AS created_at_idn"),
             DB::raw("CONCAT('SO-', LPAD(opnames.id, 5, '0')) AS kode"),
             'opnames.created_by',
-            DB::raw("FORMAT(opnames.summary, 2) AS summary_iso"),
+            DB::raw("FORMAT(opnames.summary, 0) AS summary_iso"),
             'opnames.status',
             'look_ups.label as status_text',
         ])
@@ -370,7 +370,7 @@ class OpnameController extends Controller
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('summary_iso', function ($query, $keyword) {
-                $sql = "FORMAT(opnames.summary, 2) like ?";
+                $sql = "FORMAT(opnames.summary, 0) like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('status_text', function ($query, $keyword) {

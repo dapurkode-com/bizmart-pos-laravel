@@ -70,12 +70,12 @@
 
     <table class="table mt-2 is-bordered is-content">
         <tr>
-            <th>#</th>
-            <th>Nama Barang</th>
-            <th>Barcode</th>
-            <th>Qty</th>
-            <th>Harga Barang</th>
-            <th>Subtotal</th>
+            <th class="has-text-left">#</th>
+            <th class="has-text-left">Nama Barang</th>
+            <th class="has-text-left">Barcode</th>
+            <th class="has-text-right">Qty</th>
+            <th class="has-text-right">Harga Barang</th>
+            <th class="has-text-right">Subtotal</th>
         </tr>
 
         @foreach ($details as $i => $detail)
@@ -83,16 +83,16 @@
                 <td>{{ ++$i }}</td>
                 <td>{{ $detail->item->name }}</td>
                 <td>{{ $detail->item->barcode }}</td>
-                <td>{{ $detail->qty}}</td>
-                <td>{{ number_format($detail->buy_price, 2, ".", ",") }}</td>
-                <td>{{ number_format($detail->qty * $detail->buy_price, 2, ".", ",") }}</td>
+                <td class="has-text-right">{{ $detail->qty}}</td>
+                <td class="has-text-right">{{ number_format($detail->buy_price, 0, ".", ",") }}</td>
+                <td class="has-text-right">{{ number_format($detail->qty * $detail->buy_price, 0, ".", ",") }}</td>
 
             </tr>
         @endforeach
 
         <tr>
             <th colspan="5" class="has-text-right">Total</th>
-            <th class="has-text-right">{{ number_format($buys->summary, 2, ".", ",") }}</th>
+            <th class="has-text-right">{{ number_format($buys->summary, 0, ".", ",") }}</th>
         </tr>
     </table>
 

@@ -159,9 +159,9 @@ class CashCountController extends Controller
                 SELECT
                     CONCAT('HK-', LPAD(cc.`id`, 5, '0')) AS kode,
                     DATE_FORMAT(cc.`count_date`, '%e %b %Y %H:%i') AS `date`,
-                    cc.`counted_amount`,
-                    cc.`counted_system`,
-                    cc.`deviation`,
+                    FORMAT(cc.`counted_amount`, 0) AS counted_amount,
+                    FORMAT(cc.`counted_system`, 0) AS counted_system,
+                    FORMAT(cc.`deviation`, 0) AS deviation,
                     u.`name` AS `user`
                 FROM cash_counts cc
                 LEFT JOIN users u ON u.`id` = cc.`user_id`

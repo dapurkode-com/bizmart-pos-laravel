@@ -45,9 +45,9 @@
                                 <th>Barcode</th>
                                 <th>Nama</th>
                                 <th>Kategori</th>
-                                <th>Harga Beli</th>
-                                <th>Harga Jual</th>
-                                <th>Profit</th>
+                                <th class="text-right">Harga Beli</th>
+                                <th class="text-right">Harga Jual</th>
+                                <th class="text-right">Profit</th>
                                 <th class="text-right">Aksi</th>
                             </tr>
                         </thead>
@@ -104,9 +104,9 @@
                 {data: 'barcode', name: 'items.barcode'},
                 {data: 'name', name: 'items.name'},
                 {data: 'categories', name: 'categories.name'},
-                {data: 'buy_price', name: 'items.buy_price', render: $.fn.dataTable.render.number( ',', '.', 2, 'Rp' )},
-                {data: 'sell_price', name: 'items.sell_price', render: $.fn.dataTable.render.number( ',', '.', 2, 'Rp' )},
-                {data: 'profit', name: 'items.profit', render: $.fn.dataTable.render.number( ',', '.', 2, 'Rp' )},
+                {data: 'buy_price', name: 'items.buy_price', render: $.fn.dataTable.render.number( ',', '.', 0 ), className: 'text-right'},
+                {data: 'sell_price', name: 'items.sell_price', render: $.fn.dataTable.render.number( ',', '.', 0 ), className: 'text-right'},
+                {data: 'profit', name: 'items.profit', render: $.fn.dataTable.render.number( ',', '.', 0 ), className: 'text-right'},
                 {data: 'action', orderable: false, searchable: false, className: 'text-right'},
             ],
             order: [[1, 'asc']]

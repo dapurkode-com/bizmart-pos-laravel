@@ -158,8 +158,8 @@ class BuyReportController extends Controller
         $reports = DB::select(DB::raw("
                 SELECT
                     MIN(i.`name`) AS `name`,
-                    SUM(sl.`qty`) AS sum_qty,
-                    SUM((sl.buy_price * sl.`qty`)) AS sum_buy_price
+                    FORMAT(SUM(sl.`qty`), 0) AS sum_qty,
+                    FORMAT(SUM((sl.buy_price * sl.`qty`)), 0) AS sum_buy_price
                 FROM stock_logs sl
                 LEFT JOIN items i ON i.`id` = sl.`item_id`
                 WHERE sl.`cause` = 'BUY'
@@ -179,7 +179,7 @@ class BuyReportController extends Controller
                 SELECT
                     DATE_FORMAT(MIN(payment_date), '%e %b %Y') AS `date`,
                     CONCAT('PB-', LPAD(MIN(buy_id), 5, '0')) AS buy_code,
-                    SUM(amount) AS sum_amount
+                    FORMAT(SUM(amount), 0) AS sum_amount
                 FROM `buy_payment_hs`
                 WHERE updated_at >='" . $request->filter['start_date'] . " 00:00:00'
                 AND updated_at <='" . $request->filter['end_date'] . " 23:59:59'
@@ -197,7 +197,7 @@ class BuyReportController extends Controller
                 SELECT
                     DATE_FORMAT(MIN(payment_date), '%e %b %Y') AS `date`,
                     CONCAT('PB-', LPAD(MIN(buy_id), 5, '0')) AS buy_code,
-                    (MIN(summary) - SUM(amount)) AS sum_dept
+                    FORMAT((MIN(summary) - SUM(amount)), 0) AS sum_dept
                 FROM `buy_payment_hs` bp
                 LEFT JOIN buys b ON b.`id` = bp.`buy_id`
                 WHERE bp.updated_at <= '" . $request->filter['end_date'] . " 23:59:59'
@@ -215,7 +215,7 @@ class BuyReportController extends Controller
         $reports = DB::select(DB::raw("
                 SELECT
                     MIN(s.`name`) AS `name`,
-                    COUNT(b.`suplier_id`) AS count_transaction
+                    FORMAT(COUNT(b.`suplier_id`), 0) AS count_transaction
                 FROM buys b
                 LEFT JOIN supliers s ON s.`id` = b.`suplier_id`
                 WHERE b.updated_at >='" . $request->filter['start_date'] . " 00:00:00'

@@ -41,7 +41,7 @@
                                 <th>Kode</th>
                                 <th>Tgl</th>
                                 <th>Suplier</th>
-                                <th>Total</th>
+                                <th class="text-right">Total</th>
                                 <th>Oleh</th>
                                 <th class="text-right">Aksi</th>
                             </tr>
@@ -303,7 +303,7 @@
                     {data: 'kode'},
                     {data: 'updated_at_idn'},
                     {data: 'suplier_name'},
-                    {data: 'summary_iso'},
+                    {data: 'summary_iso', className: 'text-right'},
                     {data: 'user_name'},
                     {data: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'},
                 ],
@@ -1011,7 +1011,7 @@
         }
 
         function getIsoNumberWithSeparator(isoNumber){
-            return (isoNumber.toFixed(2)).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+            return (isoNumber.toFixed(0)).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
         }
 
         function simulateEvent(elm, eventName) {

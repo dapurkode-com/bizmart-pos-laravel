@@ -54,7 +54,7 @@
                                     <th>Barcode</th>
                                     <th>Nama</th>
                                     <th>Kategori</th>
-                                    <th>Kuantitas</th>
+                                    <th class="text-right">Kuantitas</th>
                                     <th>Satuan</th>
                                 </tr>
                             </thead>
@@ -73,7 +73,7 @@
                                             })
                                             ->implode(', ') }}
                                         </td>
-                                        <td>{{ $item->stock }}</td>
+                                        <td class="text-right">{{ $item->stock }}</td>
                                         <td>{{ $item->unit ? $item->unit->name : '-' }}</td>
                                     </tr>
                                 @empty

@@ -63,13 +63,13 @@
             <th colspan="7">Daftar Transaksi</th>
         </tr>
         <tr>
-            <th>#</th>
-            <th>ID</th>
-            <th>Pegawai</th>
-            <th>Suplier</th>
-            <th>Status</th>
-            <th>Total Pembelian</th>
-            <th>Total Hutang</th>
+            <th class="has-text-left">#</th>
+            <th class="has-text-left">ID</th>
+            <th class="has-text-left">Pegawai</th>
+            <th class="has-text-left">Suplier</th>
+            <th class="has-text-left">Status</th>
+            <th class="has-text-right">Total Pembelian</th>
+            <th class="has-text-right">Total Hutang</th>
         </tr>
         @foreach ($buys as $key => $buy)
             @php
@@ -86,7 +86,7 @@
             </tr>
         @endforeach
         <tr>
-            <th colspan="5">Total</th>
+            <th colspan="5" class="has-text-right">Total</th>
             <th class="text-right">{{ number_format($buys->sum('summary')) }}</th>
             <th class="text-right">{{ number_format($buys->sum('summary') - $buys->sum('payment')) }}</th>
         </tr>
@@ -96,19 +96,19 @@
             <th colspan="3">Daftar barang yang dibeli</th>
         </tr>
         <tr>
-            <th>Barang / Jasa</th>
-            <th>Qty</th>
-            <th>Biaya</th>
+            <th class="has-text-left">Barang / Jasa</th>
+            <th class="has-text-right">Qty</th>
+            <th class="has-text-right">Biaya</th>
         </tr>
         @foreach ($stockLogs as $log)
             <tr>
                 <td>{{ $log->item_name }}</td>
-                <td>{{ $log->sum_qty }}</td>
+                <td class="has-text-right">{{ $log->sum_qty }}</td>
                 <td class="text-right">{{ number_format($log->expend) }}</td>
             </tr>
         @endforeach
         <tr>
-            <th colspan="2">Total</th>
+            <th colspan="2" class="has-text-right">Total</th>
             <th class="text-right">{{ number_format($stockLogs->sum('expend')) }}</th>
         </tr>
     </table>
@@ -117,13 +117,13 @@
             <th colspan="2">Daftar Suplier</th>
         </tr>
         <tr>
-            <th>Suplier</th>
-            <th>Jumlah Transaksi</th>
+            <th class="has-text-left">Suplier</th>
+            <th class="has-text-right">Jumlah Transaksi</th>
         </tr>
         @foreach ($supliers as $suplier)
             <tr>
                 <td>{{ $suplier->suplier_name }}</td>
-                <td>{{ $suplier->count_tx }}</td>
+                <td class="has-text-right">{{ $suplier->count_tx }}</td>
             </tr>
         @endforeach
     </table>

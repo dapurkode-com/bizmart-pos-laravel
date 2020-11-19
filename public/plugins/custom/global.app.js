@@ -113,7 +113,7 @@ function getIndoDate(val){
 }
 
 function getIsoNumberWithSeparator(isoNumber){
-    return (isoNumber.toFixed(2)).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    return (isoNumber.toFixed(0)).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
 }
 
 export { 

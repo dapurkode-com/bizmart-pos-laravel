@@ -67,18 +67,18 @@
         </tr>
         <tr>
             <td colspan="2">Penjualan</td>
-            <td>{{ number_format($sellSummary) }}</td>
+            <td class="has-text-right">{{ number_format($sellSummary) }}</td>
             <td></td>
         </tr>
         <tr>
             <td colspan="2">Potongan Penjualan</td>
-            <td style="border-bottom: 2px solid black;">0</td>
+            <td class="has-text-right" style="border-bottom: 2px solid black;">0</td>
             <td></td>
         </tr>
         <tr>
             <th colspan="2">JUMLAH PENDAPATAN BERSIH</th>
             <td></td>
-            <td>{{ number_format($sellSummary) }}</td>
+            <td class="has-text-right">{{ number_format($sellSummary) }}</td>
         </tr>
         <tr>
             <td colspan="4"></td>
@@ -88,31 +88,31 @@
         </tr>
         <tr>
             <td colspan="1">Persediaan Barang Awal</td>
-            <td>{{ number_format($stockValueOld) }}</td>
+            <td class="has-text-right">{{ number_format($stockValueOld) }}</td>
             <td></td><td></td>
         </tr>
         <tr>
             <td colspan="1">Pembelian</td>
-            <td style="border-bottom: 2px solid black;">{{ number_format($buySummary) }}</td>
+            <td class="has-text-right" style="border-bottom: 2px solid black;">{{ number_format($buySummary) }}</td>
             <td></td><td></td>
         </tr>
         <tr>
             <td colspan="2">Barang Tersedia Dijual</td>
-            <td>{{ number_format($buySummary + $stockValueOld) }}</td>
+            <td class="has-text-right">{{ number_format($buySummary + $stockValueOld) }}</td>
             <td></td>
         </tr>
         <tr>
             <td colspan="2">Persedian Barang Akhir</td>
-            <td style="border-bottom: 2px solid black;">{{ number_format($stockValueNew) }}</td>
+            <td class="has-text-right" style="border-bottom: 2px solid black;">{{ number_format($stockValueNew) }}</td>
             <td></td>
         </tr>
         <tr>
             <th colspan="3">HPP</th>
-            <td style="border-bottom: 2px solid black;">{{ number_format($buySummary + $stockValueOld - $stockValueNew) }}</td>
+            <td class="has-text-right" style="border-bottom: 2px solid black;">{{ number_format($buySummary + $stockValueOld - $stockValueNew) }}</td>
         </tr>
         <tr>
             <th colspan="3">LABA KOTOR</th>
-            <td>{{ number_format($sellSummary - ($buySummary + $stockValueOld - $stockValueNew)) }}</td>
+            <td class="has-text-right">{{ number_format($sellSummary - ($buySummary + $stockValueOld - $stockValueNew)) }}</td>
         </tr>
         <tr>
             <td colspan="4"></td>
@@ -123,18 +123,18 @@
         @foreach ($otherExpenseSummary as $oe)
         <tr>
             <td colspan="2">{{ $oe->note?? '-' }}</td>
-            <td>{{ number_format($oe->summary) }}</td>
+            <td class="has-text-right">{{ number_format($oe->summary) }}</td>
             <td></td>
         </tr>
         @endforeach
         <tr>
             <th colspan="2">JUMLAH BEBAN USAHA</th>
             <td style="border-top: 2px solid black;"></td>
-            <td style="border-bottom: 2px solid black;">{{ number_format($otherExpenseSummary->sum('summary')) }}</td>
+            <td class="has-text-right" style="border-bottom: 2px solid black;">{{ number_format($otherExpenseSummary->sum('summary')) }}</td>
         </tr>
         <tr>
             <th colspan="3">LABA/RUGI BERSIH</th>
-            <td>{{ number_format($sellSummary - ($buySummary + $stockValueOld - $stockValueNew) - $otherExpenseSummary->sum('summary')) }}</td>
+            <td class="has-text-right">{{ number_format($sellSummary - ($buySummary + $stockValueOld - $stockValueNew) - $otherExpenseSummary->sum('summary')) }}</td>
         </tr>
 
     </table>

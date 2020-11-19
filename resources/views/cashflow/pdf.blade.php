@@ -57,13 +57,13 @@
 
     <table class="table mt-2 is-bordered is-content">
         <tr>
-            <th>#</th>
-            <th>Ref ID</th>
-            <th>Tanggal</th>
-            <th>Oleh</th>
-            <th>Keterangan</th>
-            <th>Arus</th>
-            <th class="text-right">Sejumlah</th>
+            <th class="has-text-left">#</th>
+            <th class="has-text-left">Ref ID</th>
+            <th class="has-text-left">Tanggal</th>
+            <th class="has-text-left">Oleh</th>
+            <th class="has-text-left">Keterangan</th>
+            <th class="has-text-left">Arus</th>
+            <th class="has-text-right">Sejumlah</th>
         </tr>
         @php
             $total = 0;
@@ -81,9 +81,7 @@
                 <td>{{ $flow->user->name }}</td>
                 <td>{!! $flow->cashCauseText() !!}</td>
                 <td>{!! $flow->ioCashText() !!}</td>
-                <td class="text-right">
-                    {{ number_format($flow->amount) }}
-                </td>
+                <td class="has-text-right">{{ number_format($flow->amount) }}</td>
             </tr>
         @empty
             <tr>
@@ -91,8 +89,8 @@
             </tr>
         @endforelse
         <tr>
-            <td colspan="6" class="text-right"><strong>Total</strong></td>
-            <td class="text-right">{{ number_format($total) }}</td>
+            <td colspan="6" class="has-text-right"><strong>Total</strong></td>
+            <td class="has-text-right">{{ number_format($total) }}</td>
         </tr>
     </table>
 

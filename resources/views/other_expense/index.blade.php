@@ -143,7 +143,7 @@
                 {data: 'id'},
                 {data: 'updated_at'},
                 {data: 'name', name: 'users.name'},
-                {data: 'summary', render: $.fn.dataTable.render.number( ',', '.', 2, 'Rp' ), class: 'text-right'},
+                {data: 'summary', render: $.fn.dataTable.render.number( ',', '.', 0 ), class: 'text-right'},
                 {data: 'note'},
                 {data: 'action', orderable: false, searchable: false, className: 'text-right'},
             ],
