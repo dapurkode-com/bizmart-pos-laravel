@@ -46,6 +46,7 @@
                 <div class="inner">
                     <p>Total Pembelian</p>
                     <h3 id="total_value">0</h3>
+                    <input type="hidden" id="total" value="0">
                 </div>
                 <div class="icon">
                     <i class="fas fa-shopping-cart"></i>
@@ -194,10 +195,12 @@
 @endsection
 
 @section('js')
-<script>
+<script type="module">
+    import { select2DatatableInit, domReady, addListenToEvent, getIndoDate, getIsoNumberWithSeparator, swalConfirm, drawError, eraseErrorInit, swalAlert } from '{{ asset("plugins/custom/global.app.js") }}'
     $(document).ready(function () {
 
-        var elem = document.getElementById ( "total_value" );
+        var elem = document.getElementById ( "total" );
+        var elem1 = document.getElementById ( "total_value" )
         var text = elem.innerHTML;
         var sum = parseInt(text, 10);
         const itemsTable = document.querySelector('#my_table');
@@ -207,7 +210,8 @@
             var buy_price = $('[name="buy_price[]"]')[index].value;
             sum += Number(qty)*Number(buy_price)
         });
-        elem.innerHTML = sum;
+        elem1.value = sum; 
+        elem.innerHTML = getIsoNumberWithSeparator(sum);
 
         var msg = '{{ Session::get('message') }}';
         var exist = '{{Session::has('message')}}';
@@ -234,8 +238,9 @@
         $('#tbIndex').on('click','.my_btn', function (event) {
             var id = $(this).data('id');
             var elem = document.getElementById ( "total_value" );
+            var elem1 = document.getElementById ( "total" );
             var text = elem.innerHTML;
-            var sum = parseInt(text, 10);
+            var sum = parseInt(elem1.value, 10);
             // console.log(sum);
             $.ajaxSetup({
                 headers: {
@@ -278,8 +283,9 @@
 
                     if (!isItemExistInTable) {
                         console.log(isItemExistInTable)
+                        elem1.value = total;
                         $('#my_table').find('tbody').append(content);
-                        $('#total_value').html(total);
+                        $('#total_value').html(getIsoNumberWithSeparator(total));
                     }
 
                 }
@@ -292,8 +298,9 @@
             if(keycode == '13'){
                 var barcode = $(this).val();
                 var elem = document.getElementById ( "total_value" );
+                var elem1 = document.getElementById ( "total" );
                 var text = elem.innerHTML;
-                var sum = parseInt(text, 10);
+                var sum = parseInt(elem1.value, 10);
                 // console.log(barcode);
                 $.ajaxSetup({
                     headers: {
@@ -333,8 +340,9 @@
                             });
                             if (!isItemExistInTable) {
                                 console.log(isItemExistInTable)
+                                elem1.value = total;
                                 $('#my_table').find('tbody').append(content);
-                                $('#total_value').html(total);
+                                $('#total_value').html(getIsoNumberWithSeparator(total));
                                 $('#barcode').val('');
                             }
 
@@ -362,8 +370,9 @@
         $('#my_table').on('change', '[name="qty[]"]', function (e) {
             e.preventDefault();
             var elem = document.getElementById ( "total_value" );
+            var elem1 = document.getElementById ( "total" );
             var text = elem.innerHTML;
-            var sum = parseInt(text, 10);
+            var sum = parseInt(elem1.value, 10);
             var prev_qty = $(this).data("val");
             var qty = $(this).parents('.my_tr').find('[name="qty[]"]').val();
             var buy_price = $(this).parents('.my_tr').find('[name="buy_price[]"]').val();
@@ -373,7 +382,8 @@
             if (qty <= 0) {
                 alert('Jumlah barang yang dimasukkan harus lebih dari 0!');
             } else {
-                $('#total_value').html(total);
+                elem1.value = total;
+                $('#total_value').html(getIsoNumberWithSeparator(total));
                 $(this).data("val",qty);
             }
             // console.log(qty);
@@ -384,8 +394,9 @@
         $('#my_table').on('change', '[name="buy_price[]"]', function (e) {
             e.preventDefault();
             var elem = document.getElementById ( "total_value" );
+            var elem1 = document.getElementById ( "total" );
             var text = elem.innerHTML;
-            var sum = parseInt(text, 10);
+            var sum = parseInt(elem1.value, 10);
             var prev_buy_price = $(this).data("val");
             var qty = $(this).parents('.my_tr').find('[name="qty[]"]').val();
             var buy_price = $(this).parents('.my_tr').find('[name="buy_price[]"]').val();
@@ -394,7 +405,8 @@
             if (buy_price == 0) {
                 alert('Harga barang yang dimasukkan harus lebih dari 0!');
             } else {
-                $('#total_value').html(total);
+                elem1.value = total;
+                $('#total_value').html(getIsoNumberWithSeparator(total));
                 $(this).data("val",buy_price);
             }
 
