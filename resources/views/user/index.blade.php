@@ -6,12 +6,12 @@
     <div class="row mb-2">
         <div class="col-sm-6">
             <blockquote style="margin: 0; background: unset;">
-                <h1 class="m-0 text-dark">User</h1>
+                <h1 class="m-0 text-dark">Pengguna</h1>
             </blockquote>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">User</li>
+                <li class="breadcrumb-item active">Pengguna</li>
             </ol>
         </div>
     </div>
@@ -25,7 +25,7 @@
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-6">
-                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Daftar User</h5>
+                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Daftar Pengguna</h5>
                         </div>
                         <div class="col-6 text-right">
                             <button class="btn btn-info btnAdd" title="Tambah Data"><i class="fas fa-plus mr-2"></i>Tambah</button>
@@ -61,7 +61,7 @@
                     <input type="hidden" name="_remote">
                     <input type="hidden" name="_method">
                     <div class="modal-header">
-                        <h4 class="modal-title">User</h4>
+                        <h4 class="modal-title">Pengguna</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body">
@@ -91,7 +91,7 @@
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="form-group">
-                            <label>Status User</label>
+                            <label>Status Pengguna</label>
                             <select name="is_active" class="form-control">
                                 <option value="1">Aktif</option>
                                 <option value="0">Tidak Aktif</option>
@@ -274,7 +274,7 @@
 
             $(isActiveSelect).parents('.form-group').addClass('d-none');
 
-            modalTitle.innerHTML = `Tambah User`;
+            modalTitle.innerHTML = `Tambah Pengguna`;
             modalBody.classList.remove('d-none');
             modalFooter.classList.remove('d-none');
         }
@@ -293,7 +293,7 @@
                 prevCodeSelect.html(`<option value="${result.users.privilege_code}">${result.users.privilege_text}</option>`).trigger('change');
                 isActiveSelect.val(result.users.is_active).trigger('change');
 
-                modalTitle.innerHTML = `Edit User`;
+                modalTitle.innerHTML = `Ubah Pengguna`;
                 modalBody.classList.remove('d-none');
                 modalFooter.classList.remove('d-none');
             });

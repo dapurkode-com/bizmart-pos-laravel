@@ -66,7 +66,7 @@ return [
 
     'usermenu_enabled' => true,
     'usermenu_header' => true,
-    'usermenu_header_class' => 'bg-primary',
+    'usermenu_header_class' => 'bg-orange',
     'usermenu_image' => true,
     'usermenu_desc' => true,
     'usermenu_profile_url' => true,
@@ -101,7 +101,7 @@ return [
     |
     */
 
-    'classes_auth_card' => 'card-outline card-primary',
+    'classes_auth_card' => 'card-outline card-orange',
     'classes_auth_header' => '',
     'classes_auth_body' => '',
     'classes_auth_footer' => '',
@@ -121,14 +121,14 @@ return [
     */
 
     'classes_body' => '',
-    'classes_brand' => '',
-    'classes_brand_text' => '',
+    'classes_brand' => 'navbar-orange',
+    'classes_brand_text' => 'text-white',
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-dark-primary elevation-4',
+    'classes_sidebar' => 'sidebar-light-orange elevation-4',
     'classes_sidebar_nav' => '',
-    'classes_topnav' => 'navbar-white navbar-light',
+    'classes_topnav' => 'navbar-orange navbar-dark',
     'classes_topnav_nav' => 'navbar-expand-md',
     'classes_topnav_container' => 'container',
 
@@ -235,25 +235,21 @@ return [
             'text'      => 'Penjualan',
             'url'       => '/sell/create',
             'topnav'    => 'true',
-            'icon'      => 'far fa-fw fa-circle',
         ],
         [
             'text'      => 'Pembelian',
             'url'       => '/buy/create',
             'topnav'    => 'true',
-            'icon'      => 'far fa-fw fa-circle',
         ],
         [
             'text'      => 'Opname',
             'url'       => '/opname',
             'topnav'    => 'true',
-            'icon'      => 'far fa-fw fa-circle',
         ],
         [
             'text'      => 'Retur',
             'url'       => '/return_item',
             'topnav'    => 'true',
-            'icon'      => 'far fa-fw fa-circle',
         ],
         [
             'text'      => 'Dashboard',

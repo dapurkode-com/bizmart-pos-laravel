@@ -15,7 +15,7 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12">
-            <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
                 <i class="fa fa-info-circle"></i> Hai, {{ auth()->user()->name }}! Semoga harimu menyenangkan !
             </div>
         </div>
@@ -28,7 +28,7 @@
                 <div class="icon">
                     <i class="fa fa-shopping-cart"></i>
                 </div>
-                <a href="{{ route('sell.index') }}" class="small-box-footer">Lihat selengkapnya<i class="fas fa-arrow-circle-right"></i></a>
+                <a href="{{ route('sell.index') }}" class="small-box-footer">Lihat selengkapnya <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="col-lg-3 col-6">
@@ -40,7 +40,7 @@
                 <div class="icon">
                     <i class="fa fa-truck"></i>
                 </div>
-                <a href="{{ route('buy.index') }}" class="small-box-footer">Lihat selengkapnya<i class="fas fa-arrow-circle-right"></i></a>
+                <a href="{{ route('buy.index') }}" class="small-box-footer">Lihat selengkapnya <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="col-lg-3 col-6">
@@ -52,7 +52,7 @@
                 <div class="icon">
                     <i class="fa fa-sticky-note"></i>
                 </div>
-                <a href="{{ route('sell_payment_hs.index') }}" class="small-box-footer">Lihat selengkapnya<i class="fas fa-arrow-circle-right"></i></a>
+                <a href="{{ route('sell_payment_hs.index') }}" class="small-box-footer">Lihat selengkapnya <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="col-lg-3 col-6">
@@ -64,7 +64,7 @@
                 <div class="icon">
                     <i class="fa fa-donate"></i>
                 </div>
-                <a href="{{ route('buy_payment_hs.index') }}" class="small-box-footer">Lihat selengkapnya<i class="fas fa-arrow-circle-right"></i></a>
+                <a href="{{ route('buy_payment_hs.index') }}" class="small-box-footer">Lihat selengkapnya <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="col-lg-6">
@@ -104,7 +104,7 @@
             </div>
         </div>
         <div class="col-lg-12">
-            <div class="card-deck">
+            <div class="card-deck mb-3">
                 <div class="card">
                     <h5 class="card-header">Barang dengan stok minim
                     </h5>
