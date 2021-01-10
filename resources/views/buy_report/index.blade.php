@@ -264,6 +264,10 @@
             } */
 
         }
+        .buy_expend::before,
+        .buy_dept::before{
+            content:"Rp "
+        }
     </style>
 @stop
 @section('js')
