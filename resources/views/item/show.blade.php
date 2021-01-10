@@ -85,14 +85,14 @@
                             <th>Profit</th>
                             <td>{{ number_format($item->profit) }}</td>
                         </tr>
-                        {{-- <tr>
+                        <tr>
                             <th>Margin</th>
                             <td>{{ $item->margin }}</td>
                         </tr>
                         <tr>
                             <th>Markup</th>
                             <td>{{ $item->markup }}</td>
-                        </tr> --}}
+                        </tr>
                         <tr>
                             <th>Pembelian Terakhir</th>
                             <td>{{ $item->last_buy_at ? $item->last_buy_at->diffForHumans(['options' => 0]) : '-' }}</td>

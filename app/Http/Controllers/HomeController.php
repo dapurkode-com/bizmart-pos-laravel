@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use App\Buy;
-use App\Charts\SimpleChart;
 use App\Item;
 use App\Sell;
+use App\StockLog;
 use Carbon\Carbon;
-use DB;
+use App\Charts\SimpleChart;
 use Illuminate\Http\Request;
 
 /**
@@ -51,8 +52,8 @@ class HomeController extends Controller
             DATE(MAX(created_at) + INTERVAL (1 - DAYOFWEEK(MAX(created_at))) DAY) AS start_date,
             DATE(MAX(created_at) + INTERVAL (7 - DAYOFWEEK(MAX(created_at))) DAY) AS end_date
         '))
-            ->groupBy(DB::raw('WEEK(created_at)'))
-            ->orderBy(DB::raw('WEEK(created_at)'), 'DESC')
+            ->groupBy(DB::raw('YEAR(created_at), WEEK(created_at)'))
+            ->orderByRaw('YEAR(created_at) DESC, WEEK(created_at) DESC')
             ->limit(5)
             ->get();
 
@@ -64,7 +65,6 @@ class HomeController extends Controller
         }
 
         $chartWeekly = new SimpleChart();
-        $chartWeekly->title('Penjualan Mingguan', 25, "rgb(0, 0, 0)", true, 'Source Sans Pro');
         $chartWeekly->labels($labels);
         $chartWeekly->dataset("Jumlah", "bar", $weeklySellData->pluck(['count']))->color("#DC143C")->backgroundColor("#FFA07A");
 
@@ -73,17 +73,54 @@ class HomeController extends Controller
             MONTH(created_at) AS `month`,
             COUNT(id) AS `count`
         '))
-            ->groupBy(DB::raw('MONTH(created_at)'))
-            ->orderBy(DB::raw('MONTH(created_at)'), 'DESC')
+            ->groupBy(DB::raw('YEAR(created_at), MONTH(created_at)'))
+            ->orderByRaw('YEAR(created_at) DESC, MONTH(created_at) DESC')
             ->limit(5)
             ->get();
 
         $chartMonthly = new SimpleChart();
-        $chartMonthly->title('Penjualan Bulanan', 25, "rgb(0, 0, 0)", true, 'Source Sans Pro');
         $chartMonthly->labels($monthlySellData->pluck(['month']));
         $chartMonthly->dataset("Jumlah", "bar", $monthlySellData->pluck(['count']))->color("#00BFFF")->backgroundColor("#F0F8FF");
 
+        // Best Seller Item
+        $bestSellerItems = StockLog::select(DB::raw('
+            MIN(items.name) as item_name,
+            SUM(qty) as qty
+        '))
+            ->join('items', 'stock_logs.item_id', '=', 'items.id')
 
-        return response()->view('home', compact('badge_data', 'minItemStock', 'lastSell', 'lastBuy', 'chartWeekly', 'chartMonthly'));
+            ->where(DB::raw('MONTH(stock_logs.created_at)'), date('n'))
+            ->where(DB::raw('YEAR(stock_logs.created_at)'), date('Y'))
+            ->where('cause', 'SELL')
+            ->groupBy('item_id')
+            ->orderByRaw('SUM(qty) DESC')
+            ->limit(5)
+            ->get();
+
+        $chartBestSeller = new SimpleChart();
+        $chartBestSeller->labels($bestSellerItems->pluck(['item_name']));
+        $chartBestSeller->dataset("Jumlah", "bar", $bestSellerItems->pluck(['qty']))->color("#28a745")->backgroundColor("#71d687");
+
+        // Most Retur Item
+        $mostReturItems = StockLog::select(DB::raw('
+            MIN(items.name) as item_name,
+            SUM(qty) as qty
+        '))
+            ->join('items', 'stock_logs.item_id', '=', 'items.id')
+            ->where(DB::raw('MONTH(stock_logs.created_at)'), date('n'))
+            ->where(DB::raw('YEAR(stock_logs.created_at)'), date('Y'))
+            ->where('cause', 'RTR')
+            ->groupBy('item_id')
+            ->orderByRaw('SUM(qty) DESC')
+            ->limit(5)
+            ->get();
+
+        $chartMostRetur = new SimpleChart();
+        // $chartMostRetur->title('ATK Terbanyak Retur', 25, "rgb(0, 0, 0)", true, 'Source Sans Pro');
+        $chartMostRetur->labels($mostReturItems->pluck(['item_name']));
+        $chartMostRetur->dataset("Jumlah", "bar", $mostReturItems->pluck(['qty']))->color("#DC143C")->backgroundColor("#f0ac8c");
+
+
+        return response()->view('home', compact('badge_data', 'minItemStock', 'lastSell', 'lastBuy', 'chartWeekly', 'chartMonthly', 'chartBestSeller', 'chartMostRetur'));
     }
 }

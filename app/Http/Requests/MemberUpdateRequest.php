@@ -26,7 +26,7 @@ class MemberUpdateRequest extends FormRequest
         return [
             'name' => 'required|string',
             'address' => 'nullable|string',
-            'phone' => 'nulable|string',
+            'phone' => 'nullable|string',
         ];
     }
 

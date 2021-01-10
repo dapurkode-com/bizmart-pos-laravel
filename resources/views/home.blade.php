@@ -14,15 +14,11 @@
 
 @section('content')
     <div class="row">
-        {{-- <div class="col-lg-12">
-            <div class="alert alert-info alert-dismissible fade show" role="alert">
-
-                <strong><i class="fa fa-umbrella-beach"></i> Hai, {{ auth()->user()->name }}!</strong> Semoga harimu menyenangkan !
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <div class="col-lg-12">
+            <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+                <i class="fa fa-info-circle"></i> Hai, {{ auth()->user()->name }}! Semoga harimu menyenangkan !
             </div>
-        </div> --}}
+        </div>
         <div class="col-lg-3 col-6">
             <div class="small-box bg-success">
                 <div class="inner">
@@ -86,6 +82,24 @@
                 </h5>
                 <div class="card-body">
                     {!! $chartMonthly->container() !!}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <h5 class="card-header"> Barang Terlaris Bulan Ini
+                </h5>
+                <div class="card-body">
+                    {!! $chartBestSeller->container() !!}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <h5 class="card-header"> Barang Terbanyak Retur Bulan Ini
+                </h5>
+                <div class="card-body">
+                    {!! $chartMostRetur->container() !!}
                 </div>
             </div>
         </div>
@@ -180,4 +194,6 @@
 @section('js')
 {!! $chartWeekly->script() !!}
 {!! $chartMonthly->script() !!}
+{!! $chartBestSeller->script() !!}
+{!! $chartMostRetur->script() !!}
 @stop

@@ -115,7 +115,7 @@
 
                                 <div class="form-group">
                                     <label for="stock">Jumlah Stok</label>
-                                    <input type="number" name="stock" id="stock" class="form-control {{ $errors->has('stock') ? 'is-invalid' : '' }}" placeholder="Tulis jumlah stok disini." min="0" value="{{ old('stock') }}">
+                                    <input type="number" name="stock" id="stock" class="form-control {{ $errors->has('stock') ? 'is-invalid' : '' }}" placeholder="Tulis jumlah stok disini." min="0" value="{{ old('stock', 0) }}" readonly>
                                     @if ($errors->has('stock'))
                                         <div class="invalid-feedback">
                                             <ul>
@@ -167,7 +167,7 @@
                         </div>
                         <div class="form-group">
                             <label for="buy_price">Harga Beli</label>
-                            <input type="number" name="buy_price" id="buy_price" class="form-control {{ $errors->has('buy_price') ? 'is-invalid' : '' }}" placeholder="Tulis harga beli disini." value="{{ old('buy_price') }}" required min="0">
+                            <input type="number" name="buy_price" id="buy_price" class="form-control {{ $errors->has('buy_price') ? 'is-invalid' : '' }}" placeholder="Tulis harga beli disini." value="{{ old('buy_price', 0) }}" required min="0" readonly>
                             @if ($errors->has('buy_price'))
                                 <div class="invalid-feedback">
                                     <ul>
@@ -178,9 +178,7 @@
                                 </div>
                             @endif
                         </div>
-                        {{-- DEFAULT SELL_PRICE_DETERMINANT DIUBAH MENJADI MANUAL UNTUK SEMENTARA  --}}
-                        <input type="hidden" name="sell_price_determinant" value="0">
-                        {{-- <div class="form-group">
+                        <div class="form-group">
                             <label for="sell_price_determinant">Penentu harga</label>
                             <select name="sell_price_determinant" id="sell_price_determinant" class="form-control {{ $errors->has('sell_price_determinant') ? 'is-invalid' : '' }}" required>
                                 <option value="" selected hidden disabled>--Pilih--</option>
@@ -197,7 +195,7 @@
                                     </ul>
                                 </div>
                             @endif
-                        </div> --}}
+                        </div>
                         <div class="form-group">
                             <label for="sell_price">Harga Jual</label>
                             <input type="number" name="sell_price" id="sell_price" class="form-control {{ $errors->has('sell_price') ? 'is-invalid' : '' }}" placeholder="Tulis harga jual disini." value="{{ old('sell_price') }}" min="0">
@@ -211,7 +209,7 @@
                                 </div>
                             @endif
                         </div>
-                        {{-- <div class="row">
+                        <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="profit">Profit</label>
@@ -257,7 +255,7 @@
                                     @endif
                                 </div>
                             </div>
-                        </div> --}}
+                        </div>
                         <button type="submit" class="btn btn-primary float-right"><i class="fa fa-save"></i> Simpan</button>
                     </form>
                 </div>
