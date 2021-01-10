@@ -106,7 +106,7 @@
         <div class="col-lg-12">
             <div class="card-deck mb-3">
                 <div class="card">
-                    <h5 class="card-header">Barang dengan stok minim
+                    <h5 class="card-header">Barang dengan Stok Minim
                     </h5>
                     <div class="card-body table-responsive p-2">
                         <table class="table table-striped table-valign-middle">
