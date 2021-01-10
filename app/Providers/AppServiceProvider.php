@@ -32,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
     {
         config(['app.locale' => 'id']);
         Carbon::setLocale('id');
+        date_default_timezone_set('Asia/Jakarta');
         // Cashflow Observer
         SellPaymentHs::observe(\App\Observers\SellCashObserver::class);
         OtherRevenue::observe(\App\Observers\ORCashObserver::class);

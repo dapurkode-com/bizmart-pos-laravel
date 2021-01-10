@@ -191,13 +191,13 @@
                             <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Supplier</h5>
                         </div>
                         <div class="col-6 text-right">
-                            <button type="button" class="btn btn-default suplierTableRefreshBtn"><i class="fas fa-sync-alt" title="Refresh Table"></i></button>
+                            <button type="button" class="btn btn-default supplierTableRefreshBtn"><i class="fas fa-sync-alt" title="Refresh Table"></i></button>
                             <button type="button" class="btn btn-default" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <table id="suplierTable" class="table table-striped" style="width: 100%">
+                    <table id="supplierTable" class="table table-striped" style="width: 100%">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -418,7 +418,7 @@
                 select2DatatableInit();
             },
         });
-        const suplierTable = $('#suplierTable').DataTable({
+        const supplierTable = $('#supplierTable').DataTable({
             processing: true,
             serverSide: true,
             language: {
@@ -446,7 +446,7 @@
             },
             scrollX: true,
             ajax: {
-                url: "{{ route('buy_report.suplier_datatables') }}",
+                url: "{{ route('buy_report.supplier_datatables') }}",
                 data: function (d) {
                     d.filter = {
                         start_date: document.querySelector('input[name="start_date"]').value,
@@ -480,7 +480,7 @@
 
                 expendTable.ajax.reload()
                 itemTable.ajax.reload()
-                suplierTable.ajax.reload()
+                supplierTable.ajax.reload()
             });
 
             addListenToEvent('.mainContent .expendTableRefreshBtn', 'click', (event) => {
@@ -495,8 +495,8 @@
                 itemTable.ajax.reload();
             });
 
-            addListenToEvent('.mainContent .suplierTableRefreshBtn', 'click', (event) => {
-                suplierTable.ajax.reload();
+            addListenToEvent('.mainContent .supplierTableRefreshBtn', 'click', (event) => {
+                supplierTable.ajax.reload();
             });
 
         })

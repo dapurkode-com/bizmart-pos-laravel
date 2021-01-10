@@ -234,6 +234,11 @@
             width: 80px;
         }
 
+        #incomeNowSum::before,
+        #piutangSum::before{
+            content:"Rp "
+        }
+
         @media only screen and (max-width: 617px) {
             .filter {
                 grid-template-columns: 1fr;

@@ -120,9 +120,9 @@
             <th class="has-text-left">Supplier</th>
             <th class="has-text-right">Jumlah Transaksi</th>
         </tr>
-        @foreach ($supliers as $supplier)
+        @foreach ($suppliers as $supplier)
             <tr>
-                <td>{{ $supplier->suplier_name }}</td>
+                <td>{{ $supplier->supplier_name }}</td>
                 <td class="has-text-right">{{ $supplier->count_tx }}</td>
             </tr>
         @endforeach

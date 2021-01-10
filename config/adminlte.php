@@ -332,10 +332,6 @@ return [
                     'text'      => 'Opname',
                     'url'       => '/opname',
                 ],
-                [
-                    'text'      => 'Hitung Kas',
-                    'url'       => '/cash_count/create',
-                ],
             ]
         ],
         ['header' => 'DATA TRANSAKSI'],
@@ -364,18 +360,6 @@ return [
                 [
                     'text'    => 'Daftar Hutang',
                     'url'     => '/buy_payment_hs',
-                ],
-                [
-                    'text'      => 'Opname',
-                    'url'       => '/opname',
-                ],
-                [
-                    'text'      => 'Retur',
-                    'url'       => '/return_item',
-                ],
-                [
-                    'text'      => 'Riwayat Hitung Kas',
-                    'url'       => '/cash_count',
                 ],
             ],
         ],

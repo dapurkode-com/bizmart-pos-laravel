@@ -142,7 +142,5 @@ Route::group(['middleware' => ['auth']], function () {
         'sell_report' => 'SellReportController',
         'buy_report' => 'BuyReportController',
         'sell_report' => 'SellReportController',
-        'cash_count' => 'CashCountController',
-        // 'item_report' => 'ItemReportController',
     ]);
 });

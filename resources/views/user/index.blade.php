@@ -23,13 +23,9 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col-6">
-                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Daftar Pengguna</h5>
-                        </div>
-                        <div class="col-6 text-right">
-                            <button class="btn btn-info btnAdd" title="Tambah Data"><i class="fas fa-plus mr-2"></i>Tambah</button>
-                        </div>
+                    <h3 class="card-title">Daftar Pengguna</h3>
+                    <div class="card-tools">
+                        <button class="btn btn-info btn-sm btnAdd" title="Tambah Data"><i class="fas fa-plus mr-2"></i>Tambah</button>
                     </div>
                 </div>
                 <div class="card-body">
