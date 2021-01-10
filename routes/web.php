@@ -32,7 +32,7 @@ Auth::routes(
 Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/home', 'HomeController@index')->name('home');
-    Route::get('suplier/datatables', 'SuplierController@datatables')->name('suplier.datatables');
+    Route::get('supplier/datatables', 'SupplierController@datatables')->name('supplier.datatables');
     Route::get('buy/datatables', 'BuyController@datatables')->name('buy.datatables');
     Route::get('buy/datatablesReport', 'BuyController@datatablesReport')->name('buy.datatables_report');
     Route::get('buy/datatablesReportDetail', 'BuyController@datatablesReportDetail')->name('buy.datatables_report_detail');
@@ -105,7 +105,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('buy_report/item_datatables', 'BuyReportController@itemDatatables')->name('buy_report.item_datatables');
     Route::get('buy_report/expend_datatables', 'BuyReportController@expendDatatables')->name('buy_report.expend_datatables');
     Route::get('buy_report/dept_datatables', 'BuyReportController@deptDatatables')->name('buy_report.dept_datatables');
-    Route::get('buy_report/suplier_datatables', 'BuyReportController@suplierDatatables')->name('buy_report.suplier_datatables');
+    Route::get('buy_report/supplier_datatables', 'BuyReportController@supplierDatatables')->name('buy_report.supplier_datatables');
     Route::get('buy_report/generate_pdf', 'BuyReportController@generatePdf')->name('buy_report.generate_pdf');
 
     Route::get('cashflow', 'CashflowController@index')->name('cashflow');
@@ -128,7 +128,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     Route::resources([
-        'suplier' => 'SuplierController',
+        'supplier' => 'SupplierController',
         'member' => 'MemberController',
         'item'  => 'ItemController',
         'user' => 'UserController',

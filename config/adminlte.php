@@ -268,9 +268,9 @@ return [
             'url'     => '/item',
         ],
         [
-            'text'    => 'Suplier',
+            'text'    => 'Supplier',
             'icon'    => 'fas fa-fw fa-truck',
-            'url'     => '/suplier',
+            'url'     => '/supplier',
         ],
         [
             'text'    => 'Member',
