@@ -9,7 +9,7 @@ $factory->define(Buy::class, function (Faker $faker) {
     return [
         'uniq_id' => $faker->word,
         'user_id' => factory(\App\User::class),
-        'suplier_id' => factory(\App\Suplier::class),
+        'supplier_id' => factory(\App\Supplier::class),
         'summary' => $faker->text,
         'tax' => 0,
         'note' => $faker->text,

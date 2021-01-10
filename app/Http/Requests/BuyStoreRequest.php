@@ -26,8 +26,8 @@ class BuyStoreRequest extends FormRequest
         return [
             'buy_price.*'   => 'required|numeric|min:1',
             'qty.*'         => 'required|numeric|min:1',
-            'suplier_id'    => 'required',
-            'note'          => 'nullable|string',  
+            'supplier_id'    => 'required',
+            'note'          => 'nullable|string',
         ];
     }
     public function attributes()
@@ -35,8 +35,8 @@ class BuyStoreRequest extends FormRequest
         return [
             'buy_price.*'   => 'harga pembelian',
             'qty.*'         => 'kuantitas',
-            'suplier_id'    => 'suplier',
-            'note'          => 'keterangan', 
+            'supplier_id'    => 'supplier',
+            'note'          => 'keterangan',
         ];
     }
 }

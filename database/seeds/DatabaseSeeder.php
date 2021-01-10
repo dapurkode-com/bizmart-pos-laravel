@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             'name'      => 'Admin',
             'email'     => 'admin@mail.com',
             'username'  => 'admin',
-            'previllege_code' => 'OW',
+            'privilege_code' => 'OW',
             'password'  => bcrypt('airItuH2O')
         ]);
     }

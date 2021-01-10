@@ -57,7 +57,7 @@
 						<div> Denpasar, {{ $sell->updated_at->format('j F Y') }}</div>
 						<div class="has-text-weight-bold">{{ $sell->member->name }}</div>
 						<div>{{ $sell->member->address ?? '-' }}</div>
-						<div>Telp/HP: {{ $sell->suplier->phone ?? '-' }}</div>
+						<div>Telp/HP: {{ $sell->supplier->phone ?? '-' }}</div>
 					</td>
 				</tr>
 			</table>

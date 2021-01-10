@@ -1,19 +1,19 @@
 @extends('adminlte::page')
 
-@section('title', 'Tambah Suplier Baru')
+@section('title', 'Tambah Supplier Baru')
 
 @section('content_header')
 <div class="row mb-2">
 	<div class="col-sm-6">
 		<blockquote style="margin: 0; background: unset;">
-            <h1 class="m-0 text-dark">Tambah Suplier Baru</h1>
+            <h1 class="m-0 text-dark">Tambah Supplier Baru</h1>
         </blockquote>
 	</div>
 	<!-- /.col -->
 	<div class="col-sm-6">
 		<ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item">
-                <a href="{{ route('suplier.index') }}">Suplier</a>
+                <a href="{{ route('supplier.index') }}">Supplier</a>
             </li>
 			<li class="breadcrumb-item active">Buat Baru</li>
 		</ol>
@@ -27,14 +27,14 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Form Tambah Suplier Baru</h3>
+                    <h3 class="card-title">Form Tambah Supplier Baru</h3>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('suplier.store') }}" method="post">
+                    <form action="{{ route('supplier.store') }}" method="post">
                         @csrf
                         <div class="form-group">
                             <label for="name">Nama</label>
-                            <input type="text" name="name" id="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" placeholder="Tulis nama suplier disini." value="{{ old('name') }}" required autocomplete="off">
+                            <input type="text" name="name" id="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" placeholder="Tulis nama supplier disini." value="{{ old('name') }}" required autocomplete="off">
                             @if ($errors->has('name'))
                                 <div class="invalid-feedback">
                                     <ul>
@@ -47,7 +47,7 @@
                         </div>
                         <div class="form-group">
                             <label for="address">Alamat</label>
-                            <input type="text" name="address" id="address" class="form-control {{ $errors->has('address') ? 'is-invalid' : '' }}" placeholder="Tulis alamat suplier disini." value="{{ old('address') }}" autocomplete="off">
+                            <input type="text" name="address" id="address" class="form-control {{ $errors->has('address') ? 'is-invalid' : '' }}" placeholder="Tulis alamat supplier disini." value="{{ old('address') }}" autocomplete="off">
                             @if ($errors->has('address'))
                                 <div class="invalid-feedback">
                                     <ul>
@@ -60,7 +60,7 @@
                         </div>
                         <div class="form-group">
                             <label for="phone">Kontak</label>
-                            <input type="text" name="phone" id="phone" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}" placeholder="Tulis kontak suplier disini." value="{{ old('phone') }}" autocomplete="off">
+                            <input type="text" name="phone" id="phone" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}" placeholder="Tulis kontak supplier disini." value="{{ old('phone') }}" autocomplete="off">
                             @if ($errors->has('phone'))
                                 <div class="invalid-feedback">
                                     <ul>
@@ -73,7 +73,7 @@
                         </div>
                         <div class="form-group">
                             <label for="description">Keterangan</label>
-                            <textarea name="description" id="description" class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" placeholder="Tulis keterangan suplier disini." auto="off">{{ old('description') }}</textarea>
+                            <textarea name="description" id="description" class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" placeholder="Tulis keterangan supplier disini." auto="off">{{ old('description') }}</textarea>
                             @if ($errors->has('description'))
                                 <div class="invalid-feedback">
                                     <ul>

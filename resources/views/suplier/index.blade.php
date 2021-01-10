@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Suplier')
+@section('title', 'Supplier')
 
 @section('content_header')
 <div class="row mb-2">
 	<div class="col-sm-6">
 		<blockquote style="margin: 0; background: unset;">
-            <h1 class="m-0 text-dark">Suplier</h1>
+            <h1 class="m-0 text-dark">Supplier</h1>
         </blockquote>
 	</div>
 	<!-- /.col -->
 	<div class="col-sm-6">
 		<ol class="breadcrumb float-sm-right">
-			<li class="breadcrumb-item active">Suplier</li>
+			<li class="breadcrumb-item active">Supplier</li>
 		</ol>
 	</div>
 	<!-- /.col -->
@@ -24,9 +24,9 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Daftar Suplier</h3>
+                    <h3 class="card-title">Daftar Supplier</h3>
                     <div class="card-tools">
-                        <a href="{{route('suplier.create')}}" class="btn btn-info btn-sm" title="Tambah Data"><i class="fas fa-plus" style="padding-right: 1rem;"></i>Tambah</a>
+                        <a href="{{route('supplier.create')}}" class="btn btn-info btn-sm" title="Tambah Data"><i class="fas fa-plus" style="padding-right: 1rem;"></i>Tambah</a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -40,7 +40,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Suplier</th>
+                                <th>Supplier</th>
                                 <th>Alamat</th>
                                 <th>No Kontak</th>
                                 <th>Keterangan</th>
@@ -69,7 +69,7 @@
         $('#tbIndex').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('suplier.datatables') }}",
+            ajax: "{{ route('supplier.datatables') }}",
             language: {
                 decimal:        "",
                 emptyTable:     "Tidak ada data di dalam tabel",

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Buy;
 use Illuminate\Http\Request;
-use App\Suplier;
+use App\Supplier;
 use App\Item;
 use App\Helpers\BadgeHelper;
 use App\BuyDetail;
@@ -36,7 +36,7 @@ class BuyController extends Controller
      */
     public function create()
     {
-        $options['SUPLIER'] = Suplier::all();
+        $options['SUPLIER'] = Supplier::all();
         return response()->view('buy.create', compact('options'));
     }
 
@@ -53,7 +53,7 @@ class BuyController extends Controller
         try {
             DB::beginTransaction();
 
-            $suplier_id = $request->input('suplier_id');
+            $supplier_id = $request->input('supplier_id');
             $buy_prices = $request->input('buy_price');
             $note       = $request->input('note');
             $qty  = $request->input('qty');
@@ -65,7 +65,7 @@ class BuyController extends Controller
 
             $buy = Buy::create([
                 'user_id'       => auth()->user()->id,
-                'suplier_id'    => $suplier_id,
+                'supplier_id'    => $supplier_id,
                 'summary'       => $total,
                 'note'          => $note,
             ]);
@@ -169,7 +169,7 @@ class BuyController extends Controller
      */
     public function show($uniq_id)
     {
-        $buys = Buy::with('suplier')->where('uniq_id', $uniq_id)->first();
+        $buys = Buy::with('supplier')->where('uniq_id', $uniq_id)->first();
         // dd($buys);
         $mrch_name = SystemParam::where('param_code', 'MRCH_NAME')->first();
         $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
@@ -215,10 +215,10 @@ class BuyController extends Controller
     public function select(Request $request)
     {
         $flag = $request->flag;
-        if ($flag == 'suplier') {
-            $id = $request->suplier_id;
+        if ($flag == 'supplier') {
+            $id = $request->supplier_id;
             return response()->json([
-                'suplier' => Suplier::findOrFail($id)
+                'supplier' => Supplier::findOrFail($id)
             ]);
         } else if ($flag == 'barcode') {
             $id = $request->item;
@@ -245,7 +245,7 @@ class BuyController extends Controller
 
     public function printReport($uniq_id)
     {
-        $buys = Buy::with('suplier')->where('uniq_id', $uniq_id)->first();
+        $buys = Buy::with('supplier')->where('uniq_id', $uniq_id)->first();
         $details = BuyDetail::with('item')->where('buy_id', $buys->id)->get();
         $mrch_name = SystemParam::where('param_code', 'MRCH_NAME')->first();
         $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
@@ -256,7 +256,7 @@ class BuyController extends Controller
 
     public function generatePdfReport($uniq_id)
     {
-        $buys = Buy::with('suplier')->where('uniq_id', $uniq_id)->first();
+        $buys = Buy::with('supplier')->where('uniq_id', $uniq_id)->first();
         $details = BuyDetail::with('item')->where('buy_id', $buys->id)->get();
         $mrch_name = SystemParam::where('param_code', 'MRCH_NAME')->first();
         $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
@@ -294,7 +294,7 @@ class BuyController extends Controller
     {
         $start_date = $request->filter["start_date"];
         $end_date = $request->filter["end_date"];
-        $data = Buy::with('suplier');
+        $data = Buy::with('supplier');
 
         if ($start_date != null && $end_date != null) {
             $data->whereBetween('created_at', [$start_date . " 00:00:00", $end_date . " 23:59:59"]);

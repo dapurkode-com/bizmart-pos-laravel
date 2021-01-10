@@ -30,7 +30,7 @@ class ReturnItem extends Model
     protected $fillable = [
         'uniq_id',
         'user_id',
-        'suplier_id',
+        'supplier_id',
         'summary',
         'note',
         'created_by',
@@ -45,7 +45,7 @@ class ReturnItem extends Model
     protected $casts = [
         'id' => 'integer',
         'user_id' => 'integer',
-        'suplier_id' => 'integer',
+        'supplier_id' => 'integer',
         'summary' => 'double',
     ];
 
@@ -70,13 +70,13 @@ class ReturnItem extends Model
     }
 
     /**
-     * [Relationship] Suplier
+     * [Relationship] Supplier
      *
-     * @return belongsTo [Suplier]
+     * @return belongsTo [Supplier]
      */
-    public function suplier()
+    public function supplier()
     {
-        return $this->belongsTo(\App\Suplier::class);
+        return $this->belongsTo(\App\Supplier::class);
     }
 
     public function returnCode()

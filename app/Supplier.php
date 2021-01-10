@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Suplier
+ * Supplier
  *
  * @package Model
  * @author Satya Wibawa <i.g.b.n.satyawibawa@gmail.com>
  *
  */
-class Suplier extends Model
+class Supplier extends Model
 {
     use SoftDeletes;
     use HasSlug;

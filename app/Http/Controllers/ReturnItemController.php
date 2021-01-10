@@ -7,7 +7,7 @@ use App\Item;
 use App\ReturnItem;
 use App\ReturnItemDetail;
 use App\StockLog;
-use App\Suplier;
+use App\Supplier;
 use App\SystemParam;
 use DB;
 use Dompdf\Dompdf;
@@ -49,7 +49,7 @@ class ReturnItemController extends Controller
         try {
             DB::beginTransaction();
 
-            $returnItemArr = $request->only('suplier_id', 'summary', 'note');
+            $returnItemArr = $request->only('supplier_id', 'summary', 'note');
             $returnItemArr['user_id'] = auth()->user()->id;
 
             ReturnItem::create($returnItemArr);
@@ -127,7 +127,7 @@ class ReturnItemController extends Controller
      */
     public function show($id)
     {
-        $returnItem = ReturnItem::with('user', 'suplier', 'details.item')->findOrFail($id);
+        $returnItem = ReturnItem::with('user', 'supplier', 'details.item')->findOrFail($id);
         $returnItem->kode = "RT-" . str_pad($returnItem->id, 5, 0, STR_PAD_LEFT);
         return response()->json([
             'return_item' => $returnItem,
@@ -181,12 +181,12 @@ class ReturnItemController extends Controller
             'return_items.id',
             DB::raw("DATE_FORMAT(return_items.updated_at, '%d %b %Y') AS updated_at_idn"),
             DB::raw("CONCAT('RT-', LPAD(return_items.id, 5, '0')) AS kode"),
-            'supliers.name AS suplier_name',
+            'suppliers.name AS supplier_name',
             DB::raw("FORMAT(return_items.summary, 0) AS summary_iso"),
             'users.name as user_name',
         ])
             ->leftJoin('users', 'users.id', '=', 'return_items.user_id')
-            ->leftJoin('supliers', 'supliers.id', '=', 'return_items.suplier_id');
+            ->leftJoin('suppliers', 'suppliers.id', '=', 'return_items.supplier_id');
 
         return datatables()
             ->of($returnItems)
@@ -199,8 +199,8 @@ class ReturnItemController extends Controller
                 $sql = "DATE_FORMAT(return_items.updated_at, '%d %b %Y') like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
-            ->filterColumn('suplier_name', function ($query, $keyword) {
-                $sql = "supliers.name like ?";
+            ->filterColumn('supplier_name', function ($query, $keyword) {
+                $sql = "suppliers.name like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('summary_iso', function ($query, $keyword) {
@@ -231,7 +231,7 @@ class ReturnItemController extends Controller
         $limit = 25;
         $offset = ($page - 1) * $limit;
 
-        $suppliers = Suplier::select('*')
+        $suppliers = Supplier::select('*')
             ->where('name', 'like', "%$search%")
             ->orderby('name', 'asc')
             ->skip($offset)->take($limit)
@@ -316,7 +316,7 @@ class ReturnItemController extends Controller
             'mrch_name' => SystemParam::where('param_code', 'MRCH_NAME')->first()->param_value,
             'mrch_addr' => SystemParam::where('param_code', 'MRCH_ADDR')->first()->param_value,
         ]));
-        $return_item = ReturnItem::with('user', 'suplier', 'details.item')->findOrFail($id);
+        $return_item = ReturnItem::with('user', 'supplier', 'details.item')->findOrFail($id);
 
         $dompdf = new Dompdf();
         $dompdf->loadHtml(view('return_item.pdf', compact('sys_param', 'return_item'))->render());

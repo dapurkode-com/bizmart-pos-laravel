@@ -26,7 +26,7 @@ class ReturnItemStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'suplier_id' => 'required|numeric',
+            'supplier_id' => 'required|numeric',
             'summary' => 'required|numeric|min:0',
             'note' => 'required|string',
             'items' => 'required|array',
@@ -46,7 +46,7 @@ class ReturnItemStoreRequest extends FormRequest
     public function attributes()
     {
         return [
-            'suplier_id' => 'Supplier',
+            'supplier_id' => 'Supplier',
             'summary' => 'Total',
             'note' => 'Keterangan',
             'items' => 'Barang',
@@ -60,11 +60,13 @@ class ReturnItemStoreRequest extends FormRequest
 
     /**
      * Get custom fail response
-     * 
+     *
      * @return array
      */
-    protected function failedValidation(Validator $validator) { 
-        throw new HttpResponseException(response()->json([
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
                 'status' => 'invalid',
                 'validators' => $validator->errors(),
             ])

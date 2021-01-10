@@ -40,7 +40,7 @@
                                 <th>ID</th>
                                 <th>Kode</th>
                                 <th>Tgl</th>
-                                <th>Suplier</th>
+                                <th>Supplier</th>
                                 <th class="text-right">Total</th>
                                 <th>Oleh</th>
                                 <th class="text-right">Aksi</th>
@@ -370,12 +370,12 @@
             addListenToEvent('#modalForm button[type="reset"].myReset', 'click', (e) => {
                 e.preventDefault();
                 const btnDeleteItemArrElm = document.querySelectorAll('#modalForm table.listItem tbody .btnDeleteItem');
-                
+
                 for (const btnDeleteItemElm of btnDeleteItemArrElm) {
                     simulateEvent(btnDeleteItemElm, 'click');
                 }
             });
-            
+
             addListenToEvent('#modalForm input[name="qty[]"]', 'change', (e) => {
                 e.preventDefault();
                 renderCalculateTableListItem();
@@ -517,8 +517,8 @@
 
                     let qty = (qtyElm.value == '') ? parseFloat(0) : parseFloat(qtyElm.value);
                     let buyPrice = (buyPriceElm.value == '') ? parseFloat(0) : parseFloat(buyPriceElm.value);
-                    
-                    let _buyPriceTotal = qty * buyPrice;                    
+
+                    let _buyPriceTotal = qty * buyPrice;
                     buyPriceTotal += _buyPriceTotal;
 
                     buyPriceTotalElm.value = _buyPriceTotal;
@@ -531,7 +531,7 @@
 
         function submitModalForm(thisElm) {
             const parentElm = document.querySelector('#modalForm').closest('form');
-            
+
             // prepare data
             const remoteElm = parentElm.querySelector('[name="_remote"]');
             const methodElm = parentElm.querySelector('[name="_method"]');
@@ -556,21 +556,21 @@
                     const qtyElm = qtyElms[i];
                     const buyPriceElm = buyPriceElms[i];
                     let itemObj = JSON.parse(itemsElm.value);
-                    
+
                     data.items[i] = itemObj;
                     data.items[i].qty = qtyElm.value;
                     data.items[i].buy_price = buyPriceElm.value;
                 }
             }
             // end prepare data
-            
+
             // loading and disabled button
             const buttonText = thisElm.innerHTML;
             thisElm.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> ${buttonText}...`
             for (const elm of parentElm.querySelectorAll('button')) {
                 elm.disabled = true;
             }
-            
+
             fetch(remoteElm.value, {
                     method: methodElm.value,
                     headers: {
@@ -613,13 +613,13 @@
                         const elmName = keyNameSplited[2];
 
                         keyName = `${elmName}[]`;
-                         
+
                         parentElm.querySelectorAll(`[name="${keyName}"]`)[index].classList.add('is-invalid');
                         parentElm.querySelectorAll(`[name="${keyName}"]`)[index].closest('.form-group').querySelector('.invalid-feedback').innerHTML = `${value}`;
                     }
                     else {
                         let isDraw = true;
-                        
+
                         if (keyName == 'suplier_id') {
                             keyName = 'suppliers';
                         }
@@ -683,7 +683,7 @@
                             <td class="text-right">${getIsoNumberWithSeparator(buyPriceTotal)}</td>
                         </tr>
                     `;
-                    
+
                 }
             }
 
@@ -702,11 +702,11 @@
                                     <dt class="col-sm-4">Kode</dt>
                                     <dd class="col-sm-8">${returnItem.kode}</dd>
                                     <dt class="col-sm-4">Nama Supplier</dt>
-                                    <dd class="col-sm-8">${returnItem.suplier.name}</dd>
+                                    <dd class="col-sm-8">${returnItem.supplier.name}</dd>
                                     <dt class="col-sm-4">No Telp</dt>
-                                    <dd class="col-sm-8">${returnItem.suplier.phone}</dd>
+                                    <dd class="col-sm-8">${returnItem.supplier.phone}</dd>
                                     <dt class="col-sm-4">Alamat</dt>
-                                    <dd class="col-sm-8">${returnItem.suplier.address}</dd>
+                                    <dd class="col-sm-8">${returnItem.supplier.address}</dd>
                                     <dt class="col-sm-4">Keterangan</dt>
                                     <dd class="col-sm-8">${returnItem.note}</dd>
                                 </dl>
@@ -735,7 +735,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="card bg-default mb-0">
@@ -781,11 +781,11 @@
 
             parentElm.querySelector('.modal-footer').innerHTML = htmlFooter;
         }
-        
+
         function renderModalDetailFooter(data) {
             const parentElm = document.querySelector('#modalDetail');
-            
-            
+
+
         }
         // other function
 
@@ -1037,7 +1037,7 @@
                 .then((result) => {
                     resolve(result);
                 });
-            });  
+            });
         }
         // fixed function
 

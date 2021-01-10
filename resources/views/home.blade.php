@@ -59,7 +59,7 @@
             <div class="small-box bg-warning">
                 <div class="inner">
                     <h3>{{ $badge_data['count_today_debt'] }}</h3>
-                    <p>Hutang pada Suplier</p>
+                    <p>Hutang pada Supplier</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-donate"></i>
@@ -138,7 +138,7 @@
                         <table class="table table-striped table-valign-middle">
                             <thead>
                                 <tr>
-                                    <th>Suplier</th>
+                                    <th>Supplier</th>
                                     <th>Status</th>
                                     <th class="text-right">Total</th>
                                 </tr>
@@ -146,7 +146,7 @@
                             <tbody>
                                @forelse ($lastBuy as $buy)
                                     <tr>
-                                        <td>{{ $buy->suplier->name }}</td>
+                                        <td>{{ $buy->supplier->name }}</td>
                                         <td>{{ $buy->statusText() }}</td>
                                         <td class="text-right">{{ number_format($buy->summary) }}</td>
                                     </tr>

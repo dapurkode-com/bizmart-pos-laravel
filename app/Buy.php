@@ -42,7 +42,7 @@ class Buy extends Model
     protected $fillable = [
         'uniq_id',
         'user_id',
-        'suplier_id',
+        'supplier_id',
         'summary',
         'tax',
         'note',
@@ -60,7 +60,7 @@ class Buy extends Model
     protected $casts = [
         'id' => 'integer',
         'user_id' => 'integer',
-        'suplier_id' => 'integer',
+        'supplier_id' => 'integer',
         'summary' => 'double',
         'tax' => 'double',
         'paid_amount' => 'integer',
@@ -87,13 +87,13 @@ class Buy extends Model
     }
 
     /**
-     * [Relationship] Suplier yang dituju
+     * [Relationship] Supplier yang dituju
      *
-     * @return belongsTo [Suplier]
+     * @return belongsTo [Supplier]
      */
-    public function suplier()
+    public function supplier()
     {
-        return $this->belongsTo(\App\Suplier::class);
+        return $this->belongsTo(\App\Supplier::class);
     }
 
     /**

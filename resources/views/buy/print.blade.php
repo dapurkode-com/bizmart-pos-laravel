@@ -55,9 +55,9 @@
         <tr>
             <td>
                 <div>Kepada:</div>
-                <div class="has-text-weight-bold">{{ $buys->suplier->name }}</div>
-                <div>{{ $buys->suplier->address  ?? '-' }}</div>
-                <div>Telp/HP: {{ $buys->suplier->phone ?? '-' }}</div>
+                <div class="has-text-weight-bold">{{ $buys->supplier->name }}</div>
+                <div>{{ $buys->supplier->address  ?? '-' }}</div>
+                <div>Telp/HP: {{ $buys->supplier->phone ?? '-' }}</div>
             </td>
         </tr>
     </table>

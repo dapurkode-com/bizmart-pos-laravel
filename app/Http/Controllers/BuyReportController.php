@@ -210,17 +210,17 @@ class BuyReportController extends Controller
             ->toJson();
     }
 
-    public function suplierDatatables(Request $request)
+    public function supplierDatatables(Request $request)
     {
         $reports = DB::select(DB::raw("
                 SELECT
                     MIN(s.`name`) AS `name`,
-                    FORMAT(COUNT(b.`suplier_id`), 0) AS count_transaction
+                    FORMAT(COUNT(b.`supplier_id`), 0) AS count_transaction
                 FROM buys b
-                LEFT JOIN supliers s ON s.`id` = b.`suplier_id`
+                LEFT JOIN suppliers s ON s.`id` = b.`supplier_id`
                 WHERE b.updated_at >='" . $request->filter['start_date'] . " 00:00:00'
                 AND b.updated_at <='" . $request->filter['end_date'] . " 23:59:59'
-                GROUP BY b.`suplier_id`
+                GROUP BY b.`supplier_id`
             "));
         return datatables()
             ->of($reports)
@@ -261,18 +261,18 @@ class BuyReportController extends Controller
             ->orderBy('sum_qty', 'desc')
             ->get();
 
-        $supliers = buy::select(DB::raw('
-                min(supliers.name) as suplier_name,
-                count(buys.suplier_id) as count_tx
+        $suppliers = buy::select(DB::raw('
+                min(suppliers.name) as supplier_name,
+                count(buys.supplier_id) as count_tx
             '))
-            ->join('supliers', 'supliers.id', '=', 'buys.suplier_id')
+            ->join('suppliers', 'suppliers.id', '=', 'buys.supplier_id')
             ->whereBetween('buys.updated_at', [$start_date, $end_date])
-            ->groupBy('buys.suplier_id')
+            ->groupBy('buys.supplier_id')
             ->get();
 
-        // return response()->view('buy_report.pdf', compact('mrch_name', 'mrch_addr', 'mrch_phone', 'buys', 'stockLogs', 'supliers', 'start_date', 'end_date'));
+        // return response()->view('buy_report.pdf', compact('mrch_name', 'mrch_addr', 'mrch_phone', 'buys', 'stockLogs', 'suppliers', 'start_date', 'end_date'));
         $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('buy_report.pdf', compact('mrch_name', 'mrch_addr', 'mrch_phone', 'buys', 'stockLogs', 'supliers', 'start_date', 'end_date'))->render());
+        $dompdf->loadHtml(view('buy_report.pdf', compact('mrch_name', 'mrch_addr', 'mrch_phone', 'buys', 'stockLogs', 'suppliers', 'start_date', 'end_date'))->render());
         $dompdf->setPaper('A5', 'landscape');
         $dompdf->render();
         $dompdf->stream("Laporan Pembelian Tanggal $start_date sampai $end_date.pdf", array("Attachment" => true));

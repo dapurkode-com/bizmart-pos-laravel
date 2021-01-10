@@ -54,7 +54,7 @@
                                 <th>#</th>
                                 <th>Kode Pembelian</th>
                                 <th>Tanggal</th>
-                                <th>Suplier</th>
+                                <th>Supplier</th>
                                 <th>Total Harga</th>
                                 <th>Status</th>
                                 <th class="text-right">Aksi</th>
@@ -141,7 +141,7 @@
             {data: 'DT_RowIndex', orderable: false, searchable: false },
             {data: 'id'},
             {data: 'created_at'},
-            {data: 'suplier.name'},
+            {data: 'supplier.name'},
             {data: 'summary', class:'text-right'},
             {data: 'buy_status'},
             {data: 'action', orderable: false, searchable: false, className: 'text-right'},

@@ -17,7 +17,7 @@ class CreateBuysTable extends Migration
             $table->id();
             $table->string('uniq_id', 40);
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('suplier_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('supplier_id')->constrained()->cascadeOnDelete();
             $table->double('summary')->default('0');
             $table->double('tax')->default('0');
             $table->text('note')->nullable();

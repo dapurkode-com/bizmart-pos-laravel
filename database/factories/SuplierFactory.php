@@ -2,10 +2,10 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Suplier;
+use App\Supplier;
 use Faker\Generator as Faker;
 
-$factory->define(Suplier::class, function (Faker $faker) {
+$factory->define(Supplier::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'address' => $faker->word,

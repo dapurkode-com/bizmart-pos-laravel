@@ -57,7 +57,7 @@
                                 <th>#</th>
                                 <th>Kode Hutang</th>
                                 <th>Tanggal</th>
-                                <th>Suplier</th>
+                                <th>Supplier</th>
                                 <th class="text-right">Total</th>
                                 <th>Oleh</th>
                                 <th>Status</th>
@@ -346,8 +346,8 @@
                                 <dl class="row mb-0">
                                     <dt class="col-sm-4">Kode</dt>
                                     <dd class="col-sm-8">${obj.kode}</dd>
-                                    <dt class="col-sm-4">Nama Suplier</dt>
-                                    <dd class="col-sm-8">${obj.suplier.name}</dd>
+                                    <dt class="col-sm-4">Nama Supplier</dt>
+                                    <dd class="col-sm-8">${obj.supplier.name}</dd>
                                     <dt class="col-sm-4">Keterangan</dt>
                                     <dd class="col-sm-8">${(obj.note) ? obj.note : '-'}</dd>
                                     <dt class="col-sm-4">Status</dt>

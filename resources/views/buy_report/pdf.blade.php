@@ -66,7 +66,7 @@
             <th class="has-text-left">#</th>
             <th class="has-text-left">ID</th>
             <th class="has-text-left">Pegawai</th>
-            <th class="has-text-left">Suplier</th>
+            <th class="has-text-left">Supplier</th>
             <th class="has-text-left">Status</th>
             <th class="has-text-right">Total Pembelian</th>
             <th class="has-text-right">Total Hutang</th>
@@ -79,7 +79,7 @@
                 <td>{{ $key }}</td>
                 <td>{{ $buy->buy_status == 'PO' ? "PB-" . str_pad($buy->id, 5, '0', STR_PAD_LEFT) : "HT-" . str_pad($buy->id, 5, '0', STR_PAD_LEFT) }}</td>
                 <td>{{ $buy->user != null ? $buy->user->name : '' }}</td>
-                <td>{{ $buy->suplier != null ? $buy->suplier->name : '' }}</td>
+                <td>{{ $buy->supplier != null ? $buy->supplier->name : '' }}</td>
                 <td>{{ $buy->status }}</td>
                 <td class="text-right">{{ number_format($buy->summary) }}</td>
                 <td class="text-right">{{ number_format($buy->summary - $buy->payment) }}</td>
@@ -114,16 +114,16 @@
     </table>
     <table class="table mt-2 is-bordered is-content">
         <tr>
-            <th colspan="2">Daftar Suplier</th>
+            <th colspan="2">Daftar Supplier</th>
         </tr>
         <tr>
-            <th class="has-text-left">Suplier</th>
+            <th class="has-text-left">Supplier</th>
             <th class="has-text-right">Jumlah Transaksi</th>
         </tr>
-        @foreach ($supliers as $suplier)
+        @foreach ($supliers as $supplier)
             <tr>
-                <td>{{ $suplier->suplier_name }}</td>
-                <td class="has-text-right">{{ $suplier->count_tx }}</td>
+                <td>{{ $supplier->suplier_name }}</td>
+                <td class="has-text-right">{{ $supplier->count_tx }}</td>
             </tr>
         @endforeach
     </table>

@@ -50,9 +50,9 @@
                     <div class="col-sm-4 invoice-col">
                         Kepada
                         <address>
-                        <strong>{{ $buys->suplier->name }}</strong><br>
-                        {{ $buys->suplier->address }}<br>
-                        {{ $buys->suplier->phone }}<br>
+                        <strong>{{ $buys->supplier->name }}</strong><br>
+                        {{ $buys->supplier->address }}<br>
+                        {{ $buys->supplier->phone }}<br>
                         </address>
                     </div>
                     <div class="col-sm-4 invoice-col">

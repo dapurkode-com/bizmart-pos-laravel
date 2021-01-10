@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddSlugFieldToSuplierTable extends Migration
+class AddSlugFieldToSupplierTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class AddSlugFieldToSuplierTable extends Migration
      */
     public function up()
     {
-        Schema::table('supliers', function (Blueprint $table) {
+        Schema::table('suppliers', function (Blueprint $table) {
             $table->string('slug');
         });
     }
@@ -25,7 +25,7 @@ class AddSlugFieldToSuplierTable extends Migration
      */
     public function down()
     {
-        Schema::table('supliers', function (Blueprint $table) {
+        Schema::table('suppliers', function (Blueprint $table) {
             $table->dropColumn('slug');
         });
     }

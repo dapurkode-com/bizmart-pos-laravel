@@ -188,7 +188,7 @@
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-6">
-                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Suplier</h5>
+                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Supplier</h5>
                         </div>
                         <div class="col-6 text-right">
                             <button type="button" class="btn btn-default suplierTableRefreshBtn"><i class="fas fa-sync-alt" title="Refresh Table"></i></button>
@@ -201,7 +201,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Suplier</th>
+                                <th>Supplier</th>
                                 <th class="text-right">Jumlah Transaksi</th>
                             </tr>
                         </thead>

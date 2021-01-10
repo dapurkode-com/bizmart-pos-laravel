@@ -113,9 +113,9 @@
                         </div>
                         <div class="col-sm-6 border p-3">
                             <div class="form-group">
-                                <label for="suplier_id">Cari Suplier</label>
+                                <label for="suplier_id">Cari Supplier</label>
                                 <select name="suplier_id" id="suplier_id" class="form-control">
-                                    <option value="0" selected hidden disabled>--Pilih Suplier--</option>
+                                    <option value="0" selected hidden disabled>--Pilih Supplier--</option>
                                     @foreach ($options['SUPLIER'] as $option)
                                         <option value="{{ $option->id }}" {{ $option->id == old('suplier_id') ? 'selected' : '' }}>{{ $option->name }}</option>
                                     @endforeach
@@ -123,7 +123,7 @@
                             </div>
                             <table class="table table-bordered table-sm table-striped">
                                 <tr>
-                                    <th>Nama Suplier</th>
+                                    <th>Nama Supplier</th>
                                     <td id="suplier_name" class="detail"> -- </td>
                                 </tr>
                                 <tr>
@@ -210,7 +210,7 @@
             var buy_price = $('[name="buy_price[]"]')[index].value;
             sum += Number(qty)*Number(buy_price)
         });
-        elem1.value = sum; 
+        elem1.value = sum;
         elem.innerHTML = getIsoNumberWithSeparator(sum);
 
         var msg = '{{ Session::get('message') }}';
@@ -438,16 +438,16 @@
             type: "post",
             url: "{{ route('buy.select') }}",
             data: {
-                'flag': 'suplier',
+                'flag': 'supplier',
                 'suplier_id': suplier_id
             },
             dataType: "json",
             success: function (res) {
                 if (res) {
-                    // console.log(res.suplier.name);
-                    $('#suplier_name').html(res.suplier.name);
-                    $('#suplier_phone').html(res.suplier.phone);
-                    $('#suplier_address').html(res.suplier.address);
+                    // console.log(res.supplier.name);
+                    $('#suplier_name').html(res.supplier.name);
+                    $('#suplier_phone').html(res.supplier.phone);
+                    $('#suplier_address').html(res.supplier.address);
                 } else {
                     alert('Data tidak ditemukan');
                 }

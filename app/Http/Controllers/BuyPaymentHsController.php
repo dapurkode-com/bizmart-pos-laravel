@@ -49,7 +49,7 @@ class BuyPaymentHsController extends Controller
      */
     public function show($id)
     {
-        $buy = Buy::with('user', 'suplier', 'buyDetails', 'buyDetails.item', 'buyPaymentHs', 'buyPaymentHs.user')->findOrFail($id);
+        $buy = Buy::with('user', 'supplier', 'buyDetails', 'buyDetails.item', 'buyPaymentHs', 'buyPaymentHs.user')->findOrFail($id);
         $buy->kode = $buy->buyCode();
         $buy->status_text = $buy->statusText();
         return response()->json([
@@ -147,13 +147,13 @@ class BuyPaymentHsController extends Controller
             'buys.updated_at',
             DB::raw("CONCAT('HT-', LPAD(buys.id, 5, '0')) AS _id"),
             DB::raw("DATE_FORMAT(buys.updated_at, '%d %b %Y') AS _updated_at"),
-            'supliers.name AS _suplier_name',
+            'suppliers.name AS _supplier_name',
             'buys.summary',
             'users.name AS _user_name',
             'buys.buy_status',
             'look_ups.label as _status',
         ])
-            ->leftJoin('supliers', 'supliers.id', '=', 'buys.suplier_id')
+            ->leftJoin('suppliers', 'suppliers.id', '=', 'buys.supplier_id')
             ->leftJoin('users', 'users.id', '=', 'buys.user_id')
             ->leftJoin('look_ups', function ($join) {
                 $join->on('look_ups.key', '=', 'buys.buy_status');
@@ -177,8 +177,8 @@ class BuyPaymentHsController extends Controller
                 $sql = "DATE_FORMAT(buys.updated_at, '%d %b %Y') like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
-            ->filterColumn('_suplier_name', function ($query, $keyword) {
-                $sql = "supliers.name like ?";
+            ->filterColumn('_supplier_name', function ($query, $keyword) {
+                $sql = "suppliers.name like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('_user_name', function ($query, $keyword) {
