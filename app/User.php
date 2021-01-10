@@ -46,7 +46,8 @@ class User extends Authenticatable
 
     public function adminlte_image()
     {
-        return '/images/user.png';
+        $name = str_replace(' ', '+', $this->name);
+        return "https://ui-avatars.com/api/?name=$name";
     }
 
     public function adminlte_desc()
