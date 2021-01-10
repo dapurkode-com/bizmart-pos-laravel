@@ -45,12 +45,12 @@ return [
     |
     */
 
-    'logo' => '<b>SIP</b> DS Grafika', //'<b>Bizmart</b> POS',
-    'logo_img' => '/images/logo1.png',
+    'logo' => 'Bizmart <b>POS</b>',
+    'logo_img' => '/images/logo.png',
     'logo_img_class' => 'brand-image elevation-3 img-circle',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'SIPDS logo',
+    'logo_img_alt' => 'Bizmart logo',
 
     /*
     |--------------------------------------------------------------------------
