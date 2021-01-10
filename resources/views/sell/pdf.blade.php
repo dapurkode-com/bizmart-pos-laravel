@@ -34,7 +34,7 @@
 	</head>
 	<body>
 		<section>
-			<img src="images/logo1.png" style="height: 9.5mm; width: 9.5mm; position: absolute">
+			<img src="images/logo.png" style="height: 9.5mm; width: 9.5mm; position: absolute">
 
 			<table class="table is-paddingless">
 				<tr>
@@ -54,7 +54,7 @@
 			<table class="table mt-1 is-borderless is-paddingless">
 				<tr>
 					<td>
-						<div> Denpasar, {{ $sell->updated_at->format('j F Y') }}</div>
+						<div> Denpasar, {{ $sell->updated_at->translatedFormat('j F Y') }}</div>
 						<div class="has-text-weight-bold">{{ $sell->member->name }}</div>
 						<div>{{ $sell->member->address ?? '-' }}</div>
 						<div>Telp/HP: {{ $sell->supplier->phone ?? '-' }}</div>

@@ -59,8 +59,8 @@ class HomeController extends Controller
 
         $labels = [];
         foreach ($weeklySellData as $key => $data) {
-            $startDate = Carbon::parse($data->start_date)->format('d M y');
-            $endDate = Carbon::parse($data->end_date)->format('d M y');
+            $startDate = Carbon::parse($data->start_date)->translatedFormat('d M y');
+            $endDate = Carbon::parse($data->end_date)->translatedFormat('d M y');
             array_push($labels, "$startDate - $endDate");
         }
 

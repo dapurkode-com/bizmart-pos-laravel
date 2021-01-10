@@ -63,7 +63,7 @@
                     <div class="col-sm-4 invoice-col"></div>
                     <div class="col-sm-4 invoice-col text-right">
                         <strong>Laporan Arus Kas</strong><br>
-                        Tanggal {{ $date_start->format('d M Y') }} - {{ $date_end->format('d M Y') }}
+                        Tanggal {{ $date_start->translatedFormat('d M Y') }} - {{ $date_end->translatedFormat('d M Y') }}
                     </div>
                </div>
                 <div class="row">
@@ -93,7 +93,7 @@
                                     <tr>
                                         <td>{{ $key }}</td>
                                         <td>{{ $flow->ref_uniq_id }}</td>
-                                        <td>{{ $flow->trx_date->format('d M Y') }}</td>
+                                        <td>{{ $flow->trx_date->translatedFormat('d M Y') }}</td>
                                         <td>{{ $flow->user->name }}</td>
                                         <td>{!! $flow->cashCauseText() !!}</td>
                                         <td>{!! $flow->ioCashText() !!}</td>

@@ -22,8 +22,8 @@ class ProfitLossController extends Controller
         $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
         $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
 
-        $month = $request->input('month', date('m'));
-        $year  = $request->input('year', date('Y'));
+        $month = +$request->input('month', date('m'));
+        $year  = +$request->input('year', date('Y'));
 
         $date_start = Carbon::parse("$year-$month")->startOfMonth();
         $date_end   = Carbon::parse("$year-$month")->endOfMonth();
@@ -62,6 +62,21 @@ class ProfitLossController extends Controller
         }
 
         $otherExpenseSummary = OtherExpense::whereBetween('created_at', [$date_start, $date_end])->get();
+
+        $months = [
+            'Januari',
+            'Februari',
+            'Maret',
+            'April',
+            'Mei',
+            'Juni',
+            'Juli',
+            'Agustus',
+            'September',
+            'Oktober',
+            'November',
+            'Desember'
+        ];
 
         return response()->view('profit_loss.index', compact(
             'mrch_name',
@@ -73,7 +88,8 @@ class ProfitLossController extends Controller
             'buySummary',
             'stockValueOld',
             'stockValueNew',
-            'otherExpenseSummary'
+            'otherExpenseSummary',
+            'months'
         ));
     }
 
@@ -83,8 +99,8 @@ class ProfitLossController extends Controller
         $mrch_addr = SystemParam::where('param_code', 'MRCH_ADDR')->first();
         $mrch_phone = SystemParam::where('param_code', 'MRCH_PHONE')->first();
 
-        $month = $request->input('month', date('m'));
-        $year  = $request->input('year', date('Y'));
+        $month = +$request->input('month', date('m'));
+        $year  = +$request->input('year', date('Y'));
 
         $date_start = Carbon::parse("$year-$month")->startOfMonth();
         $date_end   = Carbon::parse("$year-$month")->endOfMonth();
@@ -123,6 +139,21 @@ class ProfitLossController extends Controller
         }
 
         $otherExpenseSummary = OtherExpense::whereBetween('created_at', [$date_start, $date_end])->get();
+
+        $months = [
+            'Januari',
+            'Februari',
+            'Maret',
+            'April',
+            'Mei',
+            'Juni',
+            'Juli',
+            'Agustus',
+            'September',
+            'Oktober',
+            'November',
+            'Desember'
+        ];
 
         $dompdf = new Dompdf();
         $dompdf->loadHtml(view('profit_loss.pdf', compact(
@@ -135,22 +166,11 @@ class ProfitLossController extends Controller
             'buySummary',
             'stockValueOld',
             'stockValueNew',
-            'otherExpenseSummary'
+            'otherExpenseSummary',
+            'months'
         ))->render());
         $dompdf->setPaper('A5', 'landscape');
         $dompdf->render();
         $dompdf->stream("Laporan Laba Rugi.pdf", array("Attachment" => true));
-        // return response()->view('profit_loss.pdf', compact(
-        //     'mrch_name',
-        //     'mrch_addr',
-        //     'mrch_phone',
-        //     'month',
-        //     'year',
-        //     'sellSummary',
-        //     'buySummary',
-        //     'stockValueOld',
-        //     'stockValueNew',
-        //     'otherExpenseSummary'
-        // ));
     }
 }

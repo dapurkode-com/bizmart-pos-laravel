@@ -34,7 +34,7 @@
 </head>
 <body>
     <section>
-    <img src="images/logo1.png" style="height: 9.5mm; width: 9.5mm; position: absolute">
+    <img src="images/logo.png" style="height: 9.5mm; width: 9.5mm; position: absolute">
 
     <table class="table is-paddingless">
         <tr>
@@ -51,7 +51,7 @@
             <td class="has-text-centered has-text-weight-bold is-title">Laporan Arus Kas</td>
         </tr>
         <tr>
-            <td class="has-text-centered">Tanggal {{ $date_start->format('d M Y') }} - {{ $date_end->format('d M Y') }}</td>
+            <td class="has-text-centered">Tanggal {{ $date_start->translatedFormat('d M Y') }} - {{ $date_end->translatedFormat('d M Y') }}</td>
         </tr>
     </table>
 
@@ -77,7 +77,7 @@
             <tr>
                 <td>{{ $key }}</td>
                 <td>{{ $flow->ref_uniq_id }}</td>
-                <td>{{ $flow->trx_date->format('d M Y') }}</td>
+                <td>{{ $flow->trx_date->translatedFormat('d M Y') }}</td>
                 <td>{{ $flow->user->name }}</td>
                 <td>{!! $flow->cashCauseText() !!}</td>
                 <td>{!! $flow->ioCashText() !!}</td>
@@ -97,7 +97,7 @@
     <table class="table mt-3 is-borderless is-paddingless">
         <tr>
             <td width="50%"></td>
-            <td width="50%" class="has-text-centered">Denpasar, {{ \Carbon\Carbon::today()->format('j F Y')  }}</td>
+            <td width="50%" class="has-text-centered">Denpasar, {{ \Carbon\Carbon::today()->translatedFormat('j F Y')  }}</td>
         </tr>
         <tr>
             <td class="has-text-centered"></td>

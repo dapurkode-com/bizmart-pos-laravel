@@ -28,8 +28,8 @@
                         <div class="sellTableFilter">
                             <div class="form-group mb-0">
                                <select name="month" id="month" class="form-control">
-                                    @for ($i = 1; $i <= 12; $i++)
-                                        <option value="{{$i}}" {{$month == $i ? 'selected' : ''}}>{{DateTime::createFromFormat('!m', $i)->format('F')}}</option>
+                                    @for ($i = 0; $i < 12; $i++)
+                                        <option value="{{$i}}" {{$month == $i ? 'selected' : ''}}>{{ $months[$i] }}</option>
                                     @endfor
                                 </select>
                             </div>
@@ -64,7 +64,7 @@
                     <div class="col-sm-4 invoice-col"></div>
                     <div class="col-sm-4 invoice-col text-right">
                         <strong>Laporan Laba Rugi</strong><br>
-                        Bulan {{DateTime::createFromFormat('!m', $month)->format('F')}} {{ $year }}
+                        Bulan {{$months[$month-1]}} {{ $year }}
                     </div>
                </div>
                 <div class="row">

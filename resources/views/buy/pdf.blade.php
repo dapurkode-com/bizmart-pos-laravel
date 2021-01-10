@@ -34,7 +34,7 @@
 </head>
 <body>
     <section>
-    <img src="images/logo1.png" style="height: 9.5mm; width: 9.5mm; position: absolute">
+    <img src="images/logo.png" style="height: 9.5mm; width: 9.5mm; position: absolute">
 
     <table class="table is-paddingless">
         <tr>
@@ -99,7 +99,7 @@
     <table class="table mt-3 is-borderless is-paddingless">
         <tr>
             <td width="50%"></td>
-            <td width="50%" class="has-text-centered"> Denpasar, {{ $buys->updated_at->format('j F Y')  }}</td>
+            <td width="50%" class="has-text-centered"> Denpasar, {{ $buys->updated_at->translatedFormat('j F Y')  }}</td>
         </tr>
         <tr>
             <td class="has-text-centered">Penerima,</td>

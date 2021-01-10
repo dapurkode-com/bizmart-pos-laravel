@@ -40,7 +40,7 @@
 </head>
 <body>
     <section>
-    <img src="images/logo1.png" style="height: 9.5mm; width: 9.5mm; position: absolute">
+    <img src="images/logo.png" style="height: 9.5mm; width: 9.5mm; position: absolute">
 
     <table class="table is-paddingless">
         <tr>
@@ -57,7 +57,7 @@
             <td class="has-text-centered has-text-weight-bold is-title">Laporan Laba Rugi</td>
         </tr>
         <tr>
-            <td class="has-text-centered">Bulan {{DateTime::createFromFormat('!m', $month)->format('F')}} {{ $year }}</td>
+            <td class="has-text-centered">Bulan {{$months[$month]}} {{ $year }}</td>
         </tr>
     </table>
 
@@ -142,7 +142,7 @@
     <table class="table mt-3 is-borderless is-paddingless">
         <tr>
             <td width="50%"></td>
-            <td width="50%" class="has-text-centered">Denpasar, {{ \Carbon\Carbon::today()->format('j F Y')  }}</td>
+            <td width="50%" class="has-text-centered">Denpasar, {{ \Carbon\Carbon::today()->translatedFormat('j F Y')  }}</td>
         </tr>
         <tr>
             <td class="has-text-centered"></td>
