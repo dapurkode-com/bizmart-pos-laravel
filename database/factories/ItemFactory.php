@@ -22,6 +22,6 @@ $factory->define(Item::class, function (Faker $faker) {
         'markup' => $faker->randomFloat(0, 0, 9),
         'last_buy_at' => $faker->dateTime(),
         'last_sell_at' => $faker->dateTime(),
-        'last_opname:at' => $faker->dateTime()
+        'last_opname_at' => $faker->dateTime()
     ];
 });
