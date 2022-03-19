@@ -16,7 +16,7 @@ class CreateStockLogsTable extends Migration
         Schema::create('stock_logs', function (Blueprint $table) {
             $table->id();
             $table->string('ref_uniq_id', 40);
-            $table->enum('cause', ["BUY","SELL","ADJ"]);
+            $table->enum('cause', ["BUY","SELL","ADJ", "NIT"]);
             $table->enum('in_out_position', ["IN","OUT"]);
             $table->integer('qty')->default('0');
             $table->integer('old_stock')->default('0');
