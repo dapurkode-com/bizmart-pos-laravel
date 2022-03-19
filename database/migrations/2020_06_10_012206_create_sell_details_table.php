@@ -17,7 +17,7 @@ class CreateSellDetailsTable extends Migration
             $table->id();
             $table->foreignId('sell_id')->constrained()->cascadeOnDelete();
             $table->foreignId('item_id')->constrained()->cascadeOnDelete();
-            $table->string('qty');
+            $table->integer('qty')->default(0);
             $table->double('sell_price')->default('0');
             $table->softDeletes();
             $table->timestamps();

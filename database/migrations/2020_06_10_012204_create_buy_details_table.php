@@ -17,7 +17,7 @@ class CreateBuyDetailsTable extends Migration
             $table->id();
             $table->foreignId('buy_id')->constrained()->cascadeOnDelete();
             $table->foreignId('item_id')->constrained()->cascadeOnDelete();
-            $table->string('qty');
+            $table->integer('qty')->default(0);
             $table->double('buy_price')->default('0');
             $table->softDeletes();
             $table->timestamps();
