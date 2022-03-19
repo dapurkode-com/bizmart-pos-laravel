@@ -18,8 +18,8 @@ $factory->define(Item::class, function (Faker $faker) {
         'buy_price' => $faker->randomNumber(),
         'profit' => $faker->randomNumber(),
         'sell_price_determinant' => $faker->randomElement(["0", "1", "2", "3"]),
-        'margin' => $faker->randomFloat(0, 0, 9),
-        'markup' => $faker->randomFloat(0, 0, 9),
+        'margin' => $faker->randomFloat(0, 0, 8),
+        'markup' => $faker->randomFloat(0, 0, 8),
         'last_buy_at' => $faker->dateTime(),
         'last_sell_at' => $faker->dateTime(),
         'last_opname_at' => $faker->dateTime()
