@@ -341,10 +341,10 @@ class OpnameController extends Controller
     {
         $opnames = Opname::select([
             'opnames.id',
-            DB::raw("DATE_FORMAT(opnames.created_at, '%d %b %Y') AS created_at_idn"),
-            DB::raw("CONCAT('SO-', LPAD(opnames.id, 5, '0')) AS kode"),
+            DB::raw("TO_CHAR(opnames.created_at, 'DD-MON-YYYY') AS created_at_idn"),
+            DB::raw("'SO-' || LPAD(opnames.id::text, 5, '0') AS kode"),
             'opnames.created_by',
-            DB::raw("FORMAT(opnames.summary, 0) AS summary_iso"),
+            DB::raw("TO_CHAR(opnames.summary, 'fm999G999D99') AS summary_iso"),
             'opnames.status',
             'look_ups.label as status_text',
         ])
@@ -362,15 +362,15 @@ class OpnameController extends Controller
             })
             ->rawColumns(['action', 'status_color'])
             ->filterColumn('kode', function ($query, $keyword) {
-                $sql = "CONCAT('SO-', LPAD(opnames.id, 5, '0')) like ?";
+                $sql = "'SO-' || LPAD(opnames.id::text, 5, '0') like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('created_at_idn', function ($query, $keyword) {
-                $sql = "DATE_FORMAT(opnames.created_at, '%d %b %Y') like ?";
+                $sql = "TO_CHAR(opnames.created_at, 'DD-MON-YYYY') like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('summary_iso', function ($query, $keyword) {
-                $sql = "FORMAT(opnames.summary, 0) like ?";
+                $sql = "TO_CHAR(opnames.summary, 'fm999G999D99') like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('status_text', function ($query, $keyword) {
@@ -401,7 +401,7 @@ class OpnameController extends Controller
     {
         $opnameDetails = OpnameDetail::select([
             'opname_details.id',
-            DB::raw("DATE_FORMAT(opname_details.updated_at, '%d %b %Y %H:%i:%s') AS updated_at_idn"),
+            DB::raw("TO_CHAR(opname_details.updated_at, 'DD-MON-YYYY HH:MI:SS') AS updated_at_idn"),
             'opname_details.opname_id',
             'opname_details.item_id',
             'items.barcode',
@@ -419,7 +419,7 @@ class OpnameController extends Controller
             ->of($opnameDetails)
             ->addIndexColumn()
             ->filterColumn('updated_at_idn', function ($query, $keyword) {
-                $sql = "DATE_FORMAT(opname_details.updated_at, '%d %b %Y %H:%i:%s') like ?";
+                $sql = "TO_CHAR(opname_details.updated_at, 'DD-MON-YYYY HH:MI:SS') like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('description', function ($query, $keyword) {

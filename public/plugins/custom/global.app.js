@@ -38,7 +38,7 @@ function eraseErrorInit(params) {
         e.target.classList.remove('is-invalid');
         e.target.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;
     });
-    
+
     $(document).on('change', 'select', (e) => {
         e.target.classList.remove('is-invalid');
         e.target.closest('.form-group').querySelector('.invalid-feedback').innerHTML = ``;
@@ -113,10 +113,10 @@ function getIndoDate(val){
 }
 
 function getIsoNumberWithSeparator(isoNumber){
-    return (isoNumber.toFixed(0)).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    return isoNumber.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
 }
 
-export { 
+export {
     domReady,
     addListenToEvent,
     drawError,

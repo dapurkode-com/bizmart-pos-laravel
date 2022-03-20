@@ -8,7 +8,7 @@ use JeroenNoten\LaravelAdminLte\Menu\Filters\FilterInterface;
 
 class CustomFilter implements FilterInterface
 {
-    public function transform($item, Builder $builder)
+    public function transform($item)
     {
         if (isset($item['privilege']) && !in_array(Auth::user()->privilege_code, explode(',', $item['privilege']))) {
             return [];

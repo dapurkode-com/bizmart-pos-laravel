@@ -301,8 +301,8 @@ class SellController extends Controller
         $sells = Sell::select([
             'sells.id',
             'sells.updated_at',
-            DB::raw("CONCAT('PJ-', LPAD(sells.id, 5, '0')) AS _id"),
-            DB::raw("DATE_FORMAT(sells.updated_at, '%d %b %Y') AS _updated_at"),
+            DB::raw("'PJ-' || LPAD(sells.id::text, 5, '0') AS _id"),
+            DB::raw("to_char(sells.updated_at, 'DD-MON-YYYY') AS _updated_at"),
             'members.name AS _member_name',
             'sells.summary',
             'users.name AS _user_name',
@@ -325,11 +325,11 @@ class SellController extends Controller
             ->of($sells)
             ->addIndexColumn()
             ->filterColumn('_id', function ($query, $keyword) {
-                $sql = "CONCAT('PJ-', LPAD(sells.id, 5, '0')) like ? OR CONCAT('PI-', LPAD(sells.id, 5, '0')) like ?";
+                $sql = "('PJ-' || LPAD(sells.id::text, 5, '0')) like ? OR ('PI-' || LPAD(sells.id::text, 5, '0')) like ?";
                 $query->whereRaw($sql, ["%{$keyword}%", "%{$keyword}%"]);
             })
             ->filterColumn('_updated_at', function ($query, $keyword) {
-                $sql = "DATE_FORMAT(sells.updated_at, '%d %b %Y') like ?";
+                $sql = "to_char(sells.updated_at, 'DD-MON-YYYY') like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('_member_name', function ($query, $keyword) {

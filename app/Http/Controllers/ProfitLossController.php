@@ -32,10 +32,10 @@ class ProfitLossController extends Controller
         $buySummary     = BuyPaymentHs::whereBetween('created_at', [$date_start, $date_end])->sum('amount');
 
         $stockOld = Item::select(DB::raw("(
-            SELECT sl.new_stock FROM stock_logs sl WHERE sl.item_id = items.`id` AND sl.created_at < '" . $date_start->format('Y-m-d') . " 00:00:00' ORDER BY sl.created_at LIMIT 1
+            SELECT sl.new_stock FROM stock_logs sl WHERE sl.item_id = items.id AND sl.created_at < '" . $date_start->format('Y-m-d') . " 00:00:00' ORDER BY sl.created_at LIMIT 1
         ) old_stock,
         (
-            SELECT sl.buy_price FROM stock_logs sl WHERE sl.item_id = items.`id` AND sl.created_at < '" . $date_start->format('Y-m-d') . " 00:00:00' ORDER BY sl.created_at LIMIT 1
+            SELECT sl.buy_price FROM stock_logs sl WHERE sl.item_id = items.id AND sl.created_at < '" . $date_start->format('Y-m-d') . " 00:00:00' ORDER BY sl.created_at LIMIT 1
         ) old_buy_price, items.* "))
             ->get();
 
@@ -47,10 +47,10 @@ class ProfitLossController extends Controller
         }
 
         $stockNew = Item::select(DB::raw("(
-            SELECT sl.new_stock FROM stock_logs sl WHERE sl.item_id = items.`id` AND sl.created_at <= '" . $date_end->format('Y-m-d') . " 23:59:59' ORDER BY sl.created_at LIMIT 1
+            SELECT sl.new_stock FROM stock_logs sl WHERE sl.item_id = items.id AND sl.created_at <= '" . $date_end->format('Y-m-d') . " 23:59:59' ORDER BY sl.created_at LIMIT 1
         ) old_stock,
         (
-            SELECT sl.buy_price FROM stock_logs sl WHERE sl.item_id = items.`id` AND sl.created_at <= '" . $date_end->format('Y-m-d') . " 23:59:59' ORDER BY sl.created_at LIMIT 1
+            SELECT sl.buy_price FROM stock_logs sl WHERE sl.item_id = items.id AND sl.created_at <= '" . $date_end->format('Y-m-d') . " 23:59:59' ORDER BY sl.created_at LIMIT 1
         ) old_buy_price, items.* "))
             ->get();
 
@@ -109,10 +109,10 @@ class ProfitLossController extends Controller
         $buySummary     = BuyPaymentHs::whereBetween('created_at', [$date_start, $date_end])->sum('amount');
 
         $stockOld = Item::select(DB::raw("(
-            SELECT sl.new_stock FROM stock_logs sl WHERE sl.item_id = items.`id` AND sl.created_at < '" . $date_start->format('Y-m-d') . " 00:00:00' ORDER BY sl.created_at LIMIT 1
+            SELECT sl.new_stock FROM stock_logs sl WHERE sl.item_id = items.id AND sl.created_at < '" . $date_start->format('Y-m-d') . " 00:00:00' ORDER BY sl.created_at LIMIT 1
         ) old_stock,
         (
-            SELECT sl.buy_price FROM stock_logs sl WHERE sl.item_id = items.`id` AND sl.created_at < '" . $date_start->format('Y-m-d') . " 00:00:00' ORDER BY sl.created_at LIMIT 1
+            SELECT sl.buy_price FROM stock_logs sl WHERE sl.item_id = items.id AND sl.created_at < '" . $date_start->format('Y-m-d') . " 00:00:00' ORDER BY sl.created_at LIMIT 1
         ) old_buy_price, items.* "))
             ->get();
 
@@ -124,10 +124,10 @@ class ProfitLossController extends Controller
         }
 
         $stockNew = Item::select(DB::raw("(
-            SELECT sl.new_stock FROM stock_logs sl WHERE sl.item_id = items.`id` AND sl.created_at <= '" . $date_end->format('Y-m-d') . " 23:59:59' ORDER BY sl.created_at LIMIT 1
+            SELECT sl.new_stock FROM stock_logs sl WHERE sl.item_id = items.id AND sl.created_at <= '" . $date_end->format('Y-m-d') . " 23:59:59' ORDER BY sl.created_at LIMIT 1
         ) old_stock,
         (
-            SELECT sl.buy_price FROM stock_logs sl WHERE sl.item_id = items.`id` AND sl.created_at <= '" . $date_end->format('Y-m-d') . " 23:59:59' ORDER BY sl.created_at LIMIT 1
+            SELECT sl.buy_price FROM stock_logs sl WHERE sl.item_id = items.id AND sl.created_at <= '" . $date_end->format('Y-m-d') . " 23:59:59' ORDER BY sl.created_at LIMIT 1
         ) old_buy_price, items.* "))
             ->get();
 

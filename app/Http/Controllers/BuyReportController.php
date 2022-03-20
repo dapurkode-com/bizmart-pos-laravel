@@ -125,13 +125,13 @@ class BuyReportController extends Controller
                     COALESCE(SUM(summary - sum_amount), 0) as sum_dept
                 FROM(
                     SELECT
-                        MIN(buys.`summary`) AS summary,
+                        MIN(buys.summary) AS summary,
                         SUM(amount) AS sum_amount
-                    FROM `buy_payment_hs`
-                    LEFT JOIN buys ON buys.`id` = buy_payment_hs.`buy_id`
+                    FROM buy_payment_hs
+                    LEFT JOIN buys ON buys.id = buy_payment_hs.buy_id
                     WHERE buy_payment_hs.updated_at <= '$end_date 23:59:59'
-                    AND buys.`buy_status` = 'DE'
-                    GROUP BY buy_payment_hs.`buy_id`
+                    AND buys.buy_status = 'DE'
+                    GROUP BY buy_payment_hs.buy_id
                 ) result
             "))[0];
 
@@ -157,15 +157,15 @@ class BuyReportController extends Controller
     {
         $reports = DB::select(DB::raw("
                 SELECT
-                    MIN(i.`name`) AS `name`,
-                    FORMAT(SUM(sl.`qty`), 0) AS sum_qty,
-                    FORMAT(SUM((sl.buy_price * sl.`qty`)), 0) AS sum_buy_price
+                    MIN(i.name) AS name,
+                    TO_CHAR(SUM(sl.qty), 'fm999G999D99') AS sum_qty,
+                    TO_CHAR(SUM((sl.buy_price * sl.qty)), 'fm999G999D99') AS sum_buy_price
                 FROM stock_logs sl
-                LEFT JOIN items i ON i.`id` = sl.`item_id`
-                WHERE sl.`cause` = 'BUY'
+                LEFT JOIN items i ON i.id = sl.item_id
+                WHERE sl.cause = 'BUY'
                 AND sl.updated_at >= '" . $request->filter['start_date'] . " 00:00:00'
                 AND sl.updated_at <= '" . $request->filter['end_date'] . " 23:59:59'
-                GROUP BY sl.`item_id`
+                GROUP BY sl.item_id
             "));
         return datatables()
             ->of($reports)
@@ -177,13 +177,13 @@ class BuyReportController extends Controller
     {
         $reports = DB::select(DB::raw("
                 SELECT
-                    DATE_FORMAT(MIN(payment_date), '%e %b %Y') AS `date`,
-                    CONCAT('PB-', LPAD(MIN(buy_id), 5, '0')) AS buy_code,
-                    FORMAT(SUM(amount), 0) AS sum_amount
-                FROM `buy_payment_hs`
+                    TO_CHAR(MIN(payment_date), 'DD-MON-YYYY') AS date,
+                    'PB-' || LPAD(MIN(buy_id)::text, 5, '0') AS buy_code,
+                    TO_CHAR(SUM(amount), 'fm999G999D99') AS sum_amount
+                FROM buy_payment_hs
                 WHERE updated_at >='" . $request->filter['start_date'] . " 00:00:00'
                 AND updated_at <='" . $request->filter['end_date'] . " 23:59:59'
-                GROUP BY `buy_id`
+                GROUP BY buy_id
             "));
         return datatables()
             ->of($reports)
@@ -195,14 +195,14 @@ class BuyReportController extends Controller
     {
         $reports = DB::select(DB::raw("
                 SELECT
-                    DATE_FORMAT(MIN(payment_date), '%e %b %Y') AS `date`,
-                    CONCAT('PB-', LPAD(MIN(buy_id), 5, '0')) AS buy_code,
-                    FORMAT((MIN(summary) - SUM(amount)), 0) AS sum_dept
-                FROM `buy_payment_hs` bp
-                LEFT JOIN buys b ON b.`id` = bp.`buy_id`
+                    TO_CHAR(MIN(payment_date), 'DD-MON-YYYY') AS date,
+                    'PB-' || LPAD(MIN(buy_id)::text, 5, '0') AS buy_code,
+                    TO_CHAR((MIN(summary) - SUM(amount)), 'fm999G999D99') AS sum_dept
+                FROM buy_payment_hs bp
+                LEFT JOIN buys b ON b.id = bp.buy_id
                 WHERE bp.updated_at <= '" . $request->filter['end_date'] . " 23:59:59'
-                AND b.`buy_status` = 'DE'
-                GROUP BY `buy_id`
+                AND b.buy_status = 'DE'
+                GROUP BY buy_id
             "));
         return datatables()
             ->of($reports)
@@ -214,13 +214,13 @@ class BuyReportController extends Controller
     {
         $reports = DB::select(DB::raw("
                 SELECT
-                    MIN(s.`name`) AS `name`,
-                    FORMAT(COUNT(b.`supplier_id`), 0) AS count_transaction
+                    MIN(s.name) AS name,
+                    TO_CHAR(COUNT(b.supplier_id), 'fm999G999D99') AS count_transaction
                 FROM buys b
-                LEFT JOIN suppliers s ON s.`id` = b.`supplier_id`
+                LEFT JOIN suppliers s ON s.id = b.supplier_id
                 WHERE b.updated_at >='" . $request->filter['start_date'] . " 00:00:00'
                 AND b.updated_at <='" . $request->filter['end_date'] . " 23:59:59'
-                GROUP BY b.`supplier_id`
+                GROUP BY b.supplier_id
             "));
         return datatables()
             ->of($reports)

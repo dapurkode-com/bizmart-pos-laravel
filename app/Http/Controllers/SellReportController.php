@@ -137,13 +137,13 @@ class SellReportController extends Controller
                     COALESCE(SUM(summary - sum_amount), 0) as sum_piutang
                 FROM(
                     SELECT
-                        MIN(sells.`summary`) AS summary,
+                        MIN(sells.summary) AS summary,
                         SUM(amount) AS sum_amount
-                    FROM `sell_payment_hs`
-                    LEFT JOIN sells ON sells.`id` = sell_payment_hs.`sell_id`
+                    FROM sell_payment_hs
+                    LEFT JOIN sells ON sells.id = sell_payment_hs.sell_id
                     WHERE sell_payment_hs.updated_at <= '$request->date_end 23:59:59'
-                    AND sells.`sell_status` = 'RE'
-                    GROUP BY sell_payment_hs.`sell_id`
+                    AND sells.sell_status = 'RE'
+                    GROUP BY sell_payment_hs.sell_id
                 ) result
             "))[0];
 
@@ -179,13 +179,13 @@ class SellReportController extends Controller
     {
         $reports = DB::select(DB::raw("
                 SELECT
-                    DATE_FORMAT(MIN(payment_date), '%e %b %Y') AS `date`,
-                    CONCAT('PJ-', LPAD(MIN(sell_id), 5, '0')) AS sell_code,
-                    FORMAT(SUM(amount), 0) AS sum_amount
-                FROM `sell_payment_hs`
+                    TO_CHAR(MIN(payment_date), 'DD-MON-YYYY') AS date,
+                    'PJ-' || LPAD(MIN(sell_id::text), 5, '0') AS sell_code,
+                    TO_CHAR(SUM(amount), 'fm999G999D99') AS sum_amount
+                FROM sell_payment_hs
                 WHERE updated_at >='" . $request->filter['date_start'] . " 00:00:00'
                 AND updated_at <='" . $request->filter['date_end'] . " 23:59:59'
-                GROUP BY `sell_id`
+                GROUP BY sell_id
             "));
         return datatables()
             ->of($reports)
@@ -203,14 +203,14 @@ class SellReportController extends Controller
     {
         $reports = DB::select(DB::raw("
                 SELECT
-                    DATE_FORMAT(MIN(payment_date), '%e %b %Y') AS `date`,
-                    CONCAT('PI-', LPAD(MIN(sell_id), 5, '0')) AS sell_code,
-                    FORMAT((MIN(summary) - SUM(amount)), 0) AS sum_piutang
-                FROM `sell_payment_hs` sp
-                LEFT JOIN sells s ON s.`id` = sp.`sell_id`
+                    TO_CHAR(MIN(payment_date), 'DD-MON-YYYY') AS date,
+                    'PI-' || LPAD(MIN(sell_id)::text, 5, '0') AS sell_code,
+                    TO_CHAR((MIN(summary) - SUM(amount)), 'fm999G999D99') AS sum_piutang
+                FROM sell_payment_hs sp
+                LEFT JOIN sells s ON s.id = sp.sell_id
                 WHERE sp.updated_at <= '" . $request->filter['date_end'] . " 23:59:59'
-                AND s.`sell_status` = 'RE'
-                GROUP BY `sell_id`
+                AND s.sell_status = 'RE'
+                GROUP BY sell_id
             "));
         return datatables()
             ->of($reports)
@@ -228,16 +228,16 @@ class SellReportController extends Controller
     {
         $reports = DB::select(DB::raw("
                 SELECT
-                    MIN(i.`name`) AS `name`,
-                    FORMAT(SUM(sl.`qty`), 0) AS sum_qty,
-                    FORMAT(SUM((sl.sell_price * sl.`qty`)), 0) AS sum_sell_price,
-                    FORMAT(SUM(((sl.sell_price * sl.`qty`) - (sl.buy_price * sl.`qty`))), 0) AS net_income
+                    MIN(i.name) AS name,
+                    TO_CHAR(SUM(sl.qty), 'fm999G999D99') AS sum_qty,
+                    TO_CHAR(SUM((sl.sell_price * sl.qty)), 'fm999G999D99') AS sum_sell_price,
+                    TO_CHAR(SUM(((sl.sell_price * sl.qty) - (sl.buy_price * sl.qty))), 'fm999G999D99') AS net_income
                 FROM stock_logs sl
-                LEFT JOIN items i ON i.`id` = sl.`item_id`
-                WHERE sl.`cause` = 'SELL'
+                LEFT JOIN items i ON i.id = sl.item_id
+                WHERE sl.cause = 'SELL'
                 AND sl.updated_at >= '" . $request->filter['date_start'] . " 00:00:00'
                 AND sl.updated_at <= '" . $request->filter['date_end'] . " 23:59:59'
-                GROUP BY sl.`item_id`
+                GROUP BY sl.item_id
             "));
         return datatables()
             ->of($reports)
@@ -255,67 +255,19 @@ class SellReportController extends Controller
     {
         $reports = DB::select(DB::raw("
                 SELECT
-                    MIN(m.`name`) AS `name`,
-                    FORMAT(COUNT(s.`member_id`), 0) AS count_transaction
+                    MIN(m.name) AS name,
+                    TO_CHAR(COUNT(s.member_id), 'fm999G999D99') AS count_transaction
                 FROM sells s
-                LEFT JOIN members m ON m.`id` = s.`member_id`
+                LEFT JOIN members m ON m.id = s.member_id
                 WHERE s.updated_at >= '" . $request->filter['date_start'] . " 00:00:00'
                 AND s.updated_at <= '" . $request->filter['date_end'] . " 23:59:59'
-                GROUP BY s.`member_id`
+                GROUP BY s.member_id
             "));
         return datatables()
             ->of($reports)
             ->addIndexColumn()
             ->toJson();
     }
-
-    /**
-     * note
-     */
-    /*
-    SELECT
-        DATE_FORMAT(MIN(payment_date), "%e %b %Y") AS `date`,
-        CONCAT('PJ-', LPAD(MIN(sell_id), 5, '0')) AS sell_code,
-        SUM(amount) AS sum_amount
-        FROM `sell_payment_hs`
-        WHERE updated_at >= '2020-11-09'
-        AND updated_at <= '2020-11-09 23:59:59'
-        GROUP BY `sell_id`
-    ;
-    SELECT
-        DATE_FORMAT(MIN(payment_date), "%e %b %Y") AS `date`,
-        CONCAT('PJ-', LPAD(MIN(sell_id), 5, '0')) AS sell_code,
-        (MIN(summary) - SUM(amount)) AS sum_piutang
-        FROM `sell_payment_hs` sp
-        LEFT JOIN sells s ON s.`id` = sp.`sell_id`
-        WHERE sp.updated_at <= '2020-11-09 23:59:59'
-        AND s.`sell_status` = 'RE'
-        GROUP BY `sell_id`
-    ;
-    SELECT
-        MIN(i.`name`) AS `name`,
-        SUM(sl.`qty`) AS sum_qty,
-        SUM((sl.sell_price * sl.`qty`)) AS sum_sell_price,
-        SUM(((sl.sell_price * sl.`qty`) - (sl.buy_price * sl.`qty`))) AS net_income
-        FROM stock_logs sl
-        LEFT JOIN items i ON i.`id` = sl.`item_id`
-        WHERE sl.`cause` = 'SELL'
-        AND sl.updated_at >= '2020-11-07'
-        AND sl.updated_at <= '2020-11-09 23:59:59'
-        GROUP BY sl.`item_id`
-        ORDER BY sum_qty DESC
-    ;
-    SELECT
-        MIN(m.`name`) AS `name`,
-        COUNT(s.`member_id`) AS count_member_id
-        FROM sells s
-        LEFT JOIN members m ON m.`id` = s.`member_id`
-        WHERE s.updated_at >= '2020-11-07'
-        AND s.updated_at <= '2020-11-09 23:59:59'
-        GROUP BY s.`member_id`
-        ORDER BY `count_member_id` DESC
-    ;
-    */
 
     public function generatePdf(Request $request)
     {

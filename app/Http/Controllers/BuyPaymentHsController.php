@@ -145,8 +145,8 @@ class BuyPaymentHsController extends Controller
         $buys = Buy::select([
             'buys.id',
             'buys.updated_at',
-            DB::raw("CONCAT('HT-', LPAD(buys.id, 5, '0')) AS _id"),
-            DB::raw("DATE_FORMAT(buys.updated_at, '%d %b %Y') AS _updated_at"),
+            DB::raw("'HT-' || LPAD(buys.id::text, 5, '0') AS _id"),
+            DB::raw("TO_CHAR(buys.updated_at, 'DD-MON-YYYY') AS _updated_at"),
             'suppliers.name AS _supplier_name',
             'buys.summary',
             'users.name AS _user_name',
@@ -170,11 +170,11 @@ class BuyPaymentHsController extends Controller
             ->of($buys)
             ->addIndexColumn()
             ->filterColumn('_id', function ($query, $keyword) {
-                $sql = "CONCAT('HT-', LPAD(buys.id, 5, '0')) like ?";
+                $sql = "'HT-' || LPAD(buys.id::text, 5, '0') like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('_updated_at', function ($query, $keyword) {
-                $sql = "DATE_FORMAT(buys.updated_at, '%d %b %Y') like ?";
+                $sql = "TO_CHAR(buys.updated_at, 'DD-MON-YYYY') like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('_supplier_name', function ($query, $keyword) {

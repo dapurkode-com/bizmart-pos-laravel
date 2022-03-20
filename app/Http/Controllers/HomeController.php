@@ -46,14 +46,14 @@ class HomeController extends Controller
         $lastBuy = Buy::orderBy('created_at', 'desc')->limit(10)->get();
 
         // Chart Weekly
-        $weeklySellData =    Sell::select(DB::raw('
-            WEEK(created_at) AS `week`,
-            COUNT(id) AS `count`,
-            DATE(MAX(created_at) + INTERVAL (1 - DAYOFWEEK(MAX(created_at))) DAY) AS start_date,
-            DATE(MAX(created_at) + INTERVAL (7 - DAYOFWEEK(MAX(created_at))) DAY) AS end_date
-        '))
-            ->groupBy(DB::raw('YEAR(created_at), WEEK(created_at)'))
-            ->orderByRaw('YEAR(created_at) DESC, WEEK(created_at) DESC')
+        $weeklySellData =    Sell::select(DB::raw("
+            date_trunc('week', created_at) weekly,
+            COUNT(id) AS count,
+            date_trunc('week', created_at)::date AS start_date,
+            (date_trunc('week', created_at)+ '6 days'::interval)::date AS end_date
+        "))
+            ->groupBy(DB::raw('created_at, weekly'))
+            ->orderByRaw('weekly desc')
             ->limit(5)
             ->get();
 
@@ -69,12 +69,13 @@ class HomeController extends Controller
         $chartWeekly->dataset("Jumlah", "bar", $weeklySellData->pluck(['count']))->color("#DC143C")->backgroundColor("#FFA07A");
 
         // Chart Monthly
-        $monthlySellData =    Sell::select(DB::raw('
-            MONTH(created_at) AS `month`,
-            COUNT(id) AS `count`
-        '))
-            ->groupBy(DB::raw('YEAR(created_at), MONTH(created_at)'))
-            ->orderByRaw('YEAR(created_at) DESC, MONTH(created_at) DESC')
+        $monthlySellData =    Sell::select(DB::raw("
+            date_trunc('month', created_at) monthly,
+            extract(month from created_at) AS month,
+            COUNT(id) AS count
+        "))
+            ->groupBy(DB::raw('created_at, monthly'))
+            ->orderByRaw('monthly DESC')
             ->limit(5)
             ->get();
 
@@ -89,8 +90,8 @@ class HomeController extends Controller
         '))
             ->join('items', 'stock_logs.item_id', '=', 'items.id')
 
-            ->where(DB::raw('MONTH(stock_logs.created_at)'), date('n'))
-            ->where(DB::raw('YEAR(stock_logs.created_at)'), date('Y'))
+            ->where(DB::raw('extract(month from stock_logs.created_at)'), date('n'))
+            ->where(DB::raw('extract(year from stock_logs.created_at)'), date('Y'))
             ->where('cause', 'SELL')
             ->groupBy('item_id')
             ->orderByRaw('SUM(qty) DESC')
@@ -107,8 +108,8 @@ class HomeController extends Controller
             SUM(qty) as qty
         '))
             ->join('items', 'stock_logs.item_id', '=', 'items.id')
-            ->where(DB::raw('MONTH(stock_logs.created_at)'), date('n'))
-            ->where(DB::raw('YEAR(stock_logs.created_at)'), date('Y'))
+            ->where(DB::raw('extract(month from stock_logs.created_at)'), date('n'))
+            ->where(DB::raw('extract(year from stock_logs.created_at)'), date('Y'))
             ->where('cause', 'RTR')
             ->groupBy('item_id')
             ->orderByRaw('SUM(qty) DESC')

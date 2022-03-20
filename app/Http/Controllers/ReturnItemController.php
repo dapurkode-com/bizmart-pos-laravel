@@ -179,10 +179,10 @@ class ReturnItemController extends Controller
     {
         $returnItems = ReturnItem::select([
             'return_items.id',
-            DB::raw("DATE_FORMAT(return_items.updated_at, '%d %b %Y') AS updated_at_idn"),
-            DB::raw("CONCAT('RT-', LPAD(return_items.id, 5, '0')) AS kode"),
+            DB::raw("TO_CHAR(return_items.updated_at, 'DD-MON-YYYY') AS updated_at_idn"),
+            DB::raw("'RT-' || LPAD(return_items.id::text, 5, '0') AS kode"),
             'suppliers.name AS supplier_name',
-            DB::raw("FORMAT(return_items.summary, 0) AS summary_iso"),
+            DB::raw("TO_CHAR(return_items.summary, 'fm999G999D99') AS summary_iso"),
             'users.name as user_name',
         ])
             ->leftJoin('users', 'users.id', '=', 'return_items.user_id')
@@ -192,11 +192,11 @@ class ReturnItemController extends Controller
             ->of($returnItems)
             ->addIndexColumn()
             ->filterColumn('kode', function ($query, $keyword) {
-                $sql = "CONCAT('RT-', LPAD(return_items.id, 5, '0')) like ?";
+                $sql = "'RT-' || LPAD(return_items.id::text, 5, '0') like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('updated_at_idn', function ($query, $keyword) {
-                $sql = "DATE_FORMAT(return_items.updated_at, '%d %b %Y') like ?";
+                $sql = "TO_CHAR(return_items.updated_at, 'DD-MON-YYYY') like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('supplier_name', function ($query, $keyword) {
@@ -204,7 +204,7 @@ class ReturnItemController extends Controller
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('summary_iso', function ($query, $keyword) {
-                $sql = "FORMAT(return_items.summary, 0) like ?";
+                $sql = "TO_CHAR(return_items.summary, 'fm999G999D99') like ?";
                 $query->whereRaw($sql, ["%{$keyword}%"]);
             })
             ->filterColumn('user_name', function ($query, $keyword) {
