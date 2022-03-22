@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterCauseFieldOnStockLogsTable extends Migration
+class AddOldBuyPriceFieldToStockLogsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,9 @@ class AlterCauseFieldOnStockLogsTable extends Migration
     public function up()
     {
         Schema::table('stock_logs', function (Blueprint $table) {
-            $table->string('cause')->change();
-            $table->string('in_out_position')->change();
+            $table->double("old_buy_price")->default(0);
+            $table->double("old_sell_price")->default(0);
+            $table->double("hpp")->default(0);
         });
     }
 
@@ -26,8 +27,8 @@ class AlterCauseFieldOnStockLogsTable extends Migration
      */
     public function down()
     {
-        // Schema::table('stock_logs', function (Blueprint $table) {
-        //     $table->enum('cause', ["BUY", "SELL", "ADJ"]);
-        // });
+        Schema::table('stock_logs', function (Blueprint $table) {
+            $table->removeColumns(['old_buy_price', 'old_sell_price', 'hpp']);
+        });
     }
 }

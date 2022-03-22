@@ -36,6 +36,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+        // TODO: Check SQL Summarize
         $badge_data['count_today_sell'] = Sell::whereDate('created_at', '=', Carbon::today()->toDateString())->count();
         $badge_data['count_today_buy'] = Buy::whereDate('created_at', '=', Carbon::today()->toDateString())->count();
         $badge_data['count_today_debt'] = Buy::where('buy_status', 'DE')->count();

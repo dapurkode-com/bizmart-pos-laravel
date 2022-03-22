@@ -12,11 +12,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UserSeeder::class);
-        factory(App\Item::class, 5)->create();
-        $this->call(LookUpsSeeder::class);
-        $this->call(SystemParamsSeeder::class);
-
         User::create([
             'name'      => 'Admin',
             'email'     => 'admin@mail.com',
@@ -24,5 +19,11 @@ class DatabaseSeeder extends Seeder
             'privilege_code' => 'OW',
             'password'  => bcrypt('airItuH2O')
         ]);
+        // $this->call(UserSeeder::class);
+        $this->call(LookUpsSeeder::class);
+        $this->call(SystemParamsSeeder::class);
+        $this->call(PrevSeeder::class);
+
+
     }
 }
